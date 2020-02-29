@@ -250,16 +250,13 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int nBlockH
 		nStartHeightBlock = 0;
     }
 
-	// miner takes 25% of the reward and half fees
-	txNew.vout[0].nValue = (blockReward*0.25);
+    CAmount nTotalReward;
+    CAmount nMasternodeReward = GetBlockSubsidy(nBlockHeight, Params().GetConsensus(), nTotalReward, false, true, nStartHeightBlock);
+    blockReward = nTotalReward - nMasternodeReward;
+	txNew.vout[0].nValue = blockReward;
 	if (nBlockHeight >= Params().GetConsensus().nShareFeeBlock)
 		txNew.vout[0].nValue += nHalfFee;
-	// masternode takes 75% of reward, add/remove some reward depending on seniority and half fees.
-	CAmount nTotalReward;
-	blockReward = GetBlockSubsidy(nBlockHeight, Params().GetConsensus(), nTotalReward, false, true, nStartHeightBlock);
-
-    // ... and masternode
-    txoutMasternodeRet = CTxOut(blockReward, payee);
+    txoutMasternodeRet = CTxOut(nMasternodeReward, payee);
 	if (nBlockHeight >= Params().GetConsensus().nShareFeeBlock)
 		txoutMasternodeRet.nValue += nHalfFee;
 
@@ -269,7 +266,7 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int nBlockH
     ExtractDestination(payee, address1);
     CMartkistAddress address2(address1);
 
-    LogPrintf("CMasternodePayments::FillBlockPayee -- Masternode payment %lld to %s\n", blockReward, address2.ToString());
+    LogPrintf("CMasternodePayments::FillBlockPayee -- Masternode payment %lld to %s\n", nMasternodeReward, address2.ToString());
 }
 
 int CMasternodePayments::GetMinMasternodePaymentsProto() const {

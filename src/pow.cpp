@@ -83,12 +83,11 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const Conse
 unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params) {
 	if (params.fPowNoRetargeting)
 		return pindexLast->nBits;
-    /* current difficulty formula, martkist - DarkGravity v3, written by Evan satoshiield - evan@martkist.org */
+
     const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
 	int64_t nPastBlocks = 24;
 	
-    // make sure we have at least 1000 blocks, otherwise just return powLimit
-    if (!pindexLast || pindexLast->nHeight <= 1000) {
+    if (!pindexLast || pindexLast->nHeight <= nPastBlocks) {
 		return UintToArith256(Params(CBaseChainParams::REGTEST).GetConsensus().powLimit).GetCompact();
     }
 
@@ -124,10 +123,10 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const CBlockH
     // NOTE: is this accurate? nActualTimespan counts it for (nPastBlocks - 1) blocks only...
     int64_t nTargetTimespan = nPastBlocks * params.nPowTargetSpacing;
 
-    if (nActualTimespan < nTargetTimespan/3)
-        nActualTimespan = nTargetTimespan/3;
-    if (nActualTimespan > nTargetTimespan*3)
-        nActualTimespan = nTargetTimespan*3;
+    if (nActualTimespan < nTargetTimespan/10)
+        nActualTimespan = nTargetTimespan/10;
+    if (nActualTimespan > nTargetTimespan*10)
+        nActualTimespan = nTargetTimespan*10;
 
     // Retarget
     bnNew *= nActualTimespan;

@@ -547,8 +547,13 @@ CAmount CSuperblock::GetPaymentsLimit(int nBlockHeight)
 	// MARTKIST
 	// some part of all blocks issued during the cycle goes to superblock, see GetBlockSubsidy
 	CAmount nTotalRewardWithMasternodes;
-	const CAmount &nSuperblockPartOfSubsidy = GetBlockSubsidy(nBlockHeight, consensusParams, nTotalRewardWithMasternodes, true);
-	const CAmount &nPaymentsLimit = nSuperblockPartOfSubsidy * consensusParams.nSuperblockCycle;
+    CAmount nPaymentsLimit = 0;
+
+    int nSuperblockStart = std::max(1, nBlockHeight - consensusParams.nSuperblockCycle + 1);
+    for (int i = nSuperblockStart; i <= nBlockHeight; i++) {
+        const CAmount &nSuperblockPartOfSubsidy = GetBlockSubsidy(i, consensusParams, nTotalRewardWithMasternodes, true);
+        nPaymentsLimit += nSuperblockPartOfSubsidy;
+    }
     LogPrint("gobject", "CSuperblock::GetPaymentsLimit -- Valid superblock height %d, payments max %lld\n", nBlockHeight, nPaymentsLimit);
 
     return nPaymentsLimit;

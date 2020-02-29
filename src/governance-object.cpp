@@ -688,8 +688,8 @@ void CGovernanceObject::UpdateSentinelVariables()
 
     // CALCULATE THE MINUMUM VOTE COUNT REQUIRED FOR FULL SIGNAL
 
-    int nAbsVoteReq = std::max(Params().GetConsensus().nGovernanceMinQuorum, nMnCount / 10);
-    int nAbsDeleteReq = std::max(Params().GetConsensus().nGovernanceMinQuorum, (2 * nMnCount) / 3);
+    int nAbsVoteReq = std::max(Params().GetConsensus().nGovernanceMinQuorum, nMnCount * 1/10);
+    int nAbsDeleteReq = std::max(Params().GetConsensus().nGovernanceMinQuorum, nMnCount * 2/3);
 
     // SET SENTINEL FLAGS TO FALSE
 

@@ -95,8 +95,8 @@ static CBlock CreateDevNetGenesisBlock(const uint256 &prevBlockHash, const std::
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "Wired 09/Jan/2014 The Grand Experiment Goes Live: Overstock.com Is Now Accepting Martkists";
-    const CScript genesisOutputScript = CScript() << ParseHex("040184710fa689ad5023690c80f3a49c8f13f8d45b8c857fbcbc8bc4a8e4d3eb4b10f4d4604fa08dce601aaf0f470216fe1b51850b4acf21b179c45070ac7b03a9") << OP_CHECKSIG;
+    const char* pszTimestamp = "Op Ed: With Martkist, Anarchy Is the Point, Not the Problem";
+    const CScript genesisOutputScript = CScript() << ParseHex("04f942f26515622b010eb91e46cd01f95fe06e15f51bf543364e47058d8760e672755be191a472aa02f3eb254e49f88ea012eadd6fa8e6c8bd384604872b8dfbc6") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
 // This will figure out a valid hash and Nonce if you're
@@ -161,33 +161,33 @@ class CMainParams : public CChainParams {
 public:
     CMainParams() {
         strNetworkID = "main";
-        consensus.nSubsidyHalvingInterval = 525600; // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
-		consensus.nSeniorityInterval = 43800 * 4; // seniority increases every 4
-		consensus.nTotalSeniorityIntervals = 9;
-        consensus.nMasternodePaymentsStartBlock = 2; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
+        consensus.nSubsidyHalvingInterval = 0; // not used anymore
+		consensus.nSeniorityInterval = 0; // not used anymore
+		consensus.nTotalSeniorityIntervals = 0; // not used anymore
+        consensus.nMasternodePaymentsStartBlock = 2;
         consensus.nMasternodePaymentsIncreaseBlock = 2; // actual historical value
         consensus.nMasternodePaymentsIncreasePeriod = 576*30; // 17280 - actual historical value
         consensus.nInstantSendConfirmationsRequired = 6;
         consensus.nInstantSendKeepLock = 24;
-		consensus.nShareFeeBlock = 175000;
+		consensus.nShareFeeBlock = 0;
         consensus.nBudgetPaymentsStartBlock = 0; // actual historical value
         consensus.nBudgetPaymentsCycleBlocks = 43800; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nBudgetPaymentsWindowBlocks = 100;
-        consensus.nSuperblockStartBlock = 0; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
+        consensus.nSuperblockStartBlock = 0;
 		consensus.nSuperblockStartHash = uint256();
-        consensus.nSuperblockCycle = 43800; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
-        consensus.nGovernanceMinQuorum = 10;
+        consensus.nSuperblockCycle = 49000;
+        consensus.nGovernanceMinQuorum = 33;
         consensus.nGovernanceFilterElements = 20000;
-        consensus.nMasternodeMinimumConfirmations = 15;
+        consensus.nMasternodeMinimumConfirmations = 13;
         consensus.BIP34Height = 0;
         consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 0; // 00000000000076d8fcea02ec0963de4abfd01e771fec0863f960c2c64fe6f357
         consensus.BIP66Height = 0; // 00000000000b1fa2dfa312863570e13fae9ca7b5566cb27e55422620b469aefa
         consensus.DIP0001Height = 0;
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
-        consensus.nPowTargetTimespan = 6 * 60 * 60; // 6h retarget
-        consensus.nPowTargetSpacing = 1 * 60; // Martkist: 1 minute
-		consensus.nAuxpowChainId = 0x1000;
+        consensus.nPowTargetTimespan = 180;// 00:03:00
+        consensus.nPowTargetSpacing = 60;// 00:01:00
+		consensus.nAuxpowChainId = 0xfff;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 15200;
@@ -215,10 +215,10 @@ public:
 
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000009abe7cb79f521b3819427c"); // 307300
+        consensus.nMinimumChainWork = uint256S("0x00");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x04cc9c52b4fe7a1c14494f99c72faa18822514b378f6cf8480da05679dd5be43"); // 307300
+        consensus.defaultAssumeValid = uint256S("0x00"); // 307300
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -229,17 +229,17 @@ public:
 		pchMessageStart[1] = 0xbe;
 		pchMessageStart[2] = 0xb4;
 		pchMessageStart[3] = 0xd9;
-        vAlertPubKey = ParseHex("048240a8748a80a286b270ba126705ced4f2ce5a7847b3610ea3c06513150dade2a8512ed5ea86320824683fc0818f0ac019214973e677acd1244f6d0571fc5103");
-		nDefaultPort = 8369;
+        vAlertPubKey = ParseHex("04412228975c883f72ec180073f33d1d5d46296f5af16d0628393124931078fe1f472380b0eadcd10bdafae59c3265659a04339a406c347d98f0c78cfe9a9a4444");
+		nDefaultPort = 4040;
 		nPruneAfterHeight = 1000000;
 		uint256 hash;
-		genesis = CreateGenesisBlock(1525170117, 2559938, 0x1e0ffff0, 1, 8.88 * COIN);
+		genesis = CreateGenesisBlock(1582711200, 1356960, 0x1e0fffff, 1, 1 * COIN);
 		/*CBlockHeader genesisHeader = genesis.GetBlockHeader();
 		GenerateGenesisBlock(genesisHeader, &hash);*/
 
 		consensus.hashGenesisBlock = genesis.GetHash();
-		assert(consensus.hashGenesisBlock == uint256S("0x000006e5c08d6d2414435b294210266753b05a75f90e926dd5e6082306812622"));
-		assert(genesis.hashMerkleRoot == uint256S("0x3fc1815124d408495fb860705d2188d84fcfeb5efc894f26fefc81a5cbdc49e8"));
+		assert(consensus.hashGenesisBlock == uint256S("0x00000a7f5622e1499ea8649f89c033973b9d5f4b96715ba21858af6234c7cc32"));
+		assert(genesis.hashMerkleRoot == uint256S("0x9342d40305d508194d9fce5faab7d82cd6c9fea01fedc4b37557cb8b34a127c4"));
 
 		vSeeds.push_back(CDNSSeedData("seed1.martkist.org", "seed1.martkist.org"));
 		vSeeds.push_back(CDNSSeedData("seed2.martkist.org", "seed2.martkist.org"));
@@ -248,9 +248,9 @@ public:
 
 
 
-		base58Prefixes[PUBKEY_ADDRESS_MARTK] = std::vector<unsigned char>(1, 63);
-		base58Prefixes[SCRIPT_ADDRESS_MARTK] = std::vector<unsigned char>(1, 5);
-		base58Prefixes[SECRET_KEY_MARTK] = std::vector<unsigned char>(1, 128);
+		base58Prefixes[PUBKEY_ADDRESS_MARTK] = std::vector<unsigned char>(1, 50);
+		base58Prefixes[SCRIPT_ADDRESS_MARTK] = std::vector<unsigned char>(1, 63);
+		base58Prefixes[SECRET_KEY_MARTK] = std::vector<unsigned char>(1, 45);
 
 		base58Prefixes[PUBKEY_ADDRESS_BTC] = std::vector<unsigned char>(1, 0);
 		base58Prefixes[SCRIPT_ADDRESS_BTC] = std::vector<unsigned char>(1, 5);
@@ -259,15 +259,15 @@ public:
 		base58Prefixes[PUBKEY_ADDRESS_ZEC] = { 0x1C,0xB8 };
 		base58Prefixes[SCRIPT_ADDRESS_ZEC] = { 0x1C,0xBD };
 		base58Prefixes[SECRET_KEY_ZEC] = std::vector<unsigned char>(1, 128);
-		// Martkist BIP32 pubkeys start with 'xpub' (Martkist defaults)
-		base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >();
-		// Martkist BIP32 prvkeys start with 'xprv' (Martkist defaults)
-		base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >();
+		// Martkist BIP32 pubkeys
+		base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xb2)(0x1e).convert_to_container<std::vector<unsigned char> >();
+		// Martkist BIP32 prvkeys
+		base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xad)(0xe4).convert_to_container<std::vector<unsigned char> >();
 
-        // Martkist BIP44 coin type is '57'
-        nExtCoinType = 57;
+        // Martkist BIP44 coin type is '0x800004d2'
+        nExtCoinType = 0x800004d2;
 
-        //vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
+        vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
         fMiningRequiresPeers = true;
         fDefaultConsistencyChecks = false;
@@ -277,27 +277,16 @@ public:
         fAllowMultiplePorts = false;
 
         nPoolMaxTransactions = 3;
-        nFulfilledRequestExpireTime = 60*60; // fulfilled requests expire in 1 hour
+        nFulfilledRequestExpireTime = 5 * 60;// 5min
 
-        strSporkAddress = "SSQEoqCdCTRL9qZfgWfoj6tVsBQysxQ2dN";
-		checkpointData = {
-			{
-				{ 0, uint256S("0x000006e5c08d6d2414435b294210266753b05a75f90e926dd5e6082306812622") },
-				{ 100000, uint256S("28b16c3500a8ede47d2a2373f9a5f9a25f38273daf3b4da2ba0001ca80fe6c4b") },
-				{ 150000, uint256S("8e1a7181aaa84885d741b803d18d283663d0b25f8763224281dcc09c4fa874c9") },
-				{ 170000, uint256S("98f57b8ca0834c19edad1dd01ebe13809956ec35b57b5d0b237eb7fee0a59965") },
-				{ 170001, uint256S("796579749c97a1bb0414457a7833ac9968b93987292ccda9481172ae548b1588") },
-				{ 171000, uint256S("4f2a4785a18e693c3283cc2c66c9f2b93f3fd20b8ee958f23b7a9f30800d13d2") },
-				{ 176000, uint256S("92025d074fdd503b0f0f4d4a11dcfbc8a57509d0a196bb400ebdb19556d61b0d") },
-				{ 307300, uint256S("04cc9c52b4fe7a1c14494f99c72faa18822514b378f6cf8480da05679dd5be43") },
-			}
-		};
+        strSporkAddress = "MVLzWjo2WfatRVBiZ3CrNPNUqVBs7FguU1";
+		
 
 		chainTxData = ChainTxData{
 			// Data from rpc: getchaintxstats 4096 92025d074fdd503b0f0f4d4a11dcfbc8a57509d0a196bb400ebdb19556d61b0d
-			/* nTime    */ 1536219041,
-			/* nTxCount */ 307792,
-			/* dTxRate  */ 0.019
+			/* nTime    */ 0,
+			/* nTxCount */ 0,
+			/* dTxRate  */ 0
 		};
     }
 };
@@ -310,21 +299,21 @@ class CTestNetParams : public CChainParams {
 public:
     CTestNetParams() {
         strNetworkID = "test";
-        consensus.nSubsidyHalvingInterval = 525600;
-		consensus.nSeniorityInterval = 60; // seniority increases every hour
-		consensus.nTotalSeniorityIntervals = 9;
-        consensus.nMasternodePaymentsStartBlock = 2; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
+        consensus.nSubsidyHalvingInterval = 0; // not used anymore
+		consensus.nSeniorityInterval = 0; // not used anymore
+		consensus.nTotalSeniorityIntervals = 0; // not used anymore
+        consensus.nMasternodePaymentsStartBlock = 2;
         consensus.nMasternodePaymentsIncreaseBlock = 2;
         consensus.nMasternodePaymentsIncreasePeriod = 10;
-        consensus.nInstantSendConfirmationsRequired = 2;
+        consensus.nInstantSendConfirmationsRequired = 6;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = 0;
         consensus.nBudgetPaymentsCycleBlocks = 50;
         consensus.nBudgetPaymentsWindowBlocks = 10;
-		consensus.nShareFeeBlock = 1000;
-        consensus.nSuperblockStartBlock = 1; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPeymentsStartBlock
+		consensus.nShareFeeBlock = 0;
+        consensus.nSuperblockStartBlock = 0;
         consensus.nSuperblockStartHash = uint256();
-        consensus.nSuperblockCycle = 60; // Superblocks can be issued hourly on testnet
+        consensus.nSuperblockCycle = 49000;
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
@@ -334,9 +323,9 @@ public:
         consensus.BIP66Height = 0; // 0000002acdd29a14583540cb72e1c5cc83783560e38fa7081495d474fe1671f7
         consensus.DIP0001Height = 5500;
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
-		consensus.nPowTargetTimespan = 6 * 60 * 60; // 6h retarget
-		consensus.nPowTargetSpacing = 60; // Martkist: 1 min
-		consensus.nAuxpowChainId = 0x1000;
+		consensus.nPowTargetTimespan = 180;// 00:03:00
+		consensus.nPowTargetSpacing = 60;// 00:01:00
+		consensus.nAuxpowChainId = 0xfff;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 4001; // nPowKGWHeight >= nPowDGWHeight means "no KGW"
@@ -373,26 +362,26 @@ public:
         pchMessageStart[1] = 0xe2;
         pchMessageStart[2] = 0xca;
         pchMessageStart[3] = 0xff;
-        vAlertPubKey = ParseHex("04517d8a699cb43d3938d7b24faaff7cda448ca4ea267723ba614784de661949bf632d6304316b244646dea079735b9a6fc4af804efb4752075b9fe2245e14e412");
-        nDefaultPort = 18369;
+        vAlertPubKey = ParseHex("04fd1b9a4fefd0048ba3709e00c41888e62e0805f06470d236513b2fa53ba0ddbcac917b8d25355bb9d3040502f9c0de59afd07cda1632a3fc04c65889546c9c28"); // e91867736fe8087ac7d5ac0d9974b0340978eb8a1a7f0771b1d22682b68d0406
+        nDefaultPort = 14040;
         nPruneAfterHeight = 1000;
 
-		genesis = CreateGenesisBlock(1524507866, 442226, 0x1e0ffff0, 1, 8.88 * COIN);
+		genesis = CreateGenesisBlock(1582711200, 1356960, 0x1e0fffff, 1, 1 * COIN);
 		/*
 		uint256 hash;
 		CBlockHeader genesisHeader = genesis.GetBlockHeader();
 		GenerateGenesisBlock(genesisHeader, &hash);*/
 		consensus.hashGenesisBlock = genesis.GetHash();
-		assert(consensus.hashGenesisBlock == uint256S("0x00000478aace753a4709f7503b5b583456a5a8635e989d7f899eb000bbea9fd4"));
-		assert(genesis.hashMerkleRoot == uint256S("0x3fc1815124d408495fb860705d2188d84fcfeb5efc894f26fefc81a5cbdc49e8"));
+		assert(consensus.hashGenesisBlock == uint256S("0x00000a7f5622e1499ea8649f89c033973b9d5f4b96715ba21858af6234c7cc32"));
+		assert(genesis.hashMerkleRoot == uint256S("0x9342d40305d508194d9fce5faab7d82cd6c9fea01fedc4b37557cb8b34a127c4"));
 
-        vFixedSeeds.clear();
+        vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
         vSeeds.clear();
   
 
 		base58Prefixes[PUBKEY_ADDRESS_MARTK] = std::vector<unsigned char>(1, 65);
-		base58Prefixes[SCRIPT_ADDRESS_MARTK] = std::vector<unsigned char>(1, 196);
-		base58Prefixes[SECRET_KEY_MARTK] = std::vector<unsigned char>(1, 239);
+		base58Prefixes[SCRIPT_ADDRESS_MARTK] = std::vector<unsigned char>(1, 60);
+		base58Prefixes[SECRET_KEY_MARTK] = std::vector<unsigned char>(1, 23);
 
 		base58Prefixes[PUBKEY_ADDRESS_BTC] = std::vector<unsigned char>(1, 111);
 		base58Prefixes[SCRIPT_ADDRESS_BTC] = std::vector<unsigned char>(1, 196);
@@ -402,8 +391,8 @@ public:
 		base58Prefixes[SCRIPT_ADDRESS_ZEC] = std::vector<unsigned char>(0x1C, 0xBD);
 		base58Prefixes[SECRET_KEY_ZEC] = std::vector<unsigned char>(1, 239);
 
-        // Testnet Martkist BIP44 coin type is '1' (All coin's testnet default)
-        nExtCoinType = 1;
+        // Testnet Martkist BIP44 coin type is '0x800004d3'
+        nExtCoinType = 0x800004d3;
 
 
         fMiningRequiresPeers = true;
@@ -414,15 +403,11 @@ public:
         fAllowMultiplePorts = false;
 
         nPoolMaxTransactions = 3;
-        nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
+        nFulfilledRequestExpireTime = 5 * 60;// 5min
 
-        strSporkAddress = "TXgVDiV1amUYfL8xUETVZ2nzAnPax1nEEs";
+        strSporkAddress = "TL63qB18atqREkxAhxzvKVJUVa5MTfWuD4"; // 4Tn2CyZ7GABqT4DTDooN8SZuqRpoiBonRJY1Zf68WtUzUEwkZ9GJ
 
-		checkpointData = {
-			{
-				{ 0, uint256S("000007510081c30331afdee1453991ef18663c13e14ff9caa1ae5b30fa8c35bc") },
-			}
-		};
+		
 
 		chainTxData = ChainTxData{
 			0,
@@ -443,18 +428,18 @@ class CDevNetParams : public CChainParams {
 public:
     CDevNetParams() {
         strNetworkID = "dev";
-        consensus.nSubsidyHalvingInterval = 210240;
-        consensus.nMasternodePaymentsStartBlock = 4010; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
+        consensus.nSubsidyHalvingInterval = 0; // not used anymore
+        consensus.nMasternodePaymentsStartBlock = 2;
         consensus.nMasternodePaymentsIncreaseBlock = 4030;
         consensus.nMasternodePaymentsIncreasePeriod = 10;
-        consensus.nInstantSendConfirmationsRequired = 2;
+        consensus.nInstantSendConfirmationsRequired = 6;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = 4100;
         consensus.nBudgetPaymentsCycleBlocks = 50;
         consensus.nBudgetPaymentsWindowBlocks = 10;
-        consensus.nSuperblockStartBlock = 4200; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPeymentsStartBlock
+        consensus.nSuperblockStartBlock = 0;
         consensus.nSuperblockStartHash = uint256(); // do not check this on devnet
-        consensus.nSuperblockCycle = 60; // Superblocks can be issued hourly on devnet
+        consensus.nSuperblockCycle = 49000;
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
@@ -463,9 +448,9 @@ public:
         consensus.BIP66Height = 2; // BIP66 activated immediately on devnet
         consensus.DIP0001Height = 2; // DIP0001 activated immediately on devnet
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
-        consensus.nPowTargetTimespan = 6 * 60 * 60; // Martkist: 6 hours
-        consensus.nPowTargetSpacing = 1 * 60; // Martkist: 1 minute
-		consensus.nAuxpowChainId = 0x1000;
+        consensus.nPowTargetTimespan = 180;// 00:03:00
+        consensus.nPowTargetSpacing = 60;// 00:01:00
+		consensus.nAuxpowChainId = 0xfff;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 4001; // nPowKGWHeight >= nPowDGWHeight means "no KGW"
@@ -495,31 +480,31 @@ public:
         consensus.nMinimumChainWork = uint256S("0x000000000000000000000000000000000000000000000000000000000000000");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x000000000000000000000000000000000000000000000000000000000000000");
+        consensus.defaultAssumeValid = uint256S("0x00");
 
         pchMessageStart[0] = 0xe2;
         pchMessageStart[1] = 0xca;
         pchMessageStart[2] = 0xff;
         pchMessageStart[3] = 0xce;
-        vAlertPubKey = ParseHex("04517d8a699cb43d3938d7b24faaff7cda448ca4ea267723ba614784de661949bf632d6304316b244646dea079735b9a6fc4af804efb4752075b9fe2245e14e412");
-        nDefaultPort = 18369;
+        vAlertPubKey = ParseHex("04de8e07e7906f94a3a5f47fac812badf0dd34b586d759d5ad4969e3de97f0595de783ed893922f8305ec25a346d300e7967372c56b74b3fe83c464a1fdc3bbaef"); // 3c464804a17d2dab8aeb57a8a8c72463ba73e884fe11590c194e03d105311035
+        nDefaultPort = 24040;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1417713337, 1096447, 0x207fffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1582711200, 1356960, 0x1e0fffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x000008ca1832a4baf228eb1553c03d3a2c8e02399550dd6ea8d65cec3ef23d2e"));
-        assert(genesis.hashMerkleRoot == uint256S("0x3fc1815124d408495fb860705d2188d84fcfeb5efc894f26fefc81a5cbdc49e8"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00000a7f5622e1499ea8649f89c033973b9d5f4b96715ba21858af6234c7cc32"));
+        assert(genesis.hashMerkleRoot == uint256S("0x9342d40305d508194d9fce5faab7d82cd6c9fea01fedc4b37557cb8b34a127c4"));
 
         devnetGenesis = FindDevNetGenesisBlock(consensus, genesis, 50 * COIN);
         consensus.hashDevnetGenesisBlock = devnetGenesis.GetHash();
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        //vSeeds.push_back(CDNSSeedData("martkistevo.org",  "devnet-seed.martkistevo.org"));
+        
 
-		base58Prefixes[PUBKEY_ADDRESS_MARTK] = std::vector<unsigned char>(1, 65);
-		base58Prefixes[SCRIPT_ADDRESS_MARTK] = std::vector<unsigned char>(1, 196);
-		base58Prefixes[SECRET_KEY_MARTK] = std::vector<unsigned char>(1, 239);
+		base58Prefixes[PUBKEY_ADDRESS_MARTK] = std::vector<unsigned char>(1, 66);
+		base58Prefixes[SCRIPT_ADDRESS_MARTK] = std::vector<unsigned char>(1, 61);
+		base58Prefixes[SECRET_KEY_MARTK] = std::vector<unsigned char>(1, 24);
 
 		base58Prefixes[PUBKEY_ADDRESS_BTC] = std::vector<unsigned char>(1, 111);
 		base58Prefixes[SCRIPT_ADDRESS_BTC] = std::vector<unsigned char>(1, 196);
@@ -528,13 +513,13 @@ public:
 		base58Prefixes[PUBKEY_ADDRESS_ZEC] = { 0x1C,0xB8 };
 		base58Prefixes[SCRIPT_ADDRESS_ZEC] = { 0x1C,0xBD };
 		base58Prefixes[SECRET_KEY_ZEC] = std::vector<unsigned char>(1, 239);
-		// Regtest Martkist BIP32 pubkeys start with 'tpub' (Martkist defaults)
-		base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
-		// Regtest Martkist BIP32 prvkeys start with 'tprv' (Martkist defaults)
+		// Regtest Martkist BIP32 pubkeys
+		base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xcf).convert_to_container<std::vector<unsigned char> >();
+		// Regtest Martkist BIP32 prvkeys
 		base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
-        // Testnet Martkist BIP44 coin type is '1' (All coin's testnet default)
-        nExtCoinType = 1;
+        // Testnet Martkist BIP44 coin type is '0x800004d4'
+        nExtCoinType = 0x800004d4;
 
         fMiningRequiresPeers = true;
         fDefaultConsistencyChecks = false;
@@ -544,15 +529,11 @@ public:
         fAllowMultiplePorts = false;
 
         nPoolMaxTransactions = 3;
-        nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
+        nFulfilledRequestExpireTime = 5 * 60;// 5min
 
-        strSporkAddress = "TCSJVL68KFq9FdbfxB2KhTcWp6rHD7vePs";
+        strSporkAddress = "TvV2R8L9rnzVD5H8PKoJfCzHJFFmZuLcNv"; // 4gLGkvSyBQXh6Ubd465MB7RVwLBpLScC66AKh6XTFV2eCP5KyAdh
 
-		checkpointData = {
-			{
-				{ 0, uint256S("000008ca1832a4baf228eb1553c03d3a2c8e02399550dd6ea8d65cec3ef23d2e") },
-			}
-		};
+		
 
 		chainTxData = ChainTxData{
 			0,
@@ -571,21 +552,21 @@ class CRegTestParams : public CChainParams {
 public:
     CRegTestParams() {
 		strNetworkID = "regtest";
-		consensus.nSeniorityInterval = 60; // seniority increases every hour
-		consensus.nTotalSeniorityIntervals = 9;;
+		consensus.nSeniorityInterval = 0; // not used anymore
+		consensus.nTotalSeniorityIntervals = 0; // not used anymore
 
-        consensus.nSubsidyHalvingInterval = 150;
+        consensus.nSubsidyHalvingInterval = 0; // not used anymore
         consensus.nMasternodePaymentsStartBlock = 2;
         consensus.nMasternodePaymentsIncreaseBlock = 350;
         consensus.nMasternodePaymentsIncreasePeriod = 10;
-        consensus.nInstantSendConfirmationsRequired = 2;
+        consensus.nInstantSendConfirmationsRequired = 6;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = 0;
         consensus.nBudgetPaymentsCycleBlocks = 50;
         consensus.nBudgetPaymentsWindowBlocks = 10;
-        consensus.nSuperblockStartBlock = 1;
+        consensus.nSuperblockStartBlock = 0;
         consensus.nSuperblockStartHash = uint256(); // do not check this on regtest
-        consensus.nSuperblockCycle = 10;
+        consensus.nSuperblockCycle = 49000;
 		consensus.nShareFeeBlock = 0;
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 100;
@@ -596,9 +577,9 @@ public:
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
         consensus.DIP0001Height = 2000;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
-        consensus.nPowTargetTimespan = 6 * 60 * 60; // Martkist: 6 hour
-        consensus.nPowTargetSpacing = 1 * 60; // Martkist: 1 minute
-		consensus.nAuxpowChainId = 0x1000;
+        consensus.nPowTargetTimespan = 180;// 00:03:00
+        consensus.nPowTargetSpacing = 60;// 00:01:00
+		consensus.nAuxpowChainId = 0xfff;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         consensus.nPowKGWHeight = 15200; // same as mainnet
@@ -628,17 +609,17 @@ public:
 		pchMessageStart[1] = 0xbf;
 		pchMessageStart[2] = 0xb5;
 		pchMessageStart[3] = 0xda;
-        nDefaultPort = 18369;
+        nDefaultPort = 34040;
         nPruneAfterHeight = 1000;
 
-		genesis = CreateGenesisBlock(1524508008, 6887866, 0x207fffff, 1, 8.88 * COIN);
+		genesis = CreateGenesisBlock(1582711200, 1356960, 0x1e0fffff, 1, 1 * COIN);
 		/*
 		uint256 hash;
 		CBlockHeader genesisHeader = genesis.GetBlockHeader();
 		GenerateGenesisBlock(genesisHeader, &hash);*/
 		consensus.hashGenesisBlock = genesis.GetHash();
-		assert(consensus.hashGenesisBlock == uint256S("0x0000140aa52b536eed2f54cb9590a959672c131bb5de1d934024d6c25c64df4f"));
-		assert(genesis.hashMerkleRoot == uint256S("0x3fc1815124d408495fb860705d2188d84fcfeb5efc894f26fefc81a5cbdc49e8"));
+		assert(consensus.hashGenesisBlock == uint256S("0x00000a7f5622e1499ea8649f89c033973b9d5f4b96715ba21858af6234c7cc32"));
+		assert(genesis.hashMerkleRoot == uint256S("0x9342d40305d508194d9fce5faab7d82cd6c9fea01fedc4b37557cb8b34a127c4"));
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();      //!< Regtest mode doesn't have any DNS seeds.
@@ -650,16 +631,16 @@ public:
         fAllowMultipleAddressesFromGroup = true;
         fAllowMultiplePorts = true;
 
-        nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
+        nFulfilledRequestExpireTime = 5 * 60;// 5min
 
-        // privKey: cPPpaK9LCXjGGXVJUqcrtEMVQw5tALMuN3WsVuPCWFf9tswYYDvY
-        strSporkAddress = "TCSJVL68KFq9FdbfxB2KhTcWp6rHD7vePs";
+        
+        strSporkAddress = "TfpShWBvNqMRhDbXYrf1HzymEGrMZuBFov"; // 4aF2Q9pMjw6wYXH8wsEVkniDBSh2n4nV4woVodAMYaN4Cmf18fpm
 
    
 
-		base58Prefixes[PUBKEY_ADDRESS_MARTK] = std::vector<unsigned char>(1, 65);
-		base58Prefixes[SCRIPT_ADDRESS_MARTK] = std::vector<unsigned char>(1, 196);
-		base58Prefixes[SECRET_KEY_MARTK] = std::vector<unsigned char>(1, 239);
+		base58Prefixes[PUBKEY_ADDRESS_MARTK] = std::vector<unsigned char>(1, 66);
+		base58Prefixes[SCRIPT_ADDRESS_MARTK] = std::vector<unsigned char>(1, 61);
+		base58Prefixes[SECRET_KEY_MARTK] = std::vector<unsigned char>(1, 24);
 
 		base58Prefixes[PUBKEY_ADDRESS_BTC] = std::vector<unsigned char>(1, 111);
 		base58Prefixes[SCRIPT_ADDRESS_BTC] = std::vector<unsigned char>(1, 196);
@@ -668,18 +649,14 @@ public:
 		base58Prefixes[PUBKEY_ADDRESS_ZEC] = { 0x1C,0xB8 };
 		base58Prefixes[SCRIPT_ADDRESS_ZEC] = { 0x1C,0xBD };
 		base58Prefixes[SECRET_KEY_ZEC] = std::vector<unsigned char>(1, 239);
-		// Regtest Martkist BIP32 pubkeys start with 'tpub' (Martkist defaults)
-		base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
-		// Regtest Martkist BIP32 prvkeys start with 'tprv' (Martkist defaults)
+		// Regtest Martkist BIP32 pubkeys
+		base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xcf).convert_to_container<std::vector<unsigned char> >();
+		// Regtest Martkist BIP32 prvkeys
 		base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
-        // Regtest Martkist BIP44 coin type is '1' (All coin's testnet default)
-        nExtCoinType = 1;
-		checkpointData = {
-			{
-				{ 0, uint256S("0000140aa52b536eed2f54cb9590a959672c131bb5de1d934024d6c25c64df4f") },
-			}
-		};
+        // Regtest Martkist BIP44 coin type is '0x800004d5'
+        nExtCoinType = 0x800004d5;
+		
 
 		chainTxData = ChainTxData{
 			0,

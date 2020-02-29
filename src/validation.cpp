@@ -1700,55 +1700,70 @@ double ConvertBitsToDouble(unsigned int nBits)
 
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams, CAmount &nTotalRewardWithMasternodes, bool fSuperblockPartOnly, bool fMasternodePartOnly, unsigned int nStartHeight)
 {
-	if (nHeight == 0)
-		return 8.88*COIN;
-	if (nHeight == 1)
-	{
-		std::string chain = ChainNameFromCommandLine();
-		// MARTKIST 3 snapshot
-		nTotalRewardWithMasternodes = 533000000 * COIN;
-		return nTotalRewardWithMasternodes;
-	}
-	CAmount nSubsidy = 38.5 * COIN;
-	int reductions = nHeight / consensusParams.nSubsidyHalvingInterval;
-	if (reductions >= 50) {
-		nTotalRewardWithMasternodes = 0;
-		return nTotalRewardWithMasternodes;
-	}
-	// Subsidy is cut in half every 525600 blocks which will occur approximately every year.
-	// yearly decline of production by 5% per year, projected ~888M coins max by year 2067+.
-	for (int i = 0; i < reductions; i++) {
-		nSubsidy -= nSubsidy / 20;
-	}
+    CAmount nSubsidy = 0;
+    if (nHeight == 0)
+    {
+        nSubsidy = 1 * COIN;
+    }
+    else if (nHeight <= 333) 
+    {
+        nSubsidy = 120 * COIN;
+    }
+    else if (nHeight <= 621) 
+    {
+        nSubsidy = 1200 * COIN;
+    }
+    else if (nHeight <= 1233)
+    {
+        nSubsidy = 2100 * COIN;
+    }
+    else if (nHeight <= 1440)
+    {
+        nSubsidy = 3210 * COIN;
+    }
+    else if (nHeight <= 11520)
+    {
+        nSubsidy = 321 * COIN;
+    }
+    else if (nHeight <= 51841)
+    {
+        nSubsidy = 121 * COIN;
+    }
+    else if (nHeight <= 576006)
+    {
+        nSubsidy = 12 * COIN;
+    }
+    else if (nHeight <= 1624326) 
+    {
+        nSubsidy = 6 * COIN;
+    }
+    else
+    {
+        nSubsidy = 3 * COIN;
+    }
+
 	// Reduce the block reward of miners (allowing budget/superblocks)
 	const CAmount &nSuperblockPart = (nSubsidy*0.1);
-
 	if (fSuperblockPartOnly)
 		return nSuperblockPart;
-	nSubsidy -= nSuperblockPart;
-	nTotalRewardWithMasternodes = nSubsidy;
-	if (fMasternodePartOnly) {
-		nSubsidy *= 0.75;
-		if (nHeight > 0 && nStartHeight > 0) {
-			unsigned int nDifferenceInBlocks = 0;
-			if (nHeight > (int)nStartHeight)
-				nDifferenceInBlocks = (nHeight - (int)nStartHeight);
-			// the first three intervals should discount rewards to incentivize bonding over longer terms (we add 3% premium every interval)
-			double fSubsidyAdjustmentPercentage = 0;
-			for (int i = 1; i <= consensusParams.nTotalSeniorityIntervals; i++) {
-				const unsigned int &nTotalSeniorityBlocks = i*consensusParams.nSeniorityInterval;
-				if (nDifferenceInBlocks <= nTotalSeniorityBlocks)
-					break;
-				fSubsidyAdjustmentPercentage += 0.03;
-			}
-			const CAmount &nChange = nSubsidy*fSubsidyAdjustmentPercentage;
-			nSubsidy += nChange;
-			nTotalRewardWithMasternodes += nChange;
-		}
-	}
 
-	return nSubsidy;
+    nSubsidy -= nSuperblockPart;
+    nTotalRewardWithMasternodes = nSubsidy;
+    if (fMasternodePartOnly)
+    {
+        if (nHeight <= 11520)
+            nSubsidy *= 0.18;
+        else if (nHeight <= 51841)
+            nSubsidy *= 0.27;
+        else if (nHeight <= 1624326)
+            nSubsidy *= 0.18;
+        else if (nHeight <= 3196807)
+            nSubsidy *= 0.27;
+        else
+            nSubsidy *= 0.18;
+    }
 
+    return nSubsidy;
 }
 
 bool IsInitialBlockDownload()

@@ -20,7 +20,7 @@ std::map<uint256, CSporkMessage> mapSporks;
 std::map<int, int64_t> mapSporkDefaults = {
     {SPORK_2_INSTANTSEND_ENABLED,            0},             // ON
     {SPORK_3_INSTANTSEND_BLOCK_FILTERING,    0},             // ON
-    {SPORK_5_INSTANTSEND_MAX_VALUE,          100000},          // 18000 Martkist
+    {SPORK_5_INSTANTSEND_MAX_VALUE,          18000},          // 18000 Martkist
     {SPORK_6_NEW_SIGS,                       0}, // ON
     {SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT, 0}, // ON
     {SPORK_9_SUPERBLOCKS_ENABLED,            0}, // ON
