@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,7 +14,7 @@
 #include "utilstrencodings.h"
 
 #include <boost/foreach.hpp>
-// SYSCOIN need constant SYSCOIN_TX_VERSION
+// MARTKIST need constant MARTKIST_TX_VERSION
 #include "alias.h"
     /**
      * Check transaction inputs to mitigate two
@@ -49,7 +49,7 @@ bool IsStandard(const CScript& scriptPubKey, txnouttype& whichType)
         if (m < 1 || m > n)
             return false;
 	}
-	// SYSCOIN check for size of sys tx, normal tx size is checked in isstandardtx now
+	// MARTKIST check for size of sys tx, normal tx size is checked in isstandardtx now
 	else if (whichType == TX_NULL_DATA &&
 		(!fAcceptDatacarrier || scriptPubKey.size() > nMaxDatacarrierBytes * 200))
           return false;
@@ -59,8 +59,8 @@ bool IsStandard(const CScript& scriptPubKey, txnouttype& whichType)
 
 bool IsStandardTx(const CTransaction& tx, std::string& reason)
 {
-	// SYSCOIN check for syscoin or bitcoin tx
-	if ((tx.nVersion > CTransaction::MAX_STANDARD_VERSION || tx.nVersion < 1) && tx.nVersion != SYSCOIN_TX_VERSION) {
+	// MARTKIST check for martkist or bitcoin tx
+	if ((tx.nVersion > CTransaction::MAX_STANDARD_VERSION || tx.nVersion < 1) && tx.nVersion != MARTKIST_TX_VERSION) {
 		reason = "version";
 		return false;
 	}
@@ -104,9 +104,9 @@ bool IsStandardTx(const CTransaction& tx, std::string& reason)
 
 		if (whichType == TX_NULL_DATA)
 		{
-			// SYSCOIN if not syscoin tx and opreturn size is bigger than maxcarrier bytes, return false
+			// MARTKIST if not martkist tx and opreturn size is bigger than maxcarrier bytes, return false
 			// we need this because if it is a sys tx then we allow 200x maxcarrier bytes.
-			if (tx.nVersion != SYSCOIN_TX_VERSION && txout.scriptPubKey.size() > nMaxDatacarrierBytes)
+			if (tx.nVersion != MARTKIST_TX_VERSION && txout.scriptPubKey.size() > nMaxDatacarrierBytes)
 			{
 				reason = "scriptpubkey";
 				return false;

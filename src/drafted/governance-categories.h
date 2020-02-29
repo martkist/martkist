@@ -1,4 +1,4 @@
-// Copyright (c) 2017 The Syscoin Core developers
+// Copyright (c) 2017 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,22 +8,22 @@
 
 	* means the category has an associated class
 	
-	CSyscoinNetwork: SYS NETWORK (ROOT)
+	CMartkistNetwork: MARTK NETWORK (ROOT)
 	has:
 		vector<CNetworkVariable> vecNetworkVariables;
-		vector<CSyscoinProject> vecProjects;
+		vector<CMartkistProject> vecProjects;
 		vector<CGovernanceObject> vecProposals;
 		vector<CBudgetContract> vecContracts;
 		vector<CBudgetUsers> vecUsers;
 
-	CSyscoinProject:
+	CMartkistProject:
 	has:
 		name
 		employees
 
 */
 
-	// SYS NETWORK (ROOT)
+	// MARTK NETWORK (ROOT)
 	// 	-> NETWORK VARIABLE
 	// 		-> switch, setting
 	// 	-> CATEGORIES
@@ -53,7 +53,7 @@
 	// 			-> USER1 (only users are allowed here in this scope)
 	// 			-> USER2
 	// 		-> GROUP2 (EVO)
-	// 			-> VALUEOVERRIDE (STORE=SYSDRIVE)
+	// 			-> VALUEOVERRIDE (STORE=MARTKDRIVE)
 	// 			-> USER1
 
 	// 	-> COMPANIES

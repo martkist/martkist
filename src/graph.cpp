@@ -22,7 +22,7 @@ bool OrderBasedOnArrivalTime(const int &nHeight, std::vector<CTransactionRef>& b
 		if (!txRef)
 			continue;
 		const CTransaction &tx = *txRef;
-		if (tx.nVersion == SYSCOIN_TX_VERSION)
+		if (tx.nVersion == MARTKIST_TX_VERSION)
 		{
 			if (DecodeAssetAllocationTx(tx, op, vvchArgs))
 			{
@@ -104,7 +104,7 @@ bool CreateGraphFromVTX(const int &nHeight, const std::vector<CTransactionRef>& 
 		if (!txRef)
 			continue;
 		const CTransaction &tx = *txRef;
-		if (tx.nVersion == SYSCOIN_TX_VERSION)
+		if (tx.nVersion == MARTKIST_TX_VERSION)
 		{
 			if (DecodeAssetAllocationTx(tx, op, vvchArgs))
 			{	

@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_CONSENSUS_CONSENSUS_H
-#define SYSCOIN_CONSENSUS_CONSENSUS_H
+#ifndef MARTKIST_CONSENSUS_CONSENSUS_H
+#define MARTKIST_CONSENSUS_CONSENSUS_H
 
 /** The maximum allowed size for a serialized block, in bytes (network rule) */
 static const unsigned int MAX_LEGACY_BLOCK_SIZE = (10 * 1000 * 1000);
@@ -31,4 +31,4 @@ enum {
     LOCKTIME_MEDIAN_TIME_PAST = (1 << 1),
 };
 
-#endif // SYSCOIN_CONSENSUS_CONSENSUS_H
+#endif // MARTKIST_CONSENSUS_CONSENSUS_H

@@ -1,7 +1,7 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -19,13 +19,13 @@
 #include <boost/assign/list_of.hpp>
 
 #include "chainparamsseeds.h"
-// SYSCOIN includes for gen block
+// MARTKIST includes for gen block
 #include "uint256.h"
 #include "arith_uint256.h"
 #include "hash.h"
 #include "streams.h"
 #include <time.h>
-// SYSCOIN generate block
+// MARTKIST generate block
 /**
 * Main network
 */
@@ -95,7 +95,7 @@ static CBlock CreateDevNetGenesisBlock(const uint256 &prevBlockHash, const std::
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "Wired 09/Jan/2014 The Grand Experiment Goes Live: Overstock.com Is Now Accepting Syscoins";
+    const char* pszTimestamp = "Wired 09/Jan/2014 The Grand Experiment Goes Live: Overstock.com Is Now Accepting Martkists";
     const CScript genesisOutputScript = CScript() << ParseHex("040184710fa689ad5023690c80f3a49c8f13f8d45b8c857fbcbc8bc4a8e4d3eb4b10f4d4604fa08dce601aaf0f470216fe1b51850b4acf21b179c45070ac7b03a9") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
@@ -186,7 +186,7 @@ public:
         consensus.DIP0001Height = 0;
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 6 * 60 * 60; // 6h retarget
-        consensus.nPowTargetSpacing = 1 * 60; // Syscoin: 1 minute
+        consensus.nPowTargetSpacing = 1 * 60; // Martkist: 1 minute
 		consensus.nAuxpowChainId = 0x1000;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
@@ -241,16 +241,16 @@ public:
 		assert(consensus.hashGenesisBlock == uint256S("0x000006e5c08d6d2414435b294210266753b05a75f90e926dd5e6082306812622"));
 		assert(genesis.hashMerkleRoot == uint256S("0x3fc1815124d408495fb860705d2188d84fcfeb5efc894f26fefc81a5cbdc49e8"));
 
-		vSeeds.push_back(CDNSSeedData("seed1.syscoin.org", "seed1.syscoin.org"));
-		vSeeds.push_back(CDNSSeedData("seed2.syscoin.org", "seed2.syscoin.org"));
-		vSeeds.push_back(CDNSSeedData("seed3.syscoin.org", "seed3.syscoin.org"));
-		vSeeds.push_back(CDNSSeedData("seed4.syscoin.org", "seed4.syscoin.org"));
+		vSeeds.push_back(CDNSSeedData("seed1.martkist.org", "seed1.martkist.org"));
+		vSeeds.push_back(CDNSSeedData("seed2.martkist.org", "seed2.martkist.org"));
+		vSeeds.push_back(CDNSSeedData("seed3.martkist.org", "seed3.martkist.org"));
+		vSeeds.push_back(CDNSSeedData("seed4.martkist.org", "seed4.martkist.org"));
 
 
 
-		base58Prefixes[PUBKEY_ADDRESS_SYS] = std::vector<unsigned char>(1, 63);
-		base58Prefixes[SCRIPT_ADDRESS_SYS] = std::vector<unsigned char>(1, 5);
-		base58Prefixes[SECRET_KEY_SYS] = std::vector<unsigned char>(1, 128);
+		base58Prefixes[PUBKEY_ADDRESS_MARTK] = std::vector<unsigned char>(1, 63);
+		base58Prefixes[SCRIPT_ADDRESS_MARTK] = std::vector<unsigned char>(1, 5);
+		base58Prefixes[SECRET_KEY_MARTK] = std::vector<unsigned char>(1, 128);
 
 		base58Prefixes[PUBKEY_ADDRESS_BTC] = std::vector<unsigned char>(1, 0);
 		base58Prefixes[SCRIPT_ADDRESS_BTC] = std::vector<unsigned char>(1, 5);
@@ -259,12 +259,12 @@ public:
 		base58Prefixes[PUBKEY_ADDRESS_ZEC] = { 0x1C,0xB8 };
 		base58Prefixes[SCRIPT_ADDRESS_ZEC] = { 0x1C,0xBD };
 		base58Prefixes[SECRET_KEY_ZEC] = std::vector<unsigned char>(1, 128);
-		// Syscoin BIP32 pubkeys start with 'xpub' (Syscoin defaults)
+		// Martkist BIP32 pubkeys start with 'xpub' (Martkist defaults)
 		base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >();
-		// Syscoin BIP32 prvkeys start with 'xprv' (Syscoin defaults)
+		// Martkist BIP32 prvkeys start with 'xprv' (Martkist defaults)
 		base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >();
 
-        // Syscoin BIP44 coin type is '57'
+        // Martkist BIP44 coin type is '57'
         nExtCoinType = 57;
 
         //vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
@@ -335,7 +335,7 @@ public:
         consensus.DIP0001Height = 5500;
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
 		consensus.nPowTargetTimespan = 6 * 60 * 60; // 6h retarget
-		consensus.nPowTargetSpacing = 60; // Syscoin: 1 min
+		consensus.nPowTargetSpacing = 60; // Martkist: 1 min
 		consensus.nAuxpowChainId = 0x1000;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
@@ -390,9 +390,9 @@ public:
         vSeeds.clear();
   
 
-		base58Prefixes[PUBKEY_ADDRESS_SYS] = std::vector<unsigned char>(1, 65);
-		base58Prefixes[SCRIPT_ADDRESS_SYS] = std::vector<unsigned char>(1, 196);
-		base58Prefixes[SECRET_KEY_SYS] = std::vector<unsigned char>(1, 239);
+		base58Prefixes[PUBKEY_ADDRESS_MARTK] = std::vector<unsigned char>(1, 65);
+		base58Prefixes[SCRIPT_ADDRESS_MARTK] = std::vector<unsigned char>(1, 196);
+		base58Prefixes[SECRET_KEY_MARTK] = std::vector<unsigned char>(1, 239);
 
 		base58Prefixes[PUBKEY_ADDRESS_BTC] = std::vector<unsigned char>(1, 111);
 		base58Prefixes[SCRIPT_ADDRESS_BTC] = std::vector<unsigned char>(1, 196);
@@ -402,7 +402,7 @@ public:
 		base58Prefixes[SCRIPT_ADDRESS_ZEC] = std::vector<unsigned char>(0x1C, 0xBD);
 		base58Prefixes[SECRET_KEY_ZEC] = std::vector<unsigned char>(1, 239);
 
-        // Testnet Syscoin BIP44 coin type is '1' (All coin's testnet default)
+        // Testnet Martkist BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
 
 
@@ -463,8 +463,8 @@ public:
         consensus.BIP66Height = 2; // BIP66 activated immediately on devnet
         consensus.DIP0001Height = 2; // DIP0001 activated immediately on devnet
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
-        consensus.nPowTargetTimespan = 6 * 60 * 60; // Syscoin: 6 hours
-        consensus.nPowTargetSpacing = 1 * 60; // Syscoin: 1 minute
+        consensus.nPowTargetTimespan = 6 * 60 * 60; // Martkist: 6 hours
+        consensus.nPowTargetSpacing = 1 * 60; // Martkist: 1 minute
 		consensus.nAuxpowChainId = 0x1000;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
@@ -515,11 +515,11 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        //vSeeds.push_back(CDNSSeedData("syscoinevo.org",  "devnet-seed.syscoinevo.org"));
+        //vSeeds.push_back(CDNSSeedData("martkistevo.org",  "devnet-seed.martkistevo.org"));
 
-		base58Prefixes[PUBKEY_ADDRESS_SYS] = std::vector<unsigned char>(1, 65);
-		base58Prefixes[SCRIPT_ADDRESS_SYS] = std::vector<unsigned char>(1, 196);
-		base58Prefixes[SECRET_KEY_SYS] = std::vector<unsigned char>(1, 239);
+		base58Prefixes[PUBKEY_ADDRESS_MARTK] = std::vector<unsigned char>(1, 65);
+		base58Prefixes[SCRIPT_ADDRESS_MARTK] = std::vector<unsigned char>(1, 196);
+		base58Prefixes[SECRET_KEY_MARTK] = std::vector<unsigned char>(1, 239);
 
 		base58Prefixes[PUBKEY_ADDRESS_BTC] = std::vector<unsigned char>(1, 111);
 		base58Prefixes[SCRIPT_ADDRESS_BTC] = std::vector<unsigned char>(1, 196);
@@ -528,12 +528,12 @@ public:
 		base58Prefixes[PUBKEY_ADDRESS_ZEC] = { 0x1C,0xB8 };
 		base58Prefixes[SCRIPT_ADDRESS_ZEC] = { 0x1C,0xBD };
 		base58Prefixes[SECRET_KEY_ZEC] = std::vector<unsigned char>(1, 239);
-		// Regtest Syscoin BIP32 pubkeys start with 'tpub' (Syscoin defaults)
+		// Regtest Martkist BIP32 pubkeys start with 'tpub' (Martkist defaults)
 		base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
-		// Regtest Syscoin BIP32 prvkeys start with 'tprv' (Syscoin defaults)
+		// Regtest Martkist BIP32 prvkeys start with 'tprv' (Martkist defaults)
 		base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
-        // Testnet Syscoin BIP44 coin type is '1' (All coin's testnet default)
+        // Testnet Martkist BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
 
         fMiningRequiresPeers = true;
@@ -596,8 +596,8 @@ public:
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
         consensus.DIP0001Height = 2000;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
-        consensus.nPowTargetTimespan = 6 * 60 * 60; // Syscoin: 6 hour
-        consensus.nPowTargetSpacing = 1 * 60; // Syscoin: 1 minute
+        consensus.nPowTargetTimespan = 6 * 60 * 60; // Martkist: 6 hour
+        consensus.nPowTargetSpacing = 1 * 60; // Martkist: 1 minute
 		consensus.nAuxpowChainId = 0x1000;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
@@ -657,9 +657,9 @@ public:
 
    
 
-		base58Prefixes[PUBKEY_ADDRESS_SYS] = std::vector<unsigned char>(1, 65);
-		base58Prefixes[SCRIPT_ADDRESS_SYS] = std::vector<unsigned char>(1, 196);
-		base58Prefixes[SECRET_KEY_SYS] = std::vector<unsigned char>(1, 239);
+		base58Prefixes[PUBKEY_ADDRESS_MARTK] = std::vector<unsigned char>(1, 65);
+		base58Prefixes[SCRIPT_ADDRESS_MARTK] = std::vector<unsigned char>(1, 196);
+		base58Prefixes[SECRET_KEY_MARTK] = std::vector<unsigned char>(1, 239);
 
 		base58Prefixes[PUBKEY_ADDRESS_BTC] = std::vector<unsigned char>(1, 111);
 		base58Prefixes[SCRIPT_ADDRESS_BTC] = std::vector<unsigned char>(1, 196);
@@ -668,12 +668,12 @@ public:
 		base58Prefixes[PUBKEY_ADDRESS_ZEC] = { 0x1C,0xB8 };
 		base58Prefixes[SCRIPT_ADDRESS_ZEC] = { 0x1C,0xBD };
 		base58Prefixes[SECRET_KEY_ZEC] = std::vector<unsigned char>(1, 239);
-		// Regtest Syscoin BIP32 pubkeys start with 'tpub' (Syscoin defaults)
+		// Regtest Martkist BIP32 pubkeys start with 'tpub' (Martkist defaults)
 		base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
-		// Regtest Syscoin BIP32 prvkeys start with 'tprv' (Syscoin defaults)
+		// Regtest Martkist BIP32 prvkeys start with 'tprv' (Martkist defaults)
 		base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
-        // Regtest Syscoin BIP44 coin type is '1' (All coin's testnet default)
+        // Regtest Martkist BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
 		checkpointData = {
 			{

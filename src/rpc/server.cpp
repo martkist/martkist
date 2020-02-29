@@ -1,7 +1,7 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -259,11 +259,11 @@ UniValue stop(const JSONRPCRequest& jsonRequest)
     if (jsonRequest.fHelp || jsonRequest.params.size() > 1)
         throw std::runtime_error(
             "stop\n"
-            "\nStop Syscoin Core server.");
+            "\nStop Martkist Core server.");
     // Event loop will exit after current HTTP requests have been handled, so
     // this reply will get back to the client.
     StartShutdown();
-    return "Syscoin Core server stopping";
+    return "Martkist Core server stopping";
 }
 
 /**
@@ -272,10 +272,10 @@ UniValue stop(const JSONRPCRequest& jsonRequest)
 static const CRPCCommand vRPCCommands[] =
 { //  category              name                      actor (function)         okSafe argNames
   //  --------------------- ------------------------  -----------------------  ------ ----------
-  // SYSCOIN rpc functions
+  // MARTKIST rpc functions
 	{ "wallet", "aliasnew",          &aliasnew,          false ,  {}},
 	{ "wallet", "aliasnewestimatedfee",          &aliasnewestimatedfee,          false ,{} },
-	{ "wallet", "syscointxfund",          &syscointxfund,          false ,  {}},
+	{ "wallet", "martkisttxfund",          &martkisttxfund,          false ,  {}},
 	
 	{ "wallet", "aliasupdate",       &aliasupdate,       false ,  {}},
 	{ "wallet", "aliasupdateestimatedfee",       &aliasupdateestimatedfee,       false ,{} },
@@ -288,10 +288,10 @@ static const CRPCCommand vRPCCommands[] =
 	{ "wallet", "aliasclearwhitelist",        &aliasclearwhitelist,       false ,  {}},
 	{ "wallet", "aliaswhitelist",        &aliaswhitelist,       false ,  {}},
 	{ "wallet", "listaliases",        &listaliases,       false ,{} },
-	{ "wallet", "syscoinsendrawtransaction",		 &syscoinsendrawtransaction,	false ,  {}},
-	{ "wallet", "syscoindecoderawtransaction",		 &syscoindecoderawtransaction,	false ,  {}},
-	{ "wallet", "syscoinlistreceivedbyaddress",		 &syscoinlistreceivedbyaddress,	false ,  {}},
-	{ "wallet", "prunesyscoinservices",          &prunesyscoinservices,          false ,  {}},
+	{ "wallet", "martkistsendrawtransaction",		 &martkistsendrawtransaction,	false ,  {}},
+	{ "wallet", "martkistdecoderawtransaction",		 &martkistdecoderawtransaction,	false ,  {}},
+	{ "wallet", "martkistlistreceivedbyaddress",		 &martkistlistreceivedbyaddress,	false ,  {}},
+	{ "wallet", "prunemartkistservices",          &prunemartkistservices,          false ,  {}},
 
 	// use the blockchain as a distributed marketplace
 	{ "wallet", "offernew",             &offernew,             false ,  {}},
@@ -575,7 +575,7 @@ std::vector<std::string> CRPCTable::listCommands() const
 
 std::string HelpExampleCli(const std::string& methodname, const std::string& args)
 {
-    return "> syscoin-cli " + methodname + " " + args + "\n";
+    return "> martkist-cli " + methodname + " " + args + "\n";
 }
 
 std::string HelpExampleRpc(const std::string& methodname, const std::string& args)

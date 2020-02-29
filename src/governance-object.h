@@ -1,12 +1,12 @@
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2017-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2017-2018 The Martkist Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef GOVERNANCE_OBJECT_H
 #define GOVERNANCE_OBJECT_H
 
-//#define ENABLE_SYS_DEBUG
+//#define ENABLE_MARTK_DEBUG
 
 #include "cachemultimap.h"
 #include "governance-exceptions.h"

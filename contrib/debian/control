@@ -1,8 +1,8 @@
-Source: syscoin
+Source: martkist
 Section: utils
 Priority: optional
-Maintainer: Holger Schinzel <holger@syscoin.org>
-Uploaders: Holger Schinzel <holger@syscoin.org>
+Maintainer: Holger Schinzel <holger@martkist.org>
+Uploaders: Holger Schinzel <holger@martkist.org>
 Build-Depends: debhelper,
  devscripts,
  automake,
@@ -24,45 +24,45 @@ Build-Depends: debhelper,
  libprotobuf-dev, protobuf-compiler,
  python
 Standards-Version: 3.9.2
-Homepage: https://www.syscoin.org/
-Vcs-Git: git://github.com/syscoin/syscoin.git
-Vcs-Browser: https://github.com/syscoin/syscoin
+Homepage: https://www.martkist.org/
+Vcs-Git: git://github.com/martkist/martkist.git
+Vcs-Browser: https://github.com/martkist/martkist
 
-Package: syscoind
+Package: martkistd
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - daemon
- Syscoin is an experimental new digital currency that enables anonymous, instant
- payments to anyone, anywhere in the world. Syscoin uses peer-to-peer
+ Martkist is an experimental new digital currency that enables anonymous, instant
+ payments to anyone, anywhere in the world. Martkist uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. Syscoin Core
+ and issuing money are carried out collectively by the network. Martkist Core
  is the name of the open source software which enables the use of this currency.
  .
- This package provides the daemon, syscoind, and the CLI tool
- syscoin-cli to interact with the daemon.
+ This package provides the daemon, martkistd, and the CLI tool
+ martkist-cli to interact with the daemon.
 
-Package: syscoin-qt
+Package: martkist-qt
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - Qt GUI
- Syscoin is an experimental new digital currency that enables anonymous, instant
- payments to anyone, anywhere in the world. Syscoin uses peer-to-peer
+ Martkist is an experimental new digital currency that enables anonymous, instant
+ payments to anyone, anywhere in the world. Martkist uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. Syscoin Core
+ and issuing money are carried out collectively by the network. Martkist Core
  is the name of the open source software which enables the use of this currency.
  .
- This package provides Syscoin-Qt, a GUI for Syscoin based on Qt.
+ This package provides Martkist-Qt, a GUI for Martkist based on Qt.
 
-Package: syscoin-tx
+Package: martkist-tx
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer digital currency - standalone transaction tool
- Syscoin is an experimental new digital currency that enables anonymous, instant
- payments to anyone, anywhere in the world. Syscoin uses peer-to-peer
+ Martkist is an experimental new digital currency that enables anonymous, instant
+ payments to anyone, anywhere in the world. Martkist uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. Syscoin Core
+ and issuing money are carried out collectively by the network. Martkist Core
  is the name of the open source software which enables the use of this currency.
  .
- This package provides syscoin-tx, a command-line transaction creation
- tool which can be used without a syscoin daemon.  Some means of
+ This package provides martkist-tx, a command-line transaction creation
+ tool which can be used without a martkist daemon.  Some means of
  exchanging minimal transaction data with peers is still required.

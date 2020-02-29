@@ -1,12 +1,12 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_TRANSACTIONTABLEMODEL_H
-#define SYSCOIN_QT_TRANSACTIONTABLEMODEL_H
+#ifndef MARTKIST_QT_TRANSACTIONTABLEMODEL_H
+#define MARTKIST_QT_TRANSACTIONTABLEMODEL_H
 
-#include "syscoinunits.h"
+#include "martkistunits.h"
 
 #include <QAbstractTableModel>
 #include <QStringList>
@@ -99,7 +99,7 @@ private:
     QString formatTxDate(const TransactionRecord *wtx) const;
     QString formatTxType(const TransactionRecord *wtx) const;
     QString formatTxToAddress(const TransactionRecord *wtx, bool tooltip) const;
-    QString formatTxAmount(const TransactionRecord *wtx, bool showUnconfirmed=true, SyscoinUnits::SeparatorStyle separators=SyscoinUnits::separatorStandard) const;
+    QString formatTxAmount(const TransactionRecord *wtx, bool showUnconfirmed=true, MartkistUnits::SeparatorStyle separators=MartkistUnits::separatorStandard) const;
     QString formatTooltip(const TransactionRecord *rec) const;
     QVariant txStatusDecoration(const TransactionRecord *wtx) const;
     QVariant txWatchonlyDecoration(const TransactionRecord *wtx) const;
@@ -118,4 +118,4 @@ public Q_SLOTS:
     friend class TransactionTablePriv;
 };
 
-#endif // SYSCOIN_QT_TRANSACTIONTABLEMODEL_H
+#endif // MARTKIST_QT_TRANSACTIONTABLEMODEL_H

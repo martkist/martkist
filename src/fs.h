@@ -1,9 +1,9 @@
-// Copyright (c) 2017 The Syscoin Core developers
+// Copyright (c) 2017 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_FS_H
-#define SYSCOIN_FS_H
+#ifndef MARTKIST_FS_H
+#define MARTKIST_FS_H
 
 #include <stdio.h>
 #include <string>
@@ -21,4 +21,4 @@ namespace fsbridge {
 	FILE *freopen(const fs::path& p, const char *mode, FILE *stream);
 };
 
-#endif // SYSCOIN_FS_H
+#endif // MARTKIST_FS_H

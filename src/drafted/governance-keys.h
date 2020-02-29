@@ -1,4 +1,4 @@
-// Copyright (c) 2017 The Syscoin Core developers
+// Copyright (c) 2017 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,7 +17,7 @@ CCriticalSection cs_vGovernanceKeys;
 	
 	- Users will configure their keys, something like this:
 
-	syscoin.conf:
+	martkist.conf:
 
 		addgovkey=PrivKey1:name1 #comments
 		addgovkey=PrivKey2:name2 #comments
@@ -38,7 +38,7 @@ private:
 public:
 	CGovernanceKey::CGovernanceKey(SecureString& strKeyIn, SecureString& strNameIn) {strName = strNameIn; strKey = strKeyIn;}
 
-	bool GetKey(CSyscoinSecret& secret)
+	bool GetKey(CMartkistSecret& secret)
 	{
 	    return secret.SetString(vecTokenized[0]);
 	}

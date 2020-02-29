@@ -1,12 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_WALLET_WALLET_H
-#define SYSCOIN_WALLET_WALLET_H
+#ifndef MARTKIST_WALLET_WALLET_H
+#define MARTKIST_WALLET_WALLET_H
 
 #include "amount.h"
 #include "base58.h"
@@ -35,7 +35,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
-// SYSCOIN
+// MARTKIST
 #include <auxpow.h> // contains CMerkleTx
 extern CWallet* pwalletMain;
 
@@ -208,7 +208,7 @@ struct COutputEntry
     CAmount amount;
     int vout;
 };
-// SYSCOIN remove cmerkletx
+// MARTKIST remove cmerkletx
 
 /** 
  * A transaction with a bunch of additional info that only the owner cares about.
@@ -227,7 +227,7 @@ public:
     unsigned int nTimeSmart;
     /**
      * From me flag is set to 1 for transactions that were created by the wallet
-     * on this syscoin node, and set to 0 for transactions that were created
+     * on this martkist node, and set to 0 for transactions that were created
      * externally and came in through the network or sendrawtransaction RPC.
      */
     char fFromMe;
@@ -720,7 +720,7 @@ public:
     /**
      * populate vCoins with vector of available COutputs.
      */
-    void AvailableCoins(std::vector<COutput>& vCoins, bool fOnlyConfirmed=true, const CCoinControl *coinControl = NULL, bool fIncludeZeroValue=false, AvailableCoinsType nCoinType=ALL_COINS, bool fUseInstantSend = false, bool fIncludeSyscoinAliasBalances = false, bool fIncludeSyscoinAliasOutputs = false) const;
+    void AvailableCoins(std::vector<COutput>& vCoins, bool fOnlyConfirmed=true, const CCoinControl *coinControl = NULL, bool fIncludeZeroValue=false, AvailableCoinsType nCoinType=ALL_COINS, bool fUseInstantSend = false, bool fIncludeMartkistAliasBalances = false, bool fIncludeMartkistAliasOutputs = false) const;
 
     /**
      * Shuffle and select coins until nTargetValue is reached while avoiding
@@ -737,7 +737,7 @@ public:
 
     bool SelectCoinsGrouppedByAddresses(std::vector<CompactTallyItem>& vecTallyRet, bool fSkipDenominated = true, bool fAnonymizable = true, bool fSkipUnconfirmed = true) const;
 
-    /// Get 100000SYS output and keys which can be used for the Masternode
+    /// Get 18000MARTK output and keys which can be used for the Masternode
     bool GetMasternodeOutpointAndKeys(COutPoint& outpointRet, CPubKey& pubKeyRet, CKey& keyRet, const std::string& strTxHash = "", const std::string& strOutputIndex = "");
     /// Extract txin information and keys from output
     bool GetOutpointAndKeysFromOutput(const COutput& out, COutPoint& outpointRet, CPubKey& pubKeyRet, CKey& keyRet);
@@ -1102,4 +1102,4 @@ public:
     }
 };
 
-#endif // SYSCOIN_WALLET_WALLET_H
+#endif // MARTKIST_WALLET_WALLET_H

@@ -1,11 +1,11 @@
 // Copyright (c) 2012 Pieter Wuille
 // Copyright (c) 2012-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_ADDRMAN_H
-#define SYSCOIN_ADDRMAN_H
+#ifndef MARTKIST_ADDRMAN_H
+#define MARTKIST_ADDRMAN_H
 
 #include "netaddress.h"
 #include "protocol.h"
@@ -592,4 +592,4 @@ public:
 
 };
 
-#endif // SYSCOIN_ADDRMAN_H
+#endif // MARTKIST_ADDRMAN_H

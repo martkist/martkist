@@ -6,13 +6,13 @@ reset-files.bash
 *.tar.gz
 
 *.exe
-src/syscoin
-src/syscoind
-src/syscoin-cli
-src/syscoin-tx
-src/test/test_syscoin
-src/qt/test/test_syscoin-qt
-src/bench/bench_syscoin
+src/martkist
+src/martkistd
+src/martkist-cli
+src/martkist-tx
+src/test/test_martkist
+src/qt/test/test_martkist-qt
+src/bench/bench_martkist
 
 # autoreconf
 Makefile.in
@@ -35,8 +35,8 @@ config.log
 config.status
 configure
 libtool
-src/config/syscoin-config.h
-src/config/syscoin-config.h.in
+src/config/martkist-config.h
+src/config/martkist-config.h.in
 src/config/stamp-h1
 share/setup.nsi
 share/qt/Info.plist
@@ -62,7 +62,7 @@ libconftest.dylib*
 *.o
 *.o-*
 *.patch
-.syscoin
+.martkist
 *.a
 *.pb.cc
 *.pb.h
@@ -81,12 +81,12 @@ libconftest.dylib*
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-syscoin-qt
-Syscoin-Qt.app
+martkist-qt
+Martkist-Qt.app
 
 # Unit-tests
 Makefile.test
-syscoin-qt_test
+martkist-qt_test
 src/test/buildenv.py
 
 # Resources cpp
@@ -100,7 +100,7 @@ build
 *.gcno
 *.gcda
 /*.info
-test_syscoin.coverage/
+test_martkist.coverage/
 total.coverage/
 coverage_percent.txt
 
@@ -108,13 +108,13 @@ coverage_percent.txt
 linux-coverage-build
 linux-build
 win32-build
-qa/pull-tester/run-syscoind-for-test.sh
+qa/pull-tester/run-martkistd-for-test.sh
 qa/pull-tester/tests_config.py
 qa/pull-tester/cache/*
 qa/pull-tester/test.*/*
 qa/tmp
 cache/
-share/SyscoindComparisonTool.jar
+share/MartkistdComparisonTool.jar
 
 !src/leveldb*/Makefile
 
@@ -123,13 +123,13 @@ share/SyscoindComparisonTool.jar
 .autotools
 /doc/doxygen/
 
-libsyscoinconsensus.pc
-src/qt/syscoin-qt.bash
+libmartkistconsensus.pc
+src/qt/martkist-qt.bash
 qa/pull-tester/tests-config.sh
 
 #development symlinks
-syscoin-cli
-syscoind
-syscoin-qt
+martkist-cli
+martkistd
+martkist-qt
 make
 contrib/devtools/split-debug.sh

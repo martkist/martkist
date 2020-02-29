@@ -5,15 +5,15 @@
 import socket
 
 from test_framework.socks5 import Socks5Configuration, Socks5Command, Socks5Server, AddressType
-from test_framework.test_framework import SyscoinTestFramework
+from test_framework.test_framework import MartkistTestFramework
 from test_framework.util import *
 from test_framework.netutil import test_ipv6_local
 '''
 Test plan:
-- Start syscoind's with different proxy configurations
+- Start martkistd's with different proxy configurations
 - Use addnode to initiate connections
 - Verify that proxies are connected to, and the right connection command is given
-- Proxy configurations to test on syscoind side:
+- Proxy configurations to test on martkistd side:
     - `-proxy` (proxy everything)
     - `-onion` (proxy just onions)
     - `-proxyrandomize` Circuit randomization
@@ -23,8 +23,8 @@ Test plan:
     - proxy on IPv6
 
 - Create various proxies (as threads)
-- Create syscoinds that connect to them
-- Manipulate the syscoinds using addnode (onetry) an observe effects
+- Create martkistds that connect to them
+- Manipulate the martkistds using addnode (onetry) an observe effects
 
 addnode connect to IPv4
 addnode connect to IPv6
@@ -33,7 +33,7 @@ addnode connect to generic DNS name
 '''
 
 
-class ProxyTest(SyscoinTestFramework):
+class ProxyTest(MartkistTestFramework):
     def __init__(self):
         self.have_ipv6 = test_ipv6_local()
         # Create two proxies on different ports
@@ -84,7 +84,7 @@ class ProxyTest(SyscoinTestFramework):
         node.addnode("15.61.23.23:1234", "onetry")
         cmd = proxies[0].queue.get()
         assert(isinstance(cmd, Socks5Command))
-        # Note: syscoind's SOCKS5 implementation only sends atyp DOMAINNAME, even if connecting directly to IPv4/IPv6
+        # Note: martkistd's SOCKS5 implementation only sends atyp DOMAINNAME, even if connecting directly to IPv4/IPv6
         assert_equal(cmd.atyp, AddressType.DOMAINNAME)
         assert_equal(cmd.addr, b"15.61.23.23")
         assert_equal(cmd.port, 1234)
@@ -98,7 +98,7 @@ class ProxyTest(SyscoinTestFramework):
             node.addnode("[1233:3432:2434:2343:3234:2345:6546:4534]:5443", "onetry")
             cmd = proxies[1].queue.get()
             assert(isinstance(cmd, Socks5Command))
-            # Note: syscoind's SOCKS5 implementation only sends atyp DOMAINNAME, even if connecting directly to IPv4/IPv6
+            # Note: martkistd's SOCKS5 implementation only sends atyp DOMAINNAME, even if connecting directly to IPv4/IPv6
             assert_equal(cmd.atyp, AddressType.DOMAINNAME)
             assert_equal(cmd.addr, b"1233:3432:2434:2343:3234:2345:6546:4534")
             assert_equal(cmd.port, 5443)
@@ -109,11 +109,11 @@ class ProxyTest(SyscoinTestFramework):
 
         if test_onion:
             # Test: outgoing onion connection through node
-            node.addnode("syscoinostk4e4re.onion:8369", "onetry")
+            node.addnode("martkistostk4e4re.onion:8369", "onetry")
             cmd = proxies[2].queue.get()
             assert(isinstance(cmd, Socks5Command))
             assert_equal(cmd.atyp, AddressType.DOMAINNAME)
-            assert_equal(cmd.addr, b"syscoinostk4e4re.onion")
+            assert_equal(cmd.addr, b"martkistostk4e4re.onion")
             assert_equal(cmd.port, 8369)
             if not auth:
                 assert_equal(cmd.username, None)

@@ -1,11 +1,11 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_GUICONSTANTS_H
-#define SYSCOIN_QT_GUICONSTANTS_H
+#ifndef MARTKIST_QT_GUICONSTANTS_H
+#define MARTKIST_QT_GUICONSTANTS_H
 
 /* Milliseconds between model updates */
 static const int MODEL_UPDATE_DELAY = 250;
@@ -13,7 +13,7 @@ static const int MODEL_UPDATE_DELAY = 250;
 /* AskPassphraseDialog -- Maximum passphrase length */
 static const int MAX_PASSPHRASE_SIZE = 1024;
 
-/* SyscoinGUI -- Size of icons in status bar */
+/* MartkistGUI -- Size of icons in status bar */
 static const int STATUSBAR_ICONSIZE = 16;
 
 static const bool DEFAULT_SPLASHSCREEN = true;
@@ -52,10 +52,10 @@ static const int MAX_URI_LENGTH = 255;
 /* Number of frames in spinner animation */
 #define SPINNER_FRAMES 36
 
-#define QAPP_ORG_NAME "Syscoin"
-#define QAPP_ORG_DOMAIN "syscoin.org"
-#define QAPP_APP_NAME_DEFAULT "Syscoin-Qt"
-#define QAPP_APP_NAME_TESTNET "Syscoin-Qt-testnet"
-#define QAPP_APP_NAME_DEVNET "Syscoin-Qt-%s"
+#define QAPP_ORG_NAME "Martkist"
+#define QAPP_ORG_DOMAIN "martkist.org"
+#define QAPP_APP_NAME_DEFAULT "Martkist-Qt"
+#define QAPP_APP_NAME_TESTNET "Martkist-Qt-testnet"
+#define QAPP_APP_NAME_DEVNET "Martkist-Qt-%s"
 
-#endif // SYSCOIN_QT_GUICONSTANTS_H
+#endif // MARTKIST_QT_GUICONSTANTS_H

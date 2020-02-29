@@ -3,9 +3,9 @@ Release Process
 
 Before every release candidate:
 
-* Update translations (ping wumpus on IRC) see [translation_process.md](https://github.com/syscoin/syscoin/blob/master/doc/translation_process.md#synchronising-translations).
+* Update translations (ping wumpus on IRC) see [translation_process.md](https://github.com/martkist/martkist/blob/master/doc/translation_process.md#synchronising-translations).
 
-* Update manpages, see [gen-manpages.sh](https://github.com/syscoin/syscoin/blob/master/contrib/devtools/README.md#gen-manpagessh).
+* Update manpages, see [gen-manpages.sh](https://github.com/martkist/martkist/blob/master/contrib/devtools/README.md#gen-manpagessh).
 
 Before every minor and major release:
 
@@ -21,10 +21,10 @@ Before every minor and major release:
 
 Before every major release:
 
-* Update hardcoded [seeds](/contrib/seeds/README.md), see [this pull request](https://github.com/syscoin/syscoin/pull/7415) for an example.
+* Update hardcoded [seeds](/contrib/seeds/README.md), see [this pull request](https://github.com/martkist/martkist/pull/7415) for an example.
 * Update [`BLOCK_CHAIN_SIZE`](/src/qt/intro.cpp) to the current size plus some overhead.
 * Update `src/chainparams.cpp` chainTxData with statistics about the transaction count and rate. Use the output of the RPC `getchaintxstats`, see
-  [this pull request](https://github.com/syscoin/syscoin/pull/12270) for an example. Reviewers can verify the results by running `getchaintxstats <window_block_count> <window_last_block_hash>` with the `window_block_count` and `window_last_block_hash` from your output.
+  [this pull request](https://github.com/martkist/martkist/pull/12270) for an example. Reviewers can verify the results by running `getchaintxstats <window_block_count> <window_last_block_hash>` with the `window_block_count` and `window_last_block_hash` from your output.
 * Update version of `contrib/gitian-descriptors/*.yml`: usually one'd want to do this on master after branching off the release - but be sure to at least do it before a new major release
 
 ### First time / New builders
@@ -34,12 +34,12 @@ If you're using the automated script (found in [contrib/gitian-build.sh](/contri
 Check out the source code in the following directory hierarchy.
 
     cd /path/to/your/toplevel/build
-    git clone https://github.com/syscoin-core/gitian.sigs.git
-    git clone https://github.com/syscoin-core/syscoin-detached-sigs.git
+    git clone https://github.com/martkist-core/gitian.sigs.git
+    git clone https://github.com/martkist-core/martkist-detached-sigs.git
     git clone https://github.com/devrandom/gitian-builder.git
-    git clone https://github.com/syscoin/syscoin.git
+    git clone https://github.com/martkist/martkist.git
 
-### Syscoin maintainers/release engineers, suggestion for writing release notes
+### Martkist maintainers/release engineers, suggestion for writing release notes
 
 Write release notes. git shortlog helps a lot, for example:
 
@@ -62,7 +62,7 @@ If you're using the automated script (found in [contrib/gitian-build.sh](/contri
 
 Setup Gitian descriptors:
 
-    pushd ./syscoin
+    pushd ./martkist
     export SIGNER="(your Gitian key, ie bluematt, sipa, etc)"
     export VERSION=(new version, e.g. 0.8.0)
     git fetch
@@ -85,7 +85,7 @@ Ensure gitian-builder is up-to-date:
 
     pushd ./gitian-builder
     mkdir -p inputs
-    wget -P inputs https://syscoincore.org/cfields/osslsigncode-Backports-to-1.7.1.patch
+    wget -P inputs https://martkistcore.org/cfields/osslsigncode-Backports-to-1.7.1.patch
     wget -P inputs http://downloads.sourceforge.net/project/osslsigncode/osslsigncode/osslsigncode-1.7.1.tar.gz
     popd
 
@@ -95,10 +95,10 @@ Create the OS X SDK tarball, see the [OS X readme](README_osx.md) for details, a
 
 NOTE: Gitian is sometimes unable to download files. If you have errors, try the step below.
 
-By default, Gitian will fetch source files as needed. To cache them ahead of time, make sure you have checked out the tag you want to build in syscoin, then:
+By default, Gitian will fetch source files as needed. To cache them ahead of time, make sure you have checked out the tag you want to build in martkist, then:
 
     pushd ./gitian-builder
-    make -C ../syscoin/depends download SOURCES_PATH=`pwd`/cache/common
+    make -C ../martkist/depends download SOURCES_PATH=`pwd`/cache/common
     popd
 
 Only missing files will be fetched, so this is safe to re-run for each build.
@@ -106,47 +106,47 @@ Only missing files will be fetched, so this is safe to re-run for each build.
 NOTE: Offline builds must use the --url flag to ensure Gitian fetches only from local URLs. For example:
 
     pushd ./gitian-builder
-    ./bin/gbuild --url syscoin=/path/to/syscoin,signature=/path/to/sigs {rest of arguments}
+    ./bin/gbuild --url martkist=/path/to/martkist,signature=/path/to/sigs {rest of arguments}
     popd
 
 The gbuild invocations below <b>DO NOT DO THIS</b> by default.
 
-### Build and sign Syscoin Core for Linux, Windows, and OS X:
+### Build and sign Martkist Core for Linux, Windows, and OS X:
 
     pushd ./gitian-builder
-    ./bin/gbuild --num-make 2 --memory 3000 --commit syscoin=v${VERSION} ../syscoin/contrib/gitian-descriptors/gitian-linux.yml
-    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-linux --destination ../gitian.sigs/ ../syscoin/contrib/gitian-descriptors/gitian-linux.yml
-    mv build/out/syscoin-*.tar.gz build/out/src/syscoin-*.tar.gz ../
+    ./bin/gbuild --num-make 2 --memory 3000 --commit martkist=v${VERSION} ../martkist/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-linux --destination ../gitian.sigs/ ../martkist/contrib/gitian-descriptors/gitian-linux.yml
+    mv build/out/martkist-*.tar.gz build/out/src/martkist-*.tar.gz ../
 
-    ./bin/gbuild --num-make 2 --memory 3000 --commit syscoin=v${VERSION} ../syscoin/contrib/gitian-descriptors/gitian-win.yml
-    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../syscoin/contrib/gitian-descriptors/gitian-win.yml
-    mv build/out/syscoin-*-win-unsigned.tar.gz inputs/syscoin-win-unsigned.tar.gz
-    mv build/out/syscoin-*.zip build/out/syscoin-*.exe ../
+    ./bin/gbuild --num-make 2 --memory 3000 --commit martkist=v${VERSION} ../martkist/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../martkist/contrib/gitian-descriptors/gitian-win.yml
+    mv build/out/martkist-*-win-unsigned.tar.gz inputs/martkist-win-unsigned.tar.gz
+    mv build/out/martkist-*.zip build/out/martkist-*.exe ../
 
-    ./bin/gbuild --num-make 2 --memory 3000 --commit syscoin=v${VERSION} ../syscoin/contrib/gitian-descriptors/gitian-osx.yml
-    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../syscoin/contrib/gitian-descriptors/gitian-osx.yml
-    mv build/out/syscoin-*-osx-unsigned.tar.gz inputs/syscoin-osx-unsigned.tar.gz
-    mv build/out/syscoin-*.tar.gz build/out/syscoin-*.dmg ../
+    ./bin/gbuild --num-make 2 --memory 3000 --commit martkist=v${VERSION} ../martkist/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../martkist/contrib/gitian-descriptors/gitian-osx.yml
+    mv build/out/martkist-*-osx-unsigned.tar.gz inputs/martkist-osx-unsigned.tar.gz
+    mv build/out/martkist-*.tar.gz build/out/martkist-*.dmg ../
     popd
 
 Build output expected:
 
-  1. source tarball (`syscoin-${VERSION}.tar.gz`)
-  2. linux 32-bit and 64-bit dist tarballs (`syscoin-${VERSION}-linux[32|64].tar.gz`)
-  3. windows 32-bit and 64-bit unsigned installers and dist zips (`syscoin-${VERSION}-win[32|64]-setup-unsigned.exe`, `syscoin-${VERSION}-win[32|64].zip`)
-  4. OS X unsigned installer and dist tarball (`syscoin-${VERSION}-osx-unsigned.dmg`, `syscoin-${VERSION}-osx64.tar.gz`)
+  1. source tarball (`martkist-${VERSION}.tar.gz`)
+  2. linux 32-bit and 64-bit dist tarballs (`martkist-${VERSION}-linux[32|64].tar.gz`)
+  3. windows 32-bit and 64-bit unsigned installers and dist zips (`martkist-${VERSION}-win[32|64]-setup-unsigned.exe`, `martkist-${VERSION}-win[32|64].zip`)
+  4. OS X unsigned installer and dist tarball (`martkist-${VERSION}-osx-unsigned.dmg`, `martkist-${VERSION}-osx64.tar.gz`)
   5. Gitian signatures (in `gitian.sigs/${VERSION}-<linux|{win,osx}-unsigned>/(your Gitian key)/`)
 
 ### Verify other gitian builders signatures to your own. (Optional)
 
-Add other gitian builders keys to your gpg keyring, and/or refresh keys: See `../syscoin/contrib/gitian-keys/README.md`.
+Add other gitian builders keys to your gpg keyring, and/or refresh keys: See `../martkist/contrib/gitian-keys/README.md`.
 
 Verify the signatures
 
     pushd ./gitian-builder
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../syscoin/contrib/gitian-descriptors/gitian-linux.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../syscoin/contrib/gitian-descriptors/gitian-win.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../syscoin/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../martkist/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../martkist/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../martkist/contrib/gitian-descriptors/gitian-osx.yml
     popd
 
 ### Next steps:
@@ -167,22 +167,22 @@ Codesigner only: Create Windows/OS X detached signatures:
 
 Codesigner only: Sign the osx binary:
 
-    transfer syscoin-osx-unsigned.tar.gz to osx for signing
-    tar xf syscoin-osx-unsigned.tar.gz
+    transfer martkist-osx-unsigned.tar.gz to osx for signing
+    tar xf martkist-osx-unsigned.tar.gz
     ./detached-sig-create.sh -s "Key ID"
     Enter the keychain password and authorize the signature
     Move signature-osx.tar.gz back to the gitian host
 
 Codesigner only: Sign the windows binaries:
 
-    tar xf syscoin-win-unsigned.tar.gz
+    tar xf martkist-win-unsigned.tar.gz
     ./detached-sig-create.sh -key /path/to/codesign.key
     Enter the passphrase for the key when prompted
     signature-win.tar.gz will be created
 
 Codesigner only: Commit the detached codesign payloads:
 
-    cd ~/syscoin-detached-sigs
+    cd ~/martkist-detached-sigs
     checkout the appropriate branch for this release series
     rm -rf *
     tar xf signature-osx.tar.gz
@@ -195,25 +195,25 @@ Codesigner only: Commit the detached codesign payloads:
 Non-codesigners: wait for Windows/OS X detached signatures:
 
 - Once the Windows/OS X builds each have 3 matching signatures, they will be signed with their respective release keys.
-- Detached signatures will then be committed to the [syscoin-detached-sigs](https://github.com/syscoin-core/syscoin-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
+- Detached signatures will then be committed to the [martkist-detached-sigs](https://github.com/martkist-core/martkist-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
 
 Create (and optionally verify) the signed OS X binary:
 
     pushd ./gitian-builder
-    ./bin/gbuild -i --commit signature=v${VERSION} ../syscoin/contrib/gitian-descriptors/gitian-osx-signer.yml
-    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../syscoin/contrib/gitian-descriptors/gitian-osx-signer.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../syscoin/contrib/gitian-descriptors/gitian-osx-signer.yml
-    mv build/out/syscoin-osx-signed.dmg ../syscoin-${VERSION}-osx.dmg
+    ./bin/gbuild -i --commit signature=v${VERSION} ../martkist/contrib/gitian-descriptors/gitian-osx-signer.yml
+    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../martkist/contrib/gitian-descriptors/gitian-osx-signer.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../martkist/contrib/gitian-descriptors/gitian-osx-signer.yml
+    mv build/out/martkist-osx-signed.dmg ../martkist-${VERSION}-osx.dmg
     popd
 
 Create (and optionally verify) the signed Windows binaries:
 
     pushd ./gitian-builder
-    ./bin/gbuild -i --commit signature=v${VERSION} ../syscoin/contrib/gitian-descriptors/gitian-win-signer.yml
-    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../syscoin/contrib/gitian-descriptors/gitian-win-signer.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-signed ../syscoin/contrib/gitian-descriptors/gitian-win-signer.yml
-    mv build/out/syscoin-*win64-setup.exe ../syscoin-${VERSION}-win64-setup.exe
-    mv build/out/syscoin-*win32-setup.exe ../syscoin-${VERSION}-win32-setup.exe
+    ./bin/gbuild -i --commit signature=v${VERSION} ../martkist/contrib/gitian-descriptors/gitian-win-signer.yml
+    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../martkist/contrib/gitian-descriptors/gitian-win-signer.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-signed ../martkist/contrib/gitian-descriptors/gitian-win-signer.yml
+    mv build/out/martkist-*win64-setup.exe ../martkist-${VERSION}-win64-setup.exe
+    mv build/out/martkist-*win32-setup.exe ../martkist-${VERSION}-win32-setup.exe
     popd
 
 Commit your signature for the signed OS X/Windows binaries:
@@ -235,23 +235,23 @@ sha256sum * > SHA256SUMS
 
 The list of files should be:
 ```
-syscoin-${VERSION}-aarch64-linux-gnu.tar.gz
-syscoin-${VERSION}-arm-linux-gnueabihf.tar.gz
-syscoin-${VERSION}-i686-pc-linux-gnu.tar.gz
-syscoin-${VERSION}-x86_64-linux-gnu.tar.gz
-syscoin-${VERSION}-osx64.tar.gz
-syscoin-${VERSION}-osx.dmg
-syscoin-${VERSION}.tar.gz
-syscoin-${VERSION}-win32-setup.exe
-syscoin-${VERSION}-win32.zip
-syscoin-${VERSION}-win64-setup.exe
-syscoin-${VERSION}-win64.zip
+martkist-${VERSION}-aarch64-linux-gnu.tar.gz
+martkist-${VERSION}-arm-linux-gnueabihf.tar.gz
+martkist-${VERSION}-i686-pc-linux-gnu.tar.gz
+martkist-${VERSION}-x86_64-linux-gnu.tar.gz
+martkist-${VERSION}-osx64.tar.gz
+martkist-${VERSION}-osx.dmg
+martkist-${VERSION}.tar.gz
+martkist-${VERSION}-win32-setup.exe
+martkist-${VERSION}-win32.zip
+martkist-${VERSION}-win64-setup.exe
+martkist-${VERSION}-win64.zip
 ```
 The `*-debug*` files generated by the gitian build contain debug symbols
 for troubleshooting by developers. It is assumed that anyone that is interested
 in debugging can run gitian to generate the files for themselves. To avoid
 end-user confusion about which file to pick, as well as save storage
-space *do not upload these to the syscoin.org server, nor put them in the torrent*.
+space *do not upload these to the martkist.org server, nor put them in the torrent*.
 
 - GPG-sign it, delete the unsigned file:
 ```
@@ -261,49 +261,49 @@ rm SHA256SUMS
 (the digest algorithm is forced to sha256 to avoid confusion of the `Hash:` header that GPG adds with the SHA256 used for the files)
 Note: check that SHA256SUMS itself doesn't end up in SHA256SUMS, which is a spurious/nonsensical entry.
 
-- Upload zips and installers, as well as `SHA256SUMS.asc` from last step, to the syscoin.org server
-  into `/var/www/bin/syscoin-core-${VERSION}`
+- Upload zips and installers, as well as `SHA256SUMS.asc` from last step, to the martkist.org server
+  into `/var/www/bin/martkist-core-${VERSION}`
 
 - A `.torrent` will appear in the directory after a few minutes. Optionally help seed this torrent. To get the `magnet:` URI use:
 ```bash
 transmission-show -m <torrent file>
 ```
 Insert the magnet URI into the announcement sent to mailing lists. This permits
-people without access to `syscoin.org` to download the binary distribution.
+people without access to `martkist.org` to download the binary distribution.
 Also put it into the `optional_magnetlink:` slot in the YAML file for
-syscoin.org (see below for syscoin.org update instructions).
+martkist.org (see below for martkist.org update instructions).
 
-- Update syscoin.org version
+- Update martkist.org version
 
-  - First, check to see if the Syscoin.org maintainers have prepared a
-    release: https://github.com/syscoin-dot-org/syscoin.org/labels/Releases
+  - First, check to see if the Martkist.org maintainers have prepared a
+    release: https://github.com/martkist-dot-org/martkist.org/labels/Releases
 
       - If they have, it will have previously failed their Travis CI
         checks because the final release files weren't uploaded.
         Trigger a Travis CI rebuild---if it passes, merge.
 
-  - If they have not prepared a release, follow the Syscoin.org release
-    instructions: https://github.com/syscoin-dot-org/syscoin.org#release-notes
+  - If they have not prepared a release, follow the Martkist.org release
+    instructions: https://github.com/martkist-dot-org/martkist.org#release-notes
 
   - After the pull request is merged, the website will automatically show the newest version within 15 minutes, as well
     as update the OS download links. Ping @saivann/@harding (saivann/harding on Freenode) in case anything goes wrong
 
 - Announce the release:
 
-  - syscoin-dev and syscoin-core-dev mailing list
+  - martkist-dev and martkist-core-dev mailing list
 
-  - Syscoin Core announcements list https://syscoincore.org/en/list/announcements/join/
+  - Martkist Core announcements list https://martkistcore.org/en/list/announcements/join/
 
-  - syscoincore.org blog post
+  - martkistcore.org blog post
 
-  - Update title of #syscoin on Freenode IRC
+  - Update title of #martkist on Freenode IRC
 
-  - Optionally twitter, reddit /r/Syscoin, ... but this will usually sort out itself
+  - Optionally twitter, reddit /r/Martkist, ... but this will usually sort out itself
 
-  - Notify BlueMatt so that he can start building [the PPAs](https://launchpad.net/~syscoin/+archive/ubuntu/syscoin)
+  - Notify BlueMatt so that he can start building [the PPAs](https://launchpad.net/~martkist/+archive/ubuntu/martkist)
 
   - Archive release notes for the new version to `doc/release-notes/` (branch `master` and branch of the release)
 
-  - Create a [new GitHub release](https://github.com/syscoin/syscoin/releases/new) with a link to the archived release notes.
+  - Create a [new GitHub release](https://github.com/martkist/martkist/releases/new) with a link to the archived release notes.
 
   - Celebrate

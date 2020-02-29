@@ -1,5 +1,5 @@
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2017-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2017-2018 The Martkist Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,7 +16,7 @@
 #include "util.h"
 
 #include <boost/lexical_cast.hpp>
-// SYSCOIN
+// MARTKIST
 extern std::vector<unsigned char> vchFromString(const std::string &str);
 
 /** Object for who's going to get paid on which blocks */
@@ -32,7 +32,7 @@ CCriticalSection cs_mapMasternodePaymentVotes;
 *   Determine if coinbase outgoing created money is the correct value
 *
 *   Why is this needed?
-*   - In Syscoin some blocks are superblocks, which output much higher amounts of coins
+*   - In Martkist some blocks are superblocks, which output much higher amounts of coins
 *   - Otherblocks are 10% lower in outgoing value, so in total, no extra coins are created
 *   - When non-superblocks are detected, the normal schedule should be maintained
 */
@@ -267,7 +267,7 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int nBlockH
 
     CTxDestination address1;
     ExtractDestination(payee, address1);
-    CSyscoinAddress address2(address1);
+    CMartkistAddress address2(address1);
 
     LogPrintf("CMasternodePayments::FillBlockPayee -- Masternode payment %lld to %s\n", blockReward, address2.ToString());
 }
@@ -278,7 +278,7 @@ int CMasternodePayments::GetMinMasternodePaymentsProto() const {
 
 void CMasternodePayments::ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv, CConnman& connman)
 {
-    if(fLiteMode) return; // disable all Syscoin specific functionality
+    if(fLiteMode) return; // disable all Martkist specific functionality
 
     if (strCommand == NetMsgType::MASTERNODEPAYMENTSYNC) { //Masternode Payments Request Sync
 
@@ -377,7 +377,7 @@ void CMasternodePayments::ProcessMessage(CNode* pfrom, const std::string& strCom
             // so just quit here.
             return;
         }
-		// SYSCOIN update last vote after sig check
+		// MARTKIST update last vote after sig check
 		if (!UpdateLastVote(vote)) {
 			LogPrintf("MASTERNODEPAYMENTVOTE -- masternode already voted, masternode=%s\n", vote.masternodeOutpoint.ToStringShort());
 			return;
@@ -602,7 +602,7 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransaction& txNew, const
 
             CTxDestination address1;
             ExtractDestination(payeeScript, address1);
-            CSyscoinAddress address2(address1);
+            CMartkistAddress address2(address1);
 
             if(strPayeesPossible == "") {
                 strPayeesPossible = address2.ToString();
@@ -619,7 +619,7 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransaction& txNew, const
 			nTotalRewardWithMasternodes  -= fee;
 		return true;
 	}
-    LogPrintf("CMasternodeBlockPayees::IsTransactionValid -- ERROR: Missing required payment, possible payees: '%s', amount: %f SYS\n", strPayeesPossible, (float)nMasternodePayment/COIN);
+    LogPrintf("CMasternodeBlockPayees::IsTransactionValid -- ERROR: Missing required payment, possible payees: '%s', amount: %f MARTK\n", strPayeesPossible, (float)nMasternodePayment/COIN);
     return false;
 }
 
@@ -633,7 +633,7 @@ std::string CMasternodeBlockPayees::GetRequiredPaymentsString() const
     {
         CTxDestination address1;
         ExtractDestination(payee.GetPayee(), address1);
-        CSyscoinAddress address2(address1);
+        CMartkistAddress address2(address1);
 
         if (!strRequiredPayments.empty())
             strRequiredPayments += ", ";
@@ -795,7 +795,7 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight, CConnman& connman)
 
     CTxDestination address1;
     ExtractDestination(payee, address1);
-    CSyscoinAddress address2(address1);
+    CMartkistAddress address2(address1);
 
     LogPrintf("CMasternodePayments::ProcessBlock -- vote: payee=%s, nBlockHeight=%d\n", address2.ToString(), nBlockHeight);
 
@@ -857,7 +857,7 @@ void CMasternodePayments::CheckBlockVotes(int nBlockHeight)
         if (found) {
             CTxDestination address1;
             ExtractDestination(payee, address1);
-            CSyscoinAddress address2(address1);
+            CMartkistAddress address2(address1);
 
             debugStr += strprintf("    - %s - voted for %s\n",
                                   mn.second.outpoint.ToStringShort(), address2.ToString());
@@ -1015,7 +1015,7 @@ void CMasternodePayments::RequestLowDataPaymentBlocks(CNode* pnode, CConnman& co
             for (const auto& payee : mnBlockPayees.second.vecPayees) {
                 CTxDestination address1;
                 ExtractDestination(payee.GetPayee(), address1);
-                CSyscoinAddress address2(address1);
+                CMartkistAddress address2(address1);
                 printf("payee %s votes %d\n", address2.ToString().c_str(), payee.GetVoteCount());
             }
             printf("block %d votes total %d\n", nBlockHeight, nTotalVotes);

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Martkist
+Comment=Martkist P2P Cryptocurrency
+Comment[fr]=Martkist, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Martkist, eşten eşe kriptografik sanal para birimi
+Exec=martkist-qt %u
+Terminal=false
+Type=Application
+Icon=martkist128
+MimeType=x-scheme-handler/martkist;
+Categories=Office;Finance;

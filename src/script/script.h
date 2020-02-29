@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_SCRIPT_SCRIPT_H
-#define SYSCOIN_SCRIPT_SCRIPT_H
+#ifndef MARTKIST_SCRIPT_SCRIPT_H
+#define MARTKIST_SCRIPT_SCRIPT_H
 
 #include "crypto/common.h"
 #include "prevector.h"
@@ -46,7 +46,7 @@ enum opcodetype
 {
 	// push value
 	OP_0 = 0x00,
-	// SYSCOIN aliases
+	// MARTKIST aliases
 	OP_ALIAS_ACTIVATE = 0x01,
 	OP_ALIAS_UPDATE = 0x02,
 
@@ -79,13 +79,13 @@ enum opcodetype
 	OP_ASSET_ALLOCATION_SEND = 0x01,
 	OP_ASSET_COLLECT_INTEREST = 0x02,
 
-	// syscoin extended reserved 
-	OP_SYSCOIN_ALIAS = 0x01,
-	OP_SYSCOIN_CERT = 0x02,
-	OP_SYSCOIN_ESCROW = 0x03,
-	OP_SYSCOIN_OFFER = 0x04,
-	OP_SYSCOIN_ASSET = 0x05,
-	OP_SYSCOIN_ASSET_ALLOCATION = 0x06,
+	// martkist extended reserved 
+	OP_MARTKIST_ALIAS = 0x01,
+	OP_MARTKIST_CERT = 0x02,
+	OP_MARTKIST_ESCROW = 0x03,
+	OP_MARTKIST_OFFER = 0x04,
+	OP_MARTKIST_ASSET = 0x05,
+	OP_MARTKIST_ASSET_ALLOCATION = 0x06,
     OP_FALSE = OP_0,
     OP_PUSHDATA1 = 0x4c,
     OP_PUSHDATA2 = 0x4d,
@@ -646,7 +646,7 @@ public:
     }
 
     /**
-     * Pre-version-0.6, Syscoin always counted CHECKMULTISIGs
+     * Pre-version-0.6, Martkist always counted CHECKMULTISIGs
      * as 20 sigops. With pay-to-script-hash, that changed:
      * CHECKMULTISIGs serialized in scriptSigs are
      * counted more accurately, assuming they are of the form
@@ -697,4 +697,4 @@ public:
     virtual ~CReserveScript() {}
 };
 
-#endif // SYSCOIN_SCRIPT_SCRIPT_H
+#endif // MARTKIST_SCRIPT_SCRIPT_H

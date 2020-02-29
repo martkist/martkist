@@ -1,5 +1,5 @@
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2017-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2017-2018 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,7 +20,7 @@ std::map<uint256, CSporkMessage> mapSporks;
 std::map<int, int64_t> mapSporkDefaults = {
     {SPORK_2_INSTANTSEND_ENABLED,            0},             // ON
     {SPORK_3_INSTANTSEND_BLOCK_FILTERING,    0},             // ON
-    {SPORK_5_INSTANTSEND_MAX_VALUE,          100000},          // 100000 Syscoin
+    {SPORK_5_INSTANTSEND_MAX_VALUE,          100000},          // 18000 Martkist
     {SPORK_6_NEW_SIGS,                       0}, // ON
     {SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT, 0}, // ON
     {SPORK_9_SUPERBLOCKS_ENABLED,            0}, // ON
@@ -31,7 +31,7 @@ std::map<int, int64_t> mapSporkDefaults = {
 
 void CSporkManager::ProcessSpork(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv, CConnman& connman)
 {
-    if(fLiteMode) return; // disable all Syscoin specific functionality
+    if(fLiteMode) return; // disable all Martkist specific functionality
 
     if (strCommand == NetMsgType::SPORK) {
 
@@ -191,7 +191,7 @@ std::string CSporkManager::GetSporkNameByID(int nSporkID)
 }
 
 bool CSporkManager::SetSporkAddress(const std::string& strAddress) {
-    CSyscoinAddress address(strAddress);
+    CMartkistAddress address(strAddress);
     if (!address.IsValid() || !address.GetKeyID(sporkPubKeyID)) {
         LogPrintf("CSporkManager::SetSporkAddress -- Failed to parse spork address\n");
         return false;

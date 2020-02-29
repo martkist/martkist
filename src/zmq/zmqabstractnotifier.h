@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_ZMQ_ZMQABSTRACTNOTIFIER_H
-#define SYSCOIN_ZMQ_ZMQABSTRACTNOTIFIER_H
+#ifndef MARTKIST_ZMQ_ZMQABSTRACTNOTIFIER_H
+#define MARTKIST_ZMQ_ZMQABSTRACTNOTIFIER_H
 
 #include "zmqconfig.h"
 
@@ -35,7 +35,7 @@ public:
     virtual bool NotifyBlock(const CBlockIndex *pindex);
     virtual bool NotifyTransaction(const CTransaction &transaction);
     virtual bool NotifyTransactionLock(const CTransaction &transaction);
-	virtual bool NotifySyscoinUpdate(const char *, const char *);
+	virtual bool NotifyMartkistUpdate(const char *, const char *);
 
 protected:
     void *psocket;
@@ -43,4 +43,4 @@ protected:
     std::string address;
 };
 
-#endif // SYSCOIN_ZMQ_ZMQABSTRACTNOTIFIER_H
+#endif // MARTKIST_ZMQ_ZMQABSTRACTNOTIFIER_H

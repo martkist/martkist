@@ -2,7 +2,7 @@
 #
 # bignum.py
 #
-# This file is copied from python-syscoinlib.
+# This file is copied from python-martkistlib.
 #
 # Distributed under the MIT/X11 software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -83,7 +83,7 @@ def mpi2bn(s):
         return -v
     return v
 
-# syscoin-specific little endian format, with implicit size
+# martkist-specific little endian format, with implicit size
 def mpi2vch(s):
     r = s[4:]           # strip size
     r = r[::-1]         # reverse string, converting BE->LE

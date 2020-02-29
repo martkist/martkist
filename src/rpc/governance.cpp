@@ -1,9 +1,9 @@
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2017-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2017-2018 The Martkist Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-//#define ENABLE_SYS_DEBUG
+//#define ENABLE_MARTK_DEBUG
 
 #include "activemasternode.h"
 #include "consensus/validation.h"
@@ -58,7 +58,7 @@ UniValue gobject(const JSONRPCRequest& request)
                 "  list               - List governance objects (can be filtered by signal and/or object type)\n"
                 "  diff               - List differences since last diff\n"
                 "  vote-name         - Vote on a governance object by masternode name (using masternode.conf setup)\n"
-                "  vote-conf          - Vote on a governance object by masternode configured in syscoin.conf\n"
+                "  vote-conf          - Vote on a governance object by masternode configured in martkist.conf\n"
                 "  vote-many          - Vote on a governance object by all masternodes (using masternode.conf setup)\n"
                 );
 
@@ -363,7 +363,7 @@ UniValue gobject(const JSONRPCRequest& request)
             nFailed++;
             statusObj.push_back(Pair("result", "failed"));
             statusObj.push_back(Pair("errorMessage", "Can't find masternode by collateral output"));
-            resultsObj.push_back(Pair("syscoin.conf", statusObj));
+            resultsObj.push_back(Pair("martkist.conf", statusObj));
             returnObj.push_back(Pair("overall", strprintf("Voted successfully %d time(s) and failed %d time(s).", nSuccessful, nFailed)));
             returnObj.push_back(Pair("detail", resultsObj));
             return returnObj;
@@ -374,7 +374,7 @@ UniValue gobject(const JSONRPCRequest& request)
             nFailed++;
             statusObj.push_back(Pair("result", "failed"));
             statusObj.push_back(Pair("errorMessage", "Failure to sign."));
-            resultsObj.push_back(Pair("syscoin.conf", statusObj));
+            resultsObj.push_back(Pair("martkist.conf", statusObj));
             returnObj.push_back(Pair("overall", strprintf("Voted successfully %d time(s) and failed %d time(s).", nSuccessful, nFailed)));
             returnObj.push_back(Pair("detail", resultsObj));
             return returnObj;
@@ -391,7 +391,7 @@ UniValue gobject(const JSONRPCRequest& request)
             statusObj.push_back(Pair("errorMessage", exception.GetMessage()));
         }
 
-        resultsObj.push_back(Pair("syscoin.conf", statusObj));
+        resultsObj.push_back(Pair("martkist.conf", statusObj));
 
         returnObj.push_back(Pair("overall", strprintf("Voted successfully %d time(s) and failed %d time(s).", nSuccessful, nFailed)));
         returnObj.push_back(Pair("detail", resultsObj));
@@ -999,11 +999,11 @@ UniValue getsuperblockbudget(const JSONRPCRequest& request)
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         okSafe argNames
   //  --------------------- ------------------------  -----------------------  ------ ----------
-    /* Syscoin features */
-    { "syscoin",               "getgovernanceinfo",      &getgovernanceinfo,      true,  {} },
-    { "syscoin",               "getsuperblockbudget",    &getsuperblockbudget,    true,  {"index"} },
-    { "syscoin",               "gobject",                &gobject,                true,  {} },
-    { "syscoin",               "voteraw",                &voteraw,                true,  {} },
+    /* Martkist features */
+    { "martkist",               "getgovernanceinfo",      &getgovernanceinfo,      true,  {} },
+    { "martkist",               "getsuperblockbudget",    &getsuperblockbudget,    true,  {"index"} },
+    { "martkist",               "gobject",                &gobject,                true,  {} },
+    { "martkist",               "voteraw",                &voteraw,                true,  {} },
 
 };
 

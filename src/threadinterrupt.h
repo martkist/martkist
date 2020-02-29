@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_THREADINTERRUPT_H
-#define SYSCOIN_THREADINTERRUPT_H
+#ifndef MARTKIST_THREADINTERRUPT_H
+#define MARTKIST_THREADINTERRUPT_H
 
 #include <atomic>
 #include <chrono>
@@ -31,4 +31,4 @@ private:
     std::atomic<bool> flag;
 };
 
-#endif //SYSCOIN_THREADINTERRUPT_H
+#endif //MARTKIST_THREADINTERRUPT_H

@@ -1,17 +1,17 @@
-// Copyright (c) 2014-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Bitcoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_CHAINPARAMSBASE_H
-#define SYSCOIN_CHAINPARAMSBASE_H
+#ifndef MARTKIST_CHAINPARAMSBASE_H
+#define MARTKIST_CHAINPARAMSBASE_H
 
 #include <string>
 #include <vector>
 
 /**
- * CBaseChainParams defines the base parameters (shared between syscoin-cli and syscoind)
- * of a given instance of the Syscoin system.
+ * CBaseChainParams defines the base parameters (shared between martkist-cli and martkistd)
+ * of a given instance of the Martkist system.
  */
 class CBaseChainParams
 {
@@ -63,4 +63,4 @@ std::string GetDevNetName();
  */
 bool AreBaseParamsConfigured();
 
-#endif // SYSCOIN_CHAINPARAMSBASE_H
+#endif // MARTKIST_CHAINPARAMSBASE_H

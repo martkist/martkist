@@ -1,4 +1,4 @@
-// Copyright (c) 2017 The Syscoin Core developers
+// Copyright (c) 2017 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,8 +11,8 @@ GovernanceObjectType GovernanceStringToType(std::string strType) {
     if(strType == "AllTypes") type = AllTypes;
     if(strType == "Error") type = Error;
     if(strType == "ValueOverride") type = ValueOverride;
-    if(strType == "SyscoinNetwork") type = SyscoinNetwork;
-    if(strType == "SyscoinNetworkVariable") type = SyscoinNetworkVariable;
+    if(strType == "MartkistNetwork") type = MartkistNetwork;
+    if(strType == "MartkistNetworkVariable") type = MartkistNetworkVariable;
     if(strType == "Category") type = Category;
     if(strType == "Group") type = Group;
     if(strType == "User") type = User;
@@ -32,8 +32,8 @@ std::string GovernanceTypeToString(GovernanceObjectType type) {
     if(type == AllTypes) s = "AllTypes";
     if(type == Error) s = "Error";
     if(type == ValueOverride) s = "ValueOverride";
-    if(type == SyscoinNetwork) s = "SyscoinNetwork";
-    if(type == SyscoinNetworkVariable) s = "SyscoinNetworkVariable";
+    if(type == MartkistNetwork) s = "MartkistNetwork";
+    if(type == MartkistNetworkVariable) s = "MartkistNetworkVariable";
     if(type == Category) s = "Category";
     if(type == Group) s = "Group";
     if(type == User) s = "User";

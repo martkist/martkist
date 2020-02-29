@@ -11,13 +11,13 @@
   </array>
 
   <key>CFBundleIconFile</key>
-  <string>syscoin.icns</string>
+  <string>martkist.icns</string>
 
   <key>CFBundlePackageType</key>
   <string>APPL</string>
 
   <key>CFBundleGetInfoString</key>
-  <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@, Copyright © 2009-@COPYRIGHT_YEAR@ The Syscoin Core developers, 2014-@COPYRIGHT_YEAR@ The Syscoin Core developers</string>
+  <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@, Copyright © 2009-@COPYRIGHT_YEAR@ The Martkist Core developers, 2014-@COPYRIGHT_YEAR@ The Martkist Core developers</string>
 
   <key>CFBundleShortVersionString</key>
   <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@</string>
@@ -29,16 +29,16 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>Syscoin-Qt</string>
+  <string>Martkist-Qt</string>
   
   <key>CFBundleName</key>
-  <string>Syscoin-Qt</string>
+  <string>Martkist-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>org.syscoin.Syscoin-Qt</string>
+  <string>org.martkist.Martkist-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -46,10 +46,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>org.syscoin.SyscoinPayment</string>
+      <string>org.martkist.MartkistPayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>syscoin</string>
+        <string>martkist</string>
       </array>
     </dict>
   </array>
@@ -58,9 +58,9 @@
   <array>
     <dict>
       <key>UTTypeIdentifier</key>
-      <string>org.syscoin.paymentrequest</string>
+      <string>org.martkist.paymentrequest</string>
       <key>UTTypeDescription</key>
-      <string>Syscoin payment request</string>
+      <string>Martkist payment request</string>
       <key>UTTypeConformsTo</key>
       <array>
         <string>public.data</string>
@@ -68,10 +68,10 @@
       <key>UTTypeTagSpecification</key>
       <dict>
         <key>public.mime-type</key>
-        <string>application/x-syscoin-payment-request</string>
+        <string>application/x-martkist-payment-request</string>
         <key>public.filename-extension</key>
         <array>
-          <string>syscoinmentrequest</string>
+          <string>martkistmentrequest</string>
         </array>
       </dict>
     </dict>
@@ -84,7 +84,7 @@
       <string>Editor</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>org.syscoin.paymentrequest</string>
+        <string>org.martkist.paymentrequest</string>
       </array>
       <key>LSHandlerRank</key>
       <string>Owner</string>

@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_TEST_RPC_NESTED_TESTS_H
-#define SYSCOIN_QT_TEST_RPC_NESTED_TESTS_H
+#ifndef MARTKIST_QT_TEST_RPC_NESTED_TESTS_H
+#define MARTKIST_QT_TEST_RPC_NESTED_TESTS_H
 
 #include <QObject>
 #include <QTest>
@@ -22,4 +22,4 @@ private:
     CCoinsViewDB *pcoinsdbview;
 };
 
-#endif // SYSCOIN_QT_TEST_RPC_NESTED_TESTS_H
+#endif // MARTKIST_QT_TEST_RPC_NESTED_TESTS_H

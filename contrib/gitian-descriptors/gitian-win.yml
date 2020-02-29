@@ -1,5 +1,5 @@
 ---
-name: "syscoin-win-3.2"
+name: "martkist-win-3.2"
 enable_cache: true
 suites:
 - "trusty"
@@ -23,8 +23,8 @@ packages:
 - "zip"
 reference_datetime: "2018-01-01 00:00:00"
 remotes:
-- "url": "https://github.com/syscoin/syscoin.git"
-  "dir": "syscoin"
+- "url": "https://github.com/martkist/martkist.git"
+  "dir": "martkist"
 files: []
 script: |
   WRAP_DIR=$HOME/wrapped
@@ -71,7 +71,7 @@ script: |
 
   # Create per-host linker wrapper
   # This is only needed for trusty, as the mingw linker leaks a few bytes of
-  # heap, causing non-determinism. See discussion in https://github.com/syscoin/syscoin/pull/6900
+  # heap, causing non-determinism. See discussion in https://github.com/martkist/martkist/pull/6900
   for i in $HOSTS; do
     mkdir -p ${WRAP_DIR}/${i}
     for prog in collect2; do
@@ -94,7 +94,7 @@ script: |
 
   export PATH=${WRAP_DIR}:${PATH}
 
-  cd syscoin
+  cd martkist
   BASEPREFIX=`pwd`/depends
   # Build dependencies for each host
   for i in $HOSTS; do
@@ -105,14 +105,14 @@ script: |
   ./autogen.sh
   CONFIG_SITE=${BASEPREFIX}/`echo "${HOSTS}" | awk '{print $1;}'`/share/config.site ./configure --prefix=/
   make dist
-  SOURCEDIST=`echo syscoincore-*.tar.gz`
+  SOURCEDIST=`echo martkistcore-*.tar.gz`
   DISTNAME=`echo ${SOURCEDIST} | sed 's/.tar.*//'`
 
   # Correct tar file order
   mkdir -p temp
   pushd temp
   tar xf ../$SOURCEDIST
-  find syscoincore-* | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ../$SOURCEDIST
+  find martkistcore-* | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ../$SOURCEDIST
   mkdir -p $OUTDIR/src
   cp ../$SOURCEDIST $OUTDIR/src
   popd
@@ -132,7 +132,7 @@ script: |
     make ${MAKEOPTS} -C src check-security
     make deploy
     make install DESTDIR=${INSTALLPATH}
-    cp -f syscoincore-*setup*.exe $OUTDIR/
+    cp -f martkistcore-*setup*.exe $OUTDIR/
     cd installed
     find . -name "lib*.la" -delete
     find . -name "lib*.a" -delete

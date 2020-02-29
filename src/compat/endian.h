@@ -1,13 +1,13 @@
-// Copyright (c) 2014-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Bitcoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_COMPAT_ENDIAN_H
-#define SYSCOIN_COMPAT_ENDIAN_H
+#ifndef MARTKIST_COMPAT_ENDIAN_H
+#define MARTKIST_COMPAT_ENDIAN_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/syscoin-config.h"
+#include "config/martkist-config.h"
 #endif
 
 #include <stdint.h>
@@ -194,4 +194,4 @@ inline uint64_t le64toh(uint64_t little_endian_64bits)
 
 #endif // WORDS_BIGENDIAN
 
-#endif // SYSCOIN_COMPAT_ENDIAN_H
+#endif // MARTKIST_COMPAT_ENDIAN_H

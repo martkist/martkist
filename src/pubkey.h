@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_PUBKEY_H
-#define SYSCOIN_PUBKEY_H
+#ifndef MARTKIST_PUBKEY_H
+#define MARTKIST_PUBKEY_H
 
 #include "hash.h"
 #include "serialize.h"
@@ -248,4 +248,4 @@ public:
     ~ECCVerifyHandle();
 };
 
-#endif // SYSCOIN_PUBKEY_H
+#endif // MARTKIST_PUBKEY_H

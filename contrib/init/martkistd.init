@@ -1,0 +1,67 @@
+#!/bin/bash
+#
+#  martkistd The Martkist Core server.
+#
+#
+# chkconfig: 345 80 20
+# description: martkistd
+# processname: martkistd
+#
+
+# Source function library.
+. /etc/init.d/functions
+
+# you can override defaults in /etc/sysconfig/martkistd, see below
+if [ -f /etc/sysconfig/martkistd ]; then
+        . /etc/sysconfig/martkistd
+fi
+
+RETVAL=0
+
+prog=martkistd
+# you can override the lockfile via MARTKISTD_LOCKFILE in /etc/sysconfig/martkistd
+lockfile=${MARTKISTD_LOCKFILE-/var/lock/subsys/martkistd}
+
+# martkistd defaults to /usr/bin/martkistd, override with MARTKISTD_BIN
+martkistd=${MARTKISTD_BIN-/usr/bin/martkistd}
+
+# martkistd opts default to -disablewallet, override with MARTKISTD_OPTS
+martkistd_opts=${MARTKISTD_OPTS--disablewallet}
+
+start() {
+    echo -n $"Starting $prog: "
+    daemon $DAEMONOPTS $martkistd $martkistd_opts
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && touch $lockfile
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc $prog
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && rm -f $lockfile
+    return $RETVAL
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status $prog
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: service $prog {start|stop|status|restart}"
+        exit 1
+        ;;
+esac

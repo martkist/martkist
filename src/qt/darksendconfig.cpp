@@ -1,7 +1,7 @@
 #include "darksendconfig.h"
 #include "ui_darksendconfig.h"
 
-#include "syscoinunits.h"
+#include "martkistunits.h"
 #include "guiconstants.h"
 #include "optionsmodel.h"
 #include "privatesend-client.h"
@@ -38,11 +38,11 @@ void DarksendConfig::clickBasic()
 {
     configure(true, 1000, 2);
 
-    QString strAmount(SyscoinUnits::formatWithUnit(
+    QString strAmount(MartkistUnits::formatWithUnit(
         model->getOptionsModel()->getDisplayUnit(), 100000 * COIN));
     QMessageBox::information(this, tr("PrivateSend Configuration"),
         tr(
-            "PrivateSend was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening Syscoin's configuration screen."
+            "PrivateSend was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening Martkist's configuration screen."
         ).arg(strAmount)
     );
 
@@ -53,11 +53,11 @@ void DarksendConfig::clickHigh()
 {
     configure(true, 1000, 8);
 
-    QString strAmount(SyscoinUnits::formatWithUnit(
+    QString strAmount(MartkistUnits::formatWithUnit(
         model->getOptionsModel()->getDisplayUnit(), 100000 * COIN));
     QMessageBox::information(this, tr("PrivateSend Configuration"),
         tr(
-            "PrivateSend was successfully set to high (%1 and 8 rounds). You can change this at any time by opening Syscoin's configuration screen."
+            "PrivateSend was successfully set to high (%1 and 8 rounds). You can change this at any time by opening Martkist's configuration screen."
         ).arg(strAmount)
     );
 
@@ -68,11 +68,11 @@ void DarksendConfig::clickMax()
 {
     configure(true, 1000, 16);
 
-    QString strAmount(SyscoinUnits::formatWithUnit(
+    QString strAmount(MartkistUnits::formatWithUnit(
         model->getOptionsModel()->getDisplayUnit(), 100000 * COIN));
     QMessageBox::information(this, tr("PrivateSend Configuration"),
         tr(
-            "PrivateSend was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening Syscoin's configuration screen."
+            "PrivateSend was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening Martkist's configuration screen."
         ).arg(strAmount)
     );
 

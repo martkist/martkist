@@ -1,0 +1,6 @@
+usr/local/bin/martkist-qt usr/bin
+share/pixmaps/martkist32.xpm usr/share/pixmaps
+share/pixmaps/martkist16.xpm usr/share/pixmaps
+share/pixmaps/martkist128.png usr/share/pixmaps
+debian/martkist-qt.desktop usr/share/applications
+debian/martkist-qt.protocol usr/share/kde4/services/

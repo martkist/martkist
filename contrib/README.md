@@ -21,7 +21,7 @@ Construct a linear, no-fork, best version of the blockchain.
 
 ### [Qos](/contrib/qos) ###
 
-A Linux bash script that will set up traffic control (tc) to limit the outgoing bandwidth for connections to the Syscoin network. This means one can have an always-on syscoind instance running, and another local syscoind/syscoin-qt instance which connects to this node and receives blocks from it.
+A Linux bash script that will set up traffic control (tc) to limit the outgoing bandwidth for connections to the Martkist network. This means one can have an always-on martkistd instance running, and another local martkistd/martkist-qt instance which connects to this node and receives blocks from it.
 
 ### [Seeds](/contrib/seeds) ###
 Utility to generate the pnSeed[] array that is compiled into the client.
@@ -30,8 +30,8 @@ Build Tools and Keys
 ---------------------
 
 ### [Debian](/contrib/debian) ###
-Contains files used to package syscoind/syscoin-qt
-for Debian-based Linux systems. If you compile syscoind/syscoin-qt yourself, there are some useful files here.
+Contains files used to package martkistd/martkist-qt
+for Debian-based Linux systems. If you compile martkistd/martkist-qt yourself, there are some useful files here.
 
 ### [Gitian-descriptors](/contrib/gitian-descriptors) ###
 Gavin's notes on getting gitian builds up and running using KVM.
@@ -46,7 +46,7 @@ Test and Verify Tools
 ---------------------
 
 ### [TestGen](/contrib/testgen) ###
-Utilities to generate test vectors for the data-driven Syscoin tests.
+Utilities to generate test vectors for the data-driven Martkist tests.
 
 ### [Test Patches](/contrib/test-patches) ###
 These patches are applied when the automated pull-tester
@@ -59,5 +59,5 @@ Command Line Tools
 ---------------------
 
 ### [Bash Completion](/contrib/bash-completion.md) ###
-Bash completion scripts for `syscoind` and `syscoin-cli`.
+Bash completion scripts for `martkistd` and `martkist-cli`.
 

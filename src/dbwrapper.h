@@ -1,10 +1,10 @@
 // Copyright (c) 2012-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_DBWRAPPER_H
-#define SYSCOIN_DBWRAPPER_H
+#ifndef MARTKIST_DBWRAPPER_H
+#define MARTKIST_DBWRAPPER_H
 
 #include "clientversion.h"
 #include "serialize.h"
@@ -221,7 +221,7 @@ public:
      * @param[in] obfuscate   If true, store data obfuscated via simple XOR. If false, XOR
      *                        with a zero'd byte array.
      */
-    CDBWrapper(const boost::filesystem::path& path, size_t nCacheSize, bool fMemory = false, bool fWipe = false, bool obfuscate = false, bool bSyscoin = false);
+    CDBWrapper(const boost::filesystem::path& path, size_t nCacheSize, bool fMemory = false, bool fWipe = false, bool obfuscate = false, bool bMartkist = false);
     ~CDBWrapper();
 
     template <typename K, typename V>
@@ -343,4 +343,4 @@ public:
 
 };
 
-#endif // SYSCOIN_DBWRAPPER_H
+#endif // MARTKIST_DBWRAPPER_H

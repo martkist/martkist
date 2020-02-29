@@ -12,7 +12,7 @@
 
 #include "support/events.h"
 
-#include "test/test_syscoin.h"
+#include "test/test_martkist.h"
 
 #include <vector>
 

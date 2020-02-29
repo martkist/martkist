@@ -1,17 +1,17 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_PRIMITIVES_BLOCK_H
-#define SYSCOIN_PRIMITIVES_BLOCK_H
+#ifndef MARTKIST_PRIMITIVES_BLOCK_H
+#define MARTKIST_PRIMITIVES_BLOCK_H
 
 #include "primitives/transaction.h"
 #include "primitives/pureheader.h"
 #include "serialize.h"
 #include "uint256.h"
-// SYSCOIN for auxpow
+// MARTKIST for auxpow
 #include "auxpow.h"
 #include <boost/shared_ptr.hpp>
 /** Nodes collect new transactions into a block, hash them into a hash tree,
@@ -21,7 +21,7 @@
  * in the block is a special one that creates a new coin owned by the creator
  * of the block.
  */
- // SYSCOIN depends on pureblockheader for auxpow
+ // MARTKIST depends on pureblockheader for auxpow
 class CBlockHeader : public CPureBlockHeader
 {
 public:
@@ -108,7 +108,7 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
-		// SYSCOIN include auxpow in blockheader
+		// MARTKIST include auxpow in blockheader
 		block.auxpow = auxpow;
         return block;
     }
@@ -153,4 +153,4 @@ struct CBlockLocator
     }
 };
 
-#endif // SYSCOIN_PRIMITIVES_BLOCK_H
+#endif // MARTKIST_PRIMITIVES_BLOCK_H

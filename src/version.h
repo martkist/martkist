@@ -1,11 +1,11 @@
 // Copyright (c) 2012-2014 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_VERSION_H
-#define SYSCOIN_VERSION_H
+#ifndef MARTKIST_VERSION_H
+#define MARTKIST_VERSION_H
 
 /**
  * network protocol versioning
@@ -45,4 +45,4 @@ static const int DIP0001_PROTOCOL_VERSION = 70221;
 //! short-id-based block download starts with this version
 static const int SHORT_IDS_BLOCKS_VERSION = 70221;
 
-#endif // SYSCOIN_VERSION_H
+#endif // MARTKIST_VERSION_H

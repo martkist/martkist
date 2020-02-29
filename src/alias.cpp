@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 The Syscoin Core developers
+// Copyright (c) 2015-2018 The Martkist Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file license.txt or http://www.opensource.org/licenses/mit-license.php.
 //
@@ -59,7 +59,7 @@ uint64_t GetAliasExpiration(const CAliasIndex& alias) {
 		nTime = aliasUnprunable.nExpireTime;
 	return nTime;
 }
-bool FindSyscoinScriptOp(const CScript& script, int& op) {
+bool FindMartkistScriptOp(const CScript& script, int& op) {
 	CScript::const_iterator pc = script.begin();
 	opcodetype opcode;
 	if (!script.GetOp(pc, opcode))
@@ -67,13 +67,13 @@ bool FindSyscoinScriptOp(const CScript& script, int& op) {
 	if (opcode < OP_1 || opcode > OP_16)
 		return false;
 	op = CScript::DecodeOP_N(opcode);
-	return op == OP_SYSCOIN_ALIAS || op == OP_SYSCOIN_ASSET || op == OP_SYSCOIN_ASSET_ALLOCATION || op == OP_SYSCOIN_CERT || op == OP_SYSCOIN_ESCROW || op == OP_SYSCOIN_OFFER;
+	return op == OP_MARTKIST_ALIAS || op == OP_MARTKIST_ASSET || op == OP_MARTKIST_ASSET_ALLOCATION || op == OP_MARTKIST_CERT || op == OP_MARTKIST_ESCROW || op == OP_MARTKIST_OFFER;
 }
 bool GetTimeToPrune(const CScript& scriptPubKey, uint64_t &nTime)
 {
 	vector<unsigned char> vchData;
 	vector<unsigned char> vchHash;
-	if(!GetSyscoinData(scriptPubKey, vchData, vchHash))
+	if(!GetMartkistData(scriptPubKey, vchData, vchHash))
 		return false;
 	if(!chainActive.Tip())
 		return false;
@@ -149,7 +149,7 @@ bool IsSysServiceExpired(const uint64_t &nTime)
 	return (chainActive.Tip()->GetMedianTimePast() >= nTime);
 
 }
-bool IsSyscoinScript(const CScript& scriptPubKey, int &op, vector<vector<unsigned char> > &vvchArgs)
+bool IsMartkistScript(const CScript& scriptPubKey, int &op, vector<vector<unsigned char> > &vvchArgs)
 {
 	if (DecodeAliasScript(scriptPubKey, op, vvchArgs))
 		return true;
@@ -165,7 +165,7 @@ bool IsSyscoinScript(const CScript& scriptPubKey, int &op, vector<vector<unsigne
 		return true;
 	return false;
 }
-bool RemoveSyscoinScript(const CScript& scriptPubKeyIn, CScript& scriptPubKeyOut)
+bool RemoveMartkistScript(const CScript& scriptPubKeyIn, CScript& scriptPubKeyOut)
 {
 	if (!RemoveAliasScriptPrefix(scriptPubKeyIn, scriptPubKeyOut))
 		if (!RemoveOfferScriptPrefix(scriptPubKeyIn, scriptPubKeyOut))
@@ -186,7 +186,7 @@ int getFeePerByte(const uint64_t &paymentOptionMask)
 {   
 	if (IsPaymentOptionInMask(paymentOptionMask, PAYMENTOPTION_BTC))
 		return 250;
-	else  if (IsPaymentOptionInMask(paymentOptionMask, PAYMENTOPTION_SYS))
+	else  if (IsPaymentOptionInMask(paymentOptionMask, PAYMENTOPTION_MARTK))
 		return 25;
 	else  if (IsPaymentOptionInMask(paymentOptionMask, PAYMENTOPTION_ZEC))
 		return 25;
@@ -207,14 +207,14 @@ string aliasFromOp(int op) {
 		return "<unknown alias op>";
 	}
 }
-int GetSyscoinDataOutput(const CTransaction& tx) {
+int GetMartkistDataOutput(const CTransaction& tx) {
    for(unsigned int i = 0; i<tx.vout.size();i++) {
-	   if(IsSyscoinDataOutput(tx.vout[i]))
+	   if(IsMartkistDataOutput(tx.vout[i]))
 		   return i;
 	}
    return -1;
 }
-bool IsSyscoinDataOutput(const CTxOut& out) {
+bool IsMartkistDataOutput(const CTxOut& out) {
    txnouttype whichType;
 	if (!IsStandard(out.scriptPubKey, whichType))
 		return false;
@@ -251,15 +251,15 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 	// check to see if there is more than just an alias script output for this tx, if so its not an alias update
 	for (unsigned int i = 0; i < tx.vout.size(); i++) {
 		int pop;
-		if (!FindSyscoinScriptOp(tx.vout[i].scriptPubKey, pop))
+		if (!FindMartkistScriptOp(tx.vout[i].scriptPubKey, pop))
 			continue;
-		if (pop != OP_SYSCOIN_ALIAS) {
+		if (pop != OP_MARTKIST_ALIAS) {
 			aliasData = false;
 		}
 	}
 	// if it has alias data, get it and unserialize the alias from data output
 	if (aliasData) {
-		bool bData = GetSyscoinData(tx, vchData, vchHash, nDataOut);
+		bool bData = GetMartkistData(tx, vchData, vchHash, nDataOut);
 		if (bData)
 			theAlias.UnserializeFromData(vchData, vchHash);
 	}
@@ -268,7 +268,7 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 		
 		if(vvchArgs.size() != 4)
 		{
-			errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5000 - " + _("Alias arguments incorrect size");
+			errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5000 - " + _("Alias arguments incorrect size");
 			return error(errorMessage.c_str());
 		}
 		
@@ -276,7 +276,7 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 		{
 			if(vvchArgs.size() <= 2 || vchHash != vvchArgs[2])
 			{
-				errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5001 - " + _("Hash provided doesn't match the calculated hash of the data");
+				errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5001 - " + _("Hash provided doesn't match the calculated hash of the data");
 				return true;
 			}
 		}					
@@ -285,7 +285,7 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 	// MAX_ALIAS_UPDATES_PER_BLOCK + 1(change address) + 2(data output and alias coloured output) + 1(alias transfer potentially)
 	if (tx.vout.size() > (MAX_ALIAS_UPDATES_PER_BLOCK + 4))
 	{
-		errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5002 - " + _("Too many outputs for this Syscoin transaction");
+		errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5002 - " + _("Too many outputs for this Martkist transaction");
 		return error(errorMessage.c_str());
 	}
 	Coin prevCoins;
@@ -334,7 +334,7 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 			}
 			if(!bWitnessSigFound)
 			{
-				errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5003 - " + _("Witness signature not found");
+				errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5003 - " + _("Witness signature not found");
 				return error(errorMessage.c_str());
 			}
 		}
@@ -345,70 +345,70 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 	{
 		if(!IsValidAliasName(vvchArgs[0]))
 		{
-			errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5004 - " + _("Alias name does not follow the domain name specification");
+			errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5004 - " + _("Alias name does not follow the domain name specification");
 			return error(errorMessage.c_str());
 		}
 		if(theAlias.vchPublicValue.size() > MAX_VALUE_LENGTH)
 		{
-			errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5005 - " + _("Alias public value too big");
+			errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5005 - " + _("Alias public value too big");
 			return error(errorMessage.c_str());
 		}
 		if(theAlias.vchEncryptionPrivateKey.size() > MAX_ENCRYPTED_GUID_LENGTH)
 		{
-			errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5006 - " + _("Encryption private key too long");
+			errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5006 - " + _("Encryption private key too long");
 			return error(errorMessage.c_str());
 		}
 		if(theAlias.vchEncryptionPublicKey.size() > MAX_ENCRYPTED_GUID_LENGTH)
 		{
-			errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5007 - " + _("Encryption public key too long");
+			errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5007 - " + _("Encryption public key too long");
 			return error(errorMessage.c_str());
 		}
 		switch (op) {
 			case OP_ALIAS_ACTIVATE:
 				if (prevOp != OP_ALIAS_ACTIVATE)
 				{
-					errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5008 - " + _("Alias input to this transaction not found");
+					errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5008 - " + _("Alias input to this transaction not found");
 					return error(errorMessage.c_str());
 				}
 				// Check new/activate hash
 				if (vvchPrevArgs.size() <= 0 || vvchPrevArgs[0] != vchHash)
 				{
-					errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5009 - " + _("Alias new and activate hash mismatch");
+					errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5009 - " + _("Alias new and activate hash mismatch");
 					return error(errorMessage.c_str());
 				}
 				if (vvchArgs.size() <= 1 || theAlias.vchGUID != vvchArgs[1])
 				{
-					errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5010 - " + _("Alias input guid mismatch");
+					errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5010 - " + _("Alias input guid mismatch");
 					return error(errorMessage.c_str());
 				}
 				if(theAlias.vchAddress.empty())
 				{
-					errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5011 - " + _("Alias address cannot be empty");
+					errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5011 - " + _("Alias address cannot be empty");
 					return error(errorMessage.c_str());
 				}
 				break;
 			case OP_ALIAS_UPDATE:
 				if (!IsAliasOp(prevOp))
 				{
-					errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5012 - " + _("Alias input to this transaction not found");
+					errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5012 - " + _("Alias input to this transaction not found");
 					return error(errorMessage.c_str());
 				}
 				if (!theAlias.IsNull())
 				{
 					if (theAlias.vchAlias != vvchArgs[0])
 					{
-						errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5013 - " + _("Guid in data output doesn't match guid in transaction");
+						errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5013 - " + _("Guid in data output doesn't match guid in transaction");
 						return error(errorMessage.c_str());
 					}
 					if (vvchArgs.size() <= 1 || theAlias.vchGUID != vvchArgs[1])
 					{
-						errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5014 - " + _("Alias input guid mismatch");
+						errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5014 - " + _("Alias input guid mismatch");
 						return error(errorMessage.c_str());
 					}
 				}
 				break;
 		default:
-				errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5015 - " + _("Alias transaction has unknown op");
+				errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5015 - " + _("Alias transaction has unknown op");
 				return error(errorMessage.c_str());
 		}
 
@@ -423,7 +423,7 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 	{
 		if (op == OP_ALIAS_UPDATE)
 		{
-			errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5016 - " + _("Failed to read from alias DB");
+			errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5016 - " + _("Failed to read from alias DB");
 			return true;
 		}
 	}
@@ -432,15 +432,15 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 			CTxDestination aliasDest;
 			if (vvchPrevArgs.size() <= 0 || vvchPrevArgs[0] != vvchArgs[0] || vvchPrevArgs[1] != vvchArgs[1] || prevCoins.IsSpent() || !ExtractDestination(prevCoins.out.scriptPubKey, aliasDest))
 			{
-				errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5018 - " + _("Cannot extract destination of alias input");
+				errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5018 - " + _("Cannot extract destination of alias input");
 				return error(errorMessage.c_str());
 			}
 			else
 			{
-				CSyscoinAddress prevaddy(aliasDest);
+				CMartkistAddress prevaddy(aliasDest);
 				if (EncodeBase58(dbAlias.vchAddress) != prevaddy.ToString())
 				{
-					errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5019 - " + _("You are not the owner of this alias");
+					errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5019 - " + _("You are not the owner of this alias");
 					return error(errorMessage.c_str());
 
 				}
@@ -470,7 +470,7 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 
 			if ((fee - 10000) > tx.vout[nDataOut].nValue)
 			{
-				errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5017 - " + _("Transaction does not pay enough fee: ") + ValueFromAmount(tx.vout[nDataOut].nValue).write() + "/" + ValueFromAmount(fee - 10000).write() + "/" + boost::lexical_cast<string>(fYears) + " years.";
+				errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5017 - " + _("Transaction does not pay enough fee: ") + ValueFromAmount(tx.vout[nDataOut].nValue).write() + "/" + ValueFromAmount(fee - 10000).write() + "/" + boost::lexical_cast<string>(fYears) + " years.";
 				return true;
 			}
 		}
@@ -478,7 +478,7 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 		string strResponseEnglish = "";
 		string strResponseGUID = "";
 		CTransaction txTmp;
-		GetSyscoinTransactionDescription(txTmp, op, strResponseEnglish, ALIAS, strResponseGUID);
+		GetMartkistTransactionDescription(txTmp, op, strResponseEnglish, ALIAS, strResponseGUID);
 		const string &user1 = stringFromVch(vvchArgs[0]);
 		string user2 = "";
 		string user3 = "";
@@ -488,7 +488,7 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 		{
 			if (dbAlias.vchGUID != vvchArgs[1] || dbAlias.vchAlias != vvchArgs[0])
 			{
-				errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5020 - " + _("Cannot edit this alias, guid mismatch");
+				errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5020 - " + _("Cannot edit this alias, guid mismatch");
 				if (!theAliasNull)
 					theAlias = dbAlias;
 
@@ -531,14 +531,14 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 								CAliasIndex dbReadAlias;
 								// ensure that you block transferring only if the recv address has an active alias associated with it
 								if (GetAlias(vchMyAlias, dbReadAlias)) {
-									errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5021 - " + _("An alias already exists with that address, try another public key");
+									errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5021 - " + _("An alias already exists with that address, try another public key");
 									theAlias = dbAlias;
 								}
 							}
 						}
 						if (dbAlias.nAccessFlags < 2)
 						{
-							errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5022 - " + _("Cannot edit this alias. Insufficient privileges.");
+							errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5022 - " + _("Cannot edit this alias. Insufficient privileges.");
 							theAlias = dbAlias;
 						}
 						// let old address be re-occupied by a new alias
@@ -551,13 +551,13 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 					{
 						if (dbAlias.nAccessFlags < 1)
 						{
-							errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5023 - " + _("Cannot edit this alias. It is view-only.");
+							errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5023 - " + _("Cannot edit this alias. It is view-only.");
 							theAlias = dbAlias;
 						}
 					}
 					if (theAlias.nAccessFlags > dbAlias.nAccessFlags)
 					{
-						errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5024 - " + _("Cannot modify for more lenient access. Only tighter access level can be granted.");
+						errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5024 - " + _("Cannot modify for more lenient access. Only tighter access level can be granted.");
 						theAlias = dbAlias;
 					}
 				}
@@ -568,7 +568,7 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 				{
 					if (whiteList.entries.size() > 20)
 					{
-						errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5025 -" + _("Too many affiliates for this whitelist, maximum 20 entries allowed");
+						errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5025 -" + _("Too many affiliates for this whitelist, maximum 20 entries allowed");
 						theAlias.offerWhitelist.SetNull();
 					}
 					// special case we use to remove all entries
@@ -576,7 +576,7 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 					{
 						if (theAlias.offerWhitelist.entries.empty())
 						{
-							errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5026 - " + _("Whitelist is already empty");
+							errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5026 - " + _("Whitelist is already empty");
 						}
 						else
 							theAlias.offerWhitelist.SetNull();
@@ -588,7 +588,7 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 							COfferLinkWhitelistEntry entry;
 							const COfferLinkWhitelistEntry& newEntry = it.second;
 							if (newEntry.nDiscountPct > 99) {
-								errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5027 -" + _("Whitelist discount must be between 0 and 99");
+								errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5027 -" + _("Whitelist discount must be between 0 and 99");
 								continue;
 							}
 							// the stored whitelist has this entry (and its the same) then we want to remove this entry
@@ -603,7 +603,7 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 									theAlias.offerWhitelist.PutWhitelistEntry(newEntry);
 								else
 								{
-									errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5028 -" + _("Too many affiliates for this whitelist, maximum 20 entries allowed");
+									errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5028 -" + _("Too many affiliates for this whitelist, maximum 20 entries allowed");
 								}
 							}
 						}
@@ -615,12 +615,12 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 		{
 			if (!dbAlias.IsNull())
 			{
-				errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5029 - " + _("Trying to renew an alias that isn't expired");
+				errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5029 - " + _("Trying to renew an alias that isn't expired");
 				return true;
 			}
 			if (paliasdb->ExistsAddress(theAlias.vchAddress) && chainActive.Tip()->GetMedianTimePast() < GetAliasExpiration(theAlias))
 			{
-				errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5030 - " + _("Trying to create an alias with an address of an alias that isn't expired");
+				errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5030 - " + _("Trying to create an alias with an address of an alias that isn't expired");
 				return true;
 			}
 		}
@@ -636,7 +636,7 @@ bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int
 			if (!bSanityCheck) {
 				if (!paliasdb->WriteAlias(aliasUnprunable, theAlias.vchAddress, theAlias, op))
 				{
-					errorMessage = "SYSCOIN_ALIAS_CONSENSUS_ERROR: ERRCODE: 5031 - " + _("Failed to write to alias DB");
+					errorMessage = "MARTKIST_ALIAS_CONSENSUS_ERROR: ERRCODE: 5031 - " + _("Failed to write to alias DB");
 					return error(errorMessage.c_str());
 				}
 
@@ -677,20 +677,20 @@ string stringFromVch(const vector<unsigned char> &vch) {
 	}
 	return res;
 }
-bool GetSyscoinData(const CTransaction &tx, vector<unsigned char> &vchData, vector<unsigned char> &vchHash, int& nOut)
+bool GetMartkistData(const CTransaction &tx, vector<unsigned char> &vchData, vector<unsigned char> &vchHash, int& nOut)
 {
-	nOut = GetSyscoinDataOutput(tx);
+	nOut = GetMartkistDataOutput(tx);
     if(nOut == -1)
 	   return false;
 
 	const CScript &scriptPubKey = tx.vout[nOut].scriptPubKey;
-	return GetSyscoinData(scriptPubKey, vchData, vchHash);
+	return GetMartkistData(scriptPubKey, vchData, vchHash);
 }
 bool IsValidAliasName(const std::vector<unsigned char> &vchAlias)
 {
 	return (vchAlias.size() <= 71 && vchAlias.size() >= 3);
 }
-bool GetSyscoinData(const CScript &scriptPubKey, vector<unsigned char> &vchData, vector<unsigned char> &vchHash)
+bool GetMartkistData(const CScript &scriptPubKey, vector<unsigned char> &vchData, vector<unsigned char> &vchHash)
 {
 	CScript::const_iterator pc = scriptPubKey.begin();
 	opcodetype opcode;
@@ -704,13 +704,13 @@ bool GetSyscoinData(const CScript &scriptPubKey, vector<unsigned char> &vchData,
 		return false;
 	return true;
 }
-void GetAddress(const CAliasIndex& alias, CSyscoinAddress* address,CScript& script,const uint32_t nPaymentOption)
+void GetAddress(const CAliasIndex& alias, CMartkistAddress* address,CScript& script,const uint32_t nPaymentOption)
 {
 	if(!address)
 		return;
 	CChainParams::AddressType myAddressType = PaymentOptionToAddressType(nPaymentOption);
-	CSyscoinAddress addrTmp = CSyscoinAddress(EncodeBase58(alias.vchAddress));
-	address[0] = CSyscoinAddress(addrTmp.Get(), myAddressType);
+	CMartkistAddress addrTmp = CMartkistAddress(EncodeBase58(alias.vchAddress));
+	address[0] = CMartkistAddress(addrTmp.Get(), myAddressType);
 	script = GetScriptForDestination(address[0].Get());
 }
 bool CAliasIndex::UnserializeFromData(const vector<unsigned char> &vchData, const vector<unsigned char> &vchHash) {
@@ -735,7 +735,7 @@ bool CAliasIndex::UnserializeFromTx(const CTransaction &tx) {
 	vector<unsigned char> vchData;
 	vector<unsigned char> vchHash;
 	int nOut;
-	if(!GetSyscoinData(tx, vchData, vchHash, nOut))
+	if(!GetMartkistData(tx, vchData, vchHash, nOut))
 	{
 		SetNull();
 		return false;
@@ -790,7 +790,7 @@ bool CAliasDB::CleanupDatabase(int &servicesCleaned)
     }
 	return true;
 }
-bool FlushSyscoinDBs() {
+bool FlushMartkistDBs() {
 	{
 		if (paliasdb != NULL)
 		{
@@ -859,7 +859,7 @@ bool FlushSyscoinDBs() {
 	}
 	return true;
 }
-void CleanupSyscoinServiceDatabases(int &numServicesCleaned)
+void CleanupMartkistServiceDatabases(int &numServicesCleaned)
 {
 	if(pofferdb != NULL)
 		pofferdb->CleanupDatabase(numServicesCleaned);
@@ -869,7 +869,7 @@ void CleanupSyscoinServiceDatabases(int &numServicesCleaned)
 		pcertdb->CleanupDatabase(numServicesCleaned);
 	if (paliasdb != NULL) 
 		paliasdb->CleanupDatabase(numServicesCleaned);
-	FlushSyscoinDBs();
+	FlushMartkistDBs();
 }
 bool GetAlias(const vector<unsigned char> &vchAlias,
 	CAliasIndex& txPos) {
@@ -922,14 +922,14 @@ bool GetAliasFromAddress(const std::string& strAddress, std::string& strAlias, s
 }
 
 bool GetAliasOfTx(const CTransaction& tx, vector<unsigned char>& name) {
-	if (tx.nVersion != SYSCOIN_TX_VERSION)
+	if (tx.nVersion != MARTKIST_TX_VERSION)
 		return false;
 	vector<vector<unsigned char> > vvchArgs;
 	int op;
 
 	bool good = DecodeAliasTx(tx, op, vvchArgs);
 	if (!good)
-		return error("GetAliasOfTx() : could not decode a syscoin tx");
+		return error("GetAliasOfTx() : could not decode a martkist tx");
 
 	switch (op) {
 	case OP_ALIAS_ACTIVATE:
@@ -939,7 +939,7 @@ bool GetAliasOfTx(const CTransaction& tx, vector<unsigned char>& name) {
 	}
 	return false;
 }
-bool DecodeAndParseSyscoinTx(const CTransaction& tx, int& op,
+bool DecodeAndParseMartkistTx(const CTransaction& tx, int& op,
 		vector<vector<unsigned char> >& vvch, char& type)
 {
 	return  
@@ -1009,7 +1009,7 @@ bool FindAssetOwnerInTx(const CCoinsViewCache &inputs, const CTransaction& tx, c
 		}
 		if (!ExtractDestination(prevCoins.out.scriptPubKey, dest))
 			continue;
-		if (CSyscoinAddress(dest).ToString() == ownerAddressToMatch) {
+		if (CMartkistAddress(dest).ToString() == ownerAddressToMatch) {
 			return true;
 		}
 	}
@@ -1024,7 +1024,7 @@ bool DecodeAliasScript(const CScript& script, int& op,
 	if (opcode < OP_1 || opcode > OP_16)
 		return false;
 	op = CScript::DecodeOP_N(opcode);
-	if (op != OP_SYSCOIN_ALIAS)
+	if (op != OP_MARTKIST_ALIAS)
 		return false;
 	if (!script.GetOp(pc, opcode))
 		return false;
@@ -1130,12 +1130,12 @@ void CAliasDB::WriteAliasIndex(const CAliasIndex& alias, const int &op) {
 	if (IsArgSet("-zmqpubaliasrecord")) {
 		UniValue oName(UniValue::VOBJ);
 		oName.push_back(Pair("_id", stringFromVch(alias.vchAlias)));
-		CSyscoinAddress address(EncodeBase58(alias.vchAddress));
+		CMartkistAddress address(EncodeBase58(alias.vchAddress));
 		oName.push_back(Pair("address", address.ToString()));
 		oName.push_back(Pair("expires_on", alias.nExpireTime));
 		oName.push_back(Pair("encryption_privatekey", HexStr(alias.vchEncryptionPrivateKey)));
 		oName.push_back(Pair("encryption_publickey", HexStr(alias.vchEncryptionPublicKey)));
-		GetMainSignals().NotifySyscoinUpdate(oName.write().c_str(), "aliasrecord");
+		GetMainSignals().NotifyMartkistUpdate(oName.write().c_str(), "aliasrecord");
 	}
 	WriteAliasIndexHistory(alias, op);
 }
@@ -1144,7 +1144,7 @@ void CAliasDB::WriteAliasIndexHistory(const CAliasIndex& alias, const int &op) {
 		UniValue oName(UniValue::VOBJ);
 		BuildAliasIndexerHistoryJson(alias, oName);
 		oName.push_back(Pair("op", aliasFromOp(op)));
-		GetMainSignals().NotifySyscoinUpdate(oName.write().c_str(), "aliashistory");
+		GetMainSignals().NotifyMartkistUpdate(oName.write().c_str(), "aliashistory");
 	}
 }
 bool BuildAliasIndexerTxHistoryJson(const string &user1, const string &user2, const string &user3, const uint256 &txHash, const unsigned int& nHeight, const string &type, const string &guid, UniValue& oName)
@@ -1169,10 +1169,10 @@ void CAliasDB::WriteAliasIndexTxHistory(const string &user1, const string &user2
 	if (IsArgSet("-zmqpubaliastxhistory")) {
 		UniValue oName(UniValue::VOBJ);
 		BuildAliasIndexerTxHistoryJson(user1, user2, user3, txHash, nHeight, type, guid, oName);
-		GetMainSignals().NotifySyscoinUpdate(oName.write().c_str(), "aliastxhistory");
+		GetMainSignals().NotifyMartkistUpdate(oName.write().c_str(), "aliastxhistory");
 	}
 }
-UniValue SyscoinListReceived(bool includeempty=true)
+UniValue MartkistListReceived(bool includeempty=true)
 {
 	if (!pwalletMain)
 		return NullUniValue;
@@ -1180,9 +1180,9 @@ UniValue SyscoinListReceived(bool includeempty=true)
 	UniValue ret(UniValue::VARR);
 	std::set<CKeyID> setKeyPool;
 	pwalletMain->GetAllReserveKeys(setKeyPool);
-	BOOST_FOREACH(const PAIRTYPE(CSyscoinAddress, CAddressBookData)& item, pwalletMain->mapAddressBook)
+	BOOST_FOREACH(const PAIRTYPE(CMartkistAddress, CAddressBookData)& item, pwalletMain->mapAddressBook)
 	{
-		const CSyscoinAddress& address = item.first;
+		const CMartkistAddress& address = item.first;
 		const string& strAccount = item.second.name;
 
 		isminefilter filter = ISMINE_SPENDABLE;
@@ -1231,7 +1231,7 @@ UniValue SyscoinListReceived(bool includeempty=true)
 		if (!ExtractDestination(out.tx->tx->vout[out.i].scriptPubKey, address))
 			continue;
 
-		CSyscoinAddress sysAddress(address);
+		CMartkistAddress sysAddress(address);
 		const string& strAddress = sysAddress.ToString();
 
 		if (mapAddress.find(strAddress) != mapAddress.end())
@@ -1272,16 +1272,16 @@ UniValue SyscoinListReceived(bool includeempty=true)
 	}
 	return ret;
 }
-UniValue syscointxfund_helper(const vector<unsigned char> &vchAlias, const vector<unsigned char> &vchWitness, const CRecipient &aliasRecipient, vector<CRecipient> &vecSend) {
+UniValue martkisttxfund_helper(const vector<unsigned char> &vchAlias, const vector<unsigned char> &vchWitness, const CRecipient &aliasRecipient, vector<CRecipient> &vecSend) {
 	CMutableTransaction txNew;
-	txNew.nVersion = SYSCOIN_TX_VERSION;
+	txNew.nVersion = MARTKIST_TX_VERSION;
 	COutPoint aliasOutPointWitness;
 	if (!vchWitness.empty())
 	{
 		aliasunspent(vchWitness, aliasOutPointWitness);
 		if (aliasOutPointWitness.IsNull())
 		{
-			throw runtime_error("SYSCOIN_RPC_ERROR ERRCODE: 9000 - " + _("This transaction requires a witness but not enough outputs found for witness alias: ") + stringFromVch(vchWitness));
+			throw runtime_error("MARTKIST_RPC_ERROR ERRCODE: 9000 - " + _("This transaction requires a witness but not enough outputs found for witness alias: ") + stringFromVch(vchWitness));
 		}
 		Coin pcoinW;
 		if (GetUTXOCoin(aliasOutPointWitness, pcoinW))
@@ -1302,13 +1302,13 @@ UniValue syscointxfund_helper(const vector<unsigned char> &vchAlias, const vecto
 	}
 
 	if(vchWitness == vchAlias || (!aliasOutPointWitness.IsNull() && aliasOutPointWitness == aliasOutPoint))
-		throw runtime_error("SYSCOIN_RPC_ERROR ERRCODE: 9000 - " + _("Witness to this transaction must be different than the funding alias"));
-	// set an address for syscointxfund so it uses that address to fund (alias passed in)
+		throw runtime_error("MARTKIST_RPC_ERROR ERRCODE: 9000 - " + _("Witness to this transaction must be different than the funding alias"));
+	// set an address for martkisttxfund so it uses that address to fund (alias passed in)
 	string strAddress;
 	if (!aliasRecipient.scriptPubKey.empty()) {
 		CAliasIndex alias;
 		if (!GetAlias(vchAlias, alias))
-			throw runtime_error("SYSCOIN_RPC_ERROR ERRCODE: 9000 - " + _("Cannot find alias used to fund this transaction: ") + stringFromVch(vchAlias));
+			throw runtime_error("MARTKIST_RPC_ERROR ERRCODE: 9000 - " + _("Cannot find alias used to fund this transaction: ") + stringFromVch(vchAlias));
 		strAddress = EncodeBase58(alias.vchAddress);
 	}
 	
@@ -1338,7 +1338,7 @@ UniValue syscointxfund_helper(const vector<unsigned char> &vchAlias, const vecto
 	
 	JSONRPCRequest request;
 	request.params = paramsFund;
-	return syscointxfund(request);
+	return martkisttxfund(request);
 }
 CAmount GetFee(const size_t nBytes, const bool fUseInstantSend = false) {
 
@@ -1379,14 +1379,14 @@ public:
 
 	void operator()(const CNoDestination &none) {}
 };
-UniValue syscointxfund(const JSONRPCRequest& request) {
+UniValue martkisttxfund(const JSONRPCRequest& request) {
 	const UniValue &params = request.params;
 	if (request.fHelp || 1 > params.size() || 3 < params.size())
 		throw runtime_error(
-			"syscointxfund\n"
-			"\nFunds a new syscoin transaction with inputs used from wallet or an array of addresses specified.\n"
+			"martkisttxfund\n"
+			"\nFunds a new martkist transaction with inputs used from wallet or an array of addresses specified.\n"
 			"\nArguments:\n"
-			"  \"hexstring\" (string, required) The raw syscoin transaction output given from rpc (ie: aliasnew, aliasupdate)\n"
+			"  \"hexstring\" (string, required) The raw martkist transaction output given from rpc (ie: aliasnew, aliasupdate)\n"
 			"  \"addresses (object, optional) \"\n"
 			"    [\n"
 			"      \"address\"  (array, string) Address used to fund this transaction. Leave empty to use wallet. Last address gets sent the change.\n"
@@ -1395,15 +1395,15 @@ UniValue syscointxfund(const JSONRPCRequest& request) {
 			"	\"instantsend\" (boolean, optional, default=false) Use InstantSend to send this transaction. \n"
 			"}\n"
 			"\nExamples:\n"
-			+ HelpExampleCli("syscointxfund", " <hexstring> '{\"addresses\": [\"175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W\"]}' false")
-			+ HelpExampleRpc("syscointxfund", " <hexstring> {\"addresses\": [\"175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W\"]} true")
+			+ HelpExampleCli("martkisttxfund", " <hexstring> '{\"addresses\": [\"175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W\"]}' false")
+			+ HelpExampleRpc("martkisttxfund", " <hexstring> {\"addresses\": [\"175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W\"]} true")
 			+ HelpRequiringPassphrase());
 	if (!pwalletMain)
 		throw runtime_error("No Wallet found!");
 	const string &hexstring = params[0].get_str();
 	CMutableTransaction tx;
 	if (!DecodeHexTx(tx, hexstring))
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5500 - " + _("Could not send raw transaction: Cannot decode transaction from hex string"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5500 - " + _("Could not send raw transaction: Cannot decode transaction from hex string"));
 	CTransaction txIn_t(tx);
 	// if addresses are passed in use those, otherwise use whatever is in the wallet
 	UniValue addresses(UniValue::VOBJ);
@@ -1412,7 +1412,7 @@ UniValue syscointxfund(const JSONRPCRequest& request) {
 	else {
 		EnsureWalletIsUnlocked();
 		UniValue addressArray(UniValue::VARR);
-		UniValue receivedList = SyscoinListReceived(false);
+		UniValue receivedList = MartkistListReceived(false);
 		UniValue recevedListArray = receivedList.get_array();
 		for (unsigned int idx = 0; idx < recevedListArray.size(); idx++) {
 			if(find_value(recevedListArray[idx].get_obj(), "alias").get_str().empty())
@@ -1433,12 +1433,12 @@ UniValue syscointxfund(const JSONRPCRequest& request) {
 	if (resUTXOs.isArray())
 		utxoArray = resUTXOs.get_array();
 	else
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5501 - " + _("No funds found in addresses provided"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5501 - " + _("No funds found in addresses provided"));
 
 	// add total output amount of transaction to desired amount
 	CAmount nDesiredAmount = txIn_t.GetValueOut();
 	if (fUseInstantSend && nDesiredAmount > sporkManager.GetSporkValue(SPORK_5_INSTANTSEND_MAX_VALUE)*COIN) {
-		throw runtime_error(_("InstantSend doesn't support sending values that high yet. Transactions are currently limited to 100000 SYS."));
+		throw runtime_error(_("InstantSend doesn't support sending values that high yet. Transactions are currently limited to 18000 MARTK."));
 	}
 	CAmount nCurrentAmount = 0;
 	
@@ -1450,7 +1450,7 @@ UniValue syscointxfund(const JSONRPCRequest& request) {
 	int op, aliasOp;
 	vector<vector<unsigned char> > vvch;
 	vector<vector<unsigned char> > vvchAlias;
-	if (tx.nVersion == SYSCOIN_TX_VERSION && !DecodeAliasTx(tx, op, vvchAlias))
+	if (tx.nVersion == MARTKIST_TX_VERSION && !DecodeAliasTx(tx, op, vvchAlias))
 	{
 		FindAliasInTx(view, tx, vvchAlias);
 	}
@@ -1463,7 +1463,7 @@ UniValue syscointxfund(const JSONRPCRequest& request) {
 			continue;
 		int numSigs = 0;
 		CCountSigsVisitor(*pwalletMain, numSigs).Process(coin.out.scriptPubKey);
-		if(tx.nVersion == SYSCOIN_TX_VERSION && params.size() > 1)
+		if(tx.nVersion == MARTKIST_TX_VERSION && params.size() > 1)
 			nFees += GetFee(numSigs*200);
 		else
 			nFees += GetFee(numSigs*200, fUseInstantSend);
@@ -1474,7 +1474,7 @@ UniValue syscointxfund(const JSONRPCRequest& request) {
 	}
 	if (nCurrentAmount < (nDesiredAmount + nFees)) {
 		// only look for alias inputs if addresses were passed in, if looking through wallet we do not want to fund via alias inputs as we may end up spending alias inputs inadvertently
-		if (tx.nVersion == SYSCOIN_TX_VERSION && params.size() > 1 && !fUseInstantSend) {
+		if (tx.nVersion == MARTKIST_TX_VERSION && params.size() > 1 && !fUseInstantSend) {
 			COutPoint aliasOutPoint;
 			unsigned int unspentcount = 0;
 			if(!vvchAlias.empty())
@@ -1563,7 +1563,7 @@ UniValue syscointxfund(const JSONRPCRequest& request) {
 	}
 	const CAmount &nChange = nCurrentAmount - nDesiredAmount - nFees;
 	if (nChange < 0)
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5502 - " + _("Insufficient funds"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5502 - " + _("Insufficient funds"));
 	// if addresses were passed in, send change back to the last address as policy
 	if (params.size() > 1) {
 		UniValue addressValues = find_value(addresses, "addresses");
@@ -1571,7 +1571,7 @@ UniValue syscointxfund(const JSONRPCRequest& request) {
 			throw runtime_error("Addresses is expected to be an array");
 		}
 		std::vector<UniValue> values = addressValues.getValues();
-		CSyscoinAddress addressLast(values.back().get_str());
+		CMartkistAddress addressLast(values.back().get_str());
 		if(!addressLast.IsValid())
 			throw runtime_error("Change address is not valid");
 		CTxOut changeOut(nChange, GetScriptForDestination(addressLast.Get()));
@@ -1588,11 +1588,11 @@ UniValue syscointxfund(const JSONRPCRequest& request) {
 			tx.vout.push_back(changeOut);
 	}
 
-	if (tx.nVersion == SYSCOIN_TX_VERSION) {
+	if (tx.nVersion == MARTKIST_TX_VERSION) {
 		// call this twice, with fJustCheck and !fJustCheck both with bSanity enabled so it doesn't actually write out to the databases just does the checks
-		if (!CheckSyscoinInputs(tx, state, view, true, 0, CBlock(), true))
+		if (!CheckMartkistInputs(tx, state, view, true, 0, CBlock(), true))
 			throw runtime_error(FormatStateMessage(state));
-		if (!CheckSyscoinInputs(tx, state, view, false, 0, CBlock(), true))
+		if (!CheckMartkistInputs(tx, state, view, false, 0, CBlock(), true))
 			throw runtime_error(FormatStateMessage(state));
 	}
 	// pass back new raw transaction
@@ -1623,7 +1623,7 @@ UniValue aliasnew(const JSONRPCRequest& request) {
 	The domain name should be a-z | 0-9 and hyphen(-)
 	The domain name should between 3 and 63 characters long
 	Last Tld can be 2 to a maximum of 6 characters
-	The domain name should not start or end with hyphen (-) (e.g. -syscoin.org or syscoin-.org)
+	The domain name should not start or end with hyphen (-) (e.g. -martkist.org or martkist-.org)
 	The domain name can be a subdomain (e.g. sys.blogspot.com)*/
 
 	using namespace boost::xpressive;
@@ -1636,12 +1636,12 @@ UniValue aliasnew(const JSONRPCRequest& request) {
 	if (find_first(strName, "."))
 	{
 		if (!regex_search(strName, nameparts, domainwithtldregex) || string(nameparts[0]) != strName)
-			throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5503 - " + _("Invalid Syscoin Identity. Must follow the domain name spec of 3 to 64 characters with no preceding or trailing dashes and a TLD of 2 to 6 characters"));
+			throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5503 - " + _("Invalid Martkist Identity. Must follow the domain name spec of 3 to 64 characters with no preceding or trailing dashes and a TLD of 2 to 6 characters"));
 	}
 	else
 	{
 		if (!regex_search(strName, nameparts, domainwithouttldregex) || string(nameparts[0]) != strName)
-			throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5504 - " + _("Invalid Syscoin Identity. Must follow the domain name spec of 3 to 64 characters with no preceding or trailing dashes"));
+			throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5504 - " + _("Invalid Martkist Identity. Must follow the domain name spec of 3 to 64 characters with no preceding or trailing dashes"));
 	}
 
 
@@ -1671,15 +1671,15 @@ UniValue aliasnew(const JSONRPCRequest& request) {
 	vector<unsigned char> vchWitness;
 	vchWitness = vchFromValue(params[7]);
 	CMutableTransaction tx;
-	tx.nVersion = SYSCOIN_TX_VERSION;
+	tx.nVersion = MARTKIST_TX_VERSION;
 	tx.vin.clear();
 	tx.vout.clear();
 	CAliasIndex oldAlias;
 	if (GetAlias(vchAlias, oldAlias))
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5505 - " + _("This alias already exists"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5505 - " + _("This alias already exists"));
 
 
-	const vector<unsigned char> &vchRandAlias = vchFromString(GenerateSyscoinGuid());
+	const vector<unsigned char> &vchRandAlias = vchFromString(GenerateMartkistGuid());
 
 	// build alias
 	CAliasIndex newAlias, newAlias1;
@@ -1700,10 +1700,10 @@ UniValue aliasnew(const JSONRPCRequest& request) {
 		privKey.MakeNewKey(true);
 		CPubKey pubKey = privKey.GetPubKey();
 		vector<unsigned char> vchPubKey(pubKey.begin(), pubKey.end());
-		CSyscoinAddress addressAlias(pubKey.GetID());
+		CMartkistAddress addressAlias(pubKey.GetID());
 		strAddress = addressAlias.ToString();
 		if (pwalletMain && !pwalletMain->AddKeyPubKey(privKey, pubKey))
-			throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5506 - " + _("Error adding key to wallet"));
+			throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5506 - " + _("Error adding key to wallet"));
 	}
 	CScript scriptPubKeyOrig;
 	DecodeBase58(strAddress, newAlias.vchAddress);
@@ -1719,7 +1719,7 @@ UniValue aliasnew(const JSONRPCRequest& request) {
 		hash = Hash(data.begin(), data.end());
 		vchHashAlias = vchFromString(hash.GetHex());
 		if (!newAlias.UnserializeFromData(data, vchHashAlias))
-			throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5507 - " + _("Cannot unserialize alias registration transaction"));
+			throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5507 - " + _("Cannot unserialize alias registration transaction"));
 		if (strAddress.empty())
 			newAlias1.vchAddress = newAlias.vchAddress;
 
@@ -1743,11 +1743,11 @@ UniValue aliasnew(const JSONRPCRequest& request) {
 	
 	CScript scriptPubKey;
 	if (bActivation)
-		scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_ACTIVATE) << vchAlias << newAlias1.vchGUID << vchHashAlias1 << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
+		scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_ACTIVATE) << vchAlias << newAlias1.vchGUID << vchHashAlias1 << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
 	else
-		scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_ACTIVATE) << vchHashAlias1 << OP_2DROP << OP_DROP;
+		scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_ACTIVATE) << vchHashAlias1 << OP_2DROP << OP_DROP;
 
-	CSyscoinAddress newAddress;
+	CMartkistAddress newAddress;
 	GetAddress(newAlias1, &newAddress, scriptPubKeyOrig);
 	scriptPubKey += scriptPubKeyOrig;
 
@@ -1781,7 +1781,7 @@ UniValue aliasnew(const JSONRPCRequest& request) {
 		
 		const Coin &pcoin = view.AccessCoin(regOut);
 		if (pcoin.IsSpent()) {
-			throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5508 - " + _("Cannot find alias registration transaction, please ensure it has confirmed or re-submit the registration transaction again"));
+			throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5508 - " + _("Cannot find alias registration transaction, please ensure it has confirmed or re-submit the registration transaction again"));
 		}
 		tx.vin.push_back(CTxIn(regOut, pcoin.out.scriptPubKey));
 		for (unsigned int i = 0; i<MAX_ALIAS_UPDATES_PER_BLOCK; i++)
@@ -1794,11 +1794,11 @@ UniValue aliasnew(const JSONRPCRequest& request) {
 			aliasunspent(vchWitness, aliasOutPointWitness);
 			if (aliasOutPointWitness.IsNull())
 			{
-				throw runtime_error("SYSCOIN_RPC_ERROR ERRCODE: 5509 - " + _("This transaction requires a witness but not enough outputs found for witness alias: ") + stringFromVch(vchWitness));
+				throw runtime_error("MARTKIST_RPC_ERROR ERRCODE: 5509 - " + _("This transaction requires a witness but not enough outputs found for witness alias: ") + stringFromVch(vchWitness));
 			}
 			const Coin &pcoinW = view.AccessCoin(aliasOutPointWitness);
 			if (pcoinW.IsSpent()) {
-				throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5510 - " + _("Cannot find witness transaction"));
+				throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5510 - " + _("Cannot find witness transaction"));
 			}
 			tx.vin.push_back(CTxIn(aliasOutPointWitness, pcoinW.out.scriptPubKey));
 		}
@@ -1835,7 +1835,7 @@ UniValue aliasnewestimatedfee(const JSONRPCRequest& request) {
 	The domain name should be a-z | 0-9 and hyphen(-)
 	The domain name should between 3 and 63 characters long
 	Last Tld can be 2 to a maximum of 6 characters
-	The domain name should not start or end with hyphen (-) (e.g. -syscoin.org or syscoin-.org)
+	The domain name should not start or end with hyphen (-) (e.g. -martkist.org or martkist-.org)
 	The domain name can be a subdomain (e.g. sys.blogspot.com)*/
 	using namespace boost::xpressive;
 	using namespace boost::algorithm;
@@ -1847,12 +1847,12 @@ UniValue aliasnewestimatedfee(const JSONRPCRequest& request) {
 	if (find_first(strName, "."))
 	{
 		if (!regex_search(strName, nameparts, domainwithtldregex) || string(nameparts[0]) != strName)
-			throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5503 - " + _("Invalid Syscoin Identity. Must follow the domain name spec of 3 to 64 characters with no preceding or trailing dashes and a TLD of 2 to 6 characters"));
+			throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5503 - " + _("Invalid Martkist Identity. Must follow the domain name spec of 3 to 64 characters with no preceding or trailing dashes and a TLD of 2 to 6 characters"));
 	}
 	else
 	{
 		if (!regex_search(strName, nameparts, domainwithouttldregex) || string(nameparts[0]) != strName)
-			throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5504 - " + _("Invalid Syscoin Identity. Must follow the domain name spec of 3 to 64 characters with no preceding or trailing dashes"));
+			throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5504 - " + _("Invalid Martkist Identity. Must follow the domain name spec of 3 to 64 characters with no preceding or trailing dashes"));
 	}
 
 
@@ -1882,15 +1882,15 @@ UniValue aliasnewestimatedfee(const JSONRPCRequest& request) {
 	vector<unsigned char> vchWitness;
 	vchWitness = vchFromValue(params[7]);
 	CMutableTransaction tx;
-	tx.nVersion = SYSCOIN_TX_VERSION;
+	tx.nVersion = MARTKIST_TX_VERSION;
 	tx.vin.clear();
 	tx.vout.clear();
 	CAliasIndex oldAlias;
 	if (GetAlias(vchAlias, oldAlias))
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5506 - " + _("This alias already exists"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5506 - " + _("This alias already exists"));
 
 
-	const vector<unsigned char> &vchRandAlias = vchFromString(GenerateSyscoinGuid());
+	const vector<unsigned char> &vchRandAlias = vchFromString(GenerateMartkistGuid());
 
 	// build alias
 	CAliasIndex newAlias, newAlias1;
@@ -1919,10 +1919,10 @@ UniValue aliasnewestimatedfee(const JSONRPCRequest& request) {
 
 	CScript scriptPubKey, scriptPubKey1;
 	
-	scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_ACTIVATE) << vchAlias << newAlias1.vchGUID << vchHashAlias1 << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
-	scriptPubKey1<< CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_ACTIVATE) << vchHashAlias1 << OP_2DROP << OP_DROP;
+	scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_ACTIVATE) << vchAlias << newAlias1.vchGUID << vchHashAlias1 << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
+	scriptPubKey1<< CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_ACTIVATE) << vchHashAlias1 << OP_2DROP << OP_DROP;
 	// setup dummy destination for fee calculation purposes
-	CSyscoinAddress newAddress = CSyscoinAddress("1QFqqMUD55ZV3PJEJZtaKCsQmjLT6JkjvJ");
+	CMartkistAddress newAddress = CMartkistAddress("1QFqqMUD55ZV3PJEJZtaKCsQmjLT6JkjvJ");
 	scriptPubKey += GetScriptForDestination(newAddress.Get());
 	scriptPubKey1 += GetScriptForDestination(newAddress.Get());
 
@@ -1998,7 +1998,7 @@ UniValue aliasupdate(const JSONRPCRequest& request) {
 	CAliasIndex theAlias;
 	ToLowerCase(vchAlias);
 	if (!GetAlias(vchAlias, theAlias))
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5511 - " + _("Could not find an alias with this name"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5511 - " + _("Could not find an alias with this name"));
 
 
 	CAliasIndex copyAlias = theAlias;
@@ -2016,7 +2016,7 @@ UniValue aliasupdate(const JSONRPCRequest& request) {
 	theAlias.nAccessFlags = copyAlias.nAccessFlags;
 	theAlias.nAcceptTransferFlags = nAcceptTransferFlags;
 	
-	CSyscoinAddress newAddress;
+	CMartkistAddress newAddress;
 	CScript scriptPubKeyOrig;
 	if(theAlias.vchAddress.empty())
 		GetAddress(copyAlias, &newAddress, scriptPubKeyOrig);
@@ -2029,7 +2029,7 @@ UniValue aliasupdate(const JSONRPCRequest& request) {
     vector<unsigned char> vchHashAlias = vchFromString(hash.GetHex());
 
 	CScript scriptPubKey;
-	scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << copyAlias.vchAlias << copyAlias.vchGUID << vchHashAlias << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
+	scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << copyAlias.vchAlias << copyAlias.vchGUID << vchHashAlias << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
 	scriptPubKey += scriptPubKeyOrig;
 
     vector<CRecipient> vecSend;
@@ -2053,7 +2053,7 @@ UniValue aliasupdate(const JSONRPCRequest& request) {
 	vecSend.push_back(fee);
 	vecSend.push_back(recipient);
 	
-	return syscointxfund_helper(vchAlias, vchWitness, recipient, vecSend);
+	return martkisttxfund_helper(vchAlias, vchWitness, recipient, vecSend);
 }
 UniValue aliasupdateestimatedfee(const JSONRPCRequest& request) {
 	const UniValue &params = request.params;
@@ -2096,7 +2096,7 @@ UniValue aliasupdateestimatedfee(const JSONRPCRequest& request) {
 	CAliasIndex theAlias;
 	ToLowerCase(vchAlias);
 	if (!GetAlias(vchAlias, theAlias))
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5511 - " + _("Could not find an alias with this name"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5511 - " + _("Could not find an alias with this name"));
 
 
 	CAliasIndex copyAlias = theAlias;
@@ -2114,7 +2114,7 @@ UniValue aliasupdateestimatedfee(const JSONRPCRequest& request) {
 	theAlias.nAccessFlags = copyAlias.nAccessFlags;
 	theAlias.nAcceptTransferFlags = nAcceptTransferFlags;
 
-	CSyscoinAddress newAddress;
+	CMartkistAddress newAddress;
 	CScript scriptPubKeyOrig;
 	if (theAlias.vchAddress.empty())
 		GetAddress(copyAlias, &newAddress, scriptPubKeyOrig);
@@ -2127,7 +2127,7 @@ UniValue aliasupdateestimatedfee(const JSONRPCRequest& request) {
 	vector<unsigned char> vchHashAlias = vchFromString(hash.GetHex());
 
 	CScript scriptPubKey;
-	scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << copyAlias.vchAlias << copyAlias.vchGUID << vchHashAlias << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
+	scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << copyAlias.vchAlias << copyAlias.vchGUID << vchHashAlias << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
 	scriptPubKey += scriptPubKeyOrig;
 
 	vector<CRecipient> vecSend;
@@ -2151,7 +2151,7 @@ UniValue aliasupdateestimatedfee(const JSONRPCRequest& request) {
 	vecSend.push_back(fee);
 	vecSend.push_back(recipient);
 
-	const UniValue &txHexArray = syscointxfund_helper(vchAlias, vchWitness, recipient, vecSend);
+	const UniValue &txHexArray = martkisttxfund_helper(vchAlias, vchWitness, recipient, vecSend);
 	CMutableTransaction tx;
 	DecodeHexTx(tx, txHexArray[0].get_str());
 	CTransaction rawTx(tx);
@@ -2166,11 +2166,11 @@ UniValue aliasupdateestimatedfee(const JSONRPCRequest& request) {
 	res.push_back(ValueFromAmount(estimatedFee));
 	return res;
 }
-UniValue syscoindecoderawtransaction(const JSONRPCRequest& request) {
+UniValue martkistdecoderawtransaction(const JSONRPCRequest& request) {
 	const UniValue &params = request.params;
 	if (request.fHelp || 1 != params.size())
-		throw runtime_error("syscoindecoderawtransaction <hexstring>\n"
-		"Decode raw syscoin transaction (serialized, hex-encoded) and display information pertaining to the service that is included in the transactiion data output(OP_RETURN)\n"
+		throw runtime_error("martkistdecoderawtransaction <hexstring>\n"
+		"Decode raw martkist transaction (serialized, hex-encoded) and display information pertaining to the service that is included in the transactiion data output(OP_RETURN)\n"
 				"<hexstring> The transaction hex string.\n");
 	string hexstring = params[0].get_str();
 	CMutableTransaction tx;
@@ -2178,17 +2178,17 @@ UniValue syscoindecoderawtransaction(const JSONRPCRequest& request) {
 	CTransaction rawTx(tx);
 	if(rawTx.IsNull())
 	{
-		throw runtime_error("SYSCOIN_RPC_ERROR: ERRCODE: 5512 - " + _("Could not decode transaction"));
+		throw runtime_error("MARTKIST_RPC_ERROR: ERRCODE: 5512 - " + _("Could not decode transaction"));
 	}
 	vector<unsigned char> vchData;
 	int nOut;
 	int op;
 	vector<vector<unsigned char> > vvch;
 	vector<unsigned char> vchHash;
-	GetSyscoinData(rawTx, vchData, vchHash, nOut);	
+	GetMartkistData(rawTx, vchData, vchHash, nOut);	
 	UniValue output(UniValue::VOBJ);
 	char type;
-	if(DecodeAndParseSyscoinTx(rawTx, op,  vvch, type))
+	if(DecodeAndParseMartkistTx(rawTx, op,  vvch, type))
 		SysTxToJSON(op, vchData, vchHash, output, type);
 	
 	return output;
@@ -2236,10 +2236,10 @@ void AliasTxToJSON(const int op, const vector<unsigned char> &vchData, const vec
 		entry.push_back(Pair("renewal", alias.nExpireTime));
 
 }
-UniValue syscoinsendrawtransaction(const JSONRPCRequest& request) {
+UniValue martkistsendrawtransaction(const JSONRPCRequest& request) {
 	const UniValue &params = request.params;
 	if (request.fHelp || params.size() < 1 || params.size() > 3)
-		throw runtime_error("syscoinsendrawtransaction \"hexstring\" ( allowhighfees instantsend )\n"
+		throw runtime_error("martkistsendrawtransaction \"hexstring\" ( allowhighfees instantsend )\n"
 			"\nSubmits raw transaction (serialized, hex-encoded) to local node and network.\n"
 			"\nAlso see createrawtransaction and signrawtransaction calls.\n"
 			"\nArguments:\n"
@@ -2257,12 +2257,12 @@ UniValue syscoinsendrawtransaction(const JSONRPCRequest& request) {
 		fInstantSend = params[2].get_bool();
 	CMutableTransaction txIn;
 	if (!DecodeHexTx(txIn, hexstring))
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5513 - " + _("Could not send raw transaction: Cannot decode transaction from hex string"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5513 - " + _("Could not send raw transaction: Cannot decode transaction from hex string"));
 	CTransaction tx(txIn);
 	if (tx.vin.size() <= 0)
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5514 - " + _("Could not send raw transaction: Inputs are empty"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5514 - " + _("Could not send raw transaction: Inputs are empty"));
 	if (tx.vout.size() <= 0)
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5515 - " + _("Could not send raw transaction: Outputs are empty"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5515 - " + _("Could not send raw transaction: Outputs are empty"));
 	UniValue arraySendParams(UniValue::VARR);
 	arraySendParams.push_back(hexstring);
 	arraySendParams.push_back(fOverrideFees);
@@ -2279,7 +2279,7 @@ UniValue syscoinsendrawtransaction(const JSONRPCRequest& request) {
 		throw runtime_error(find_value(objError, "message").get_str());
 	}
 	if (!returnRes.isStr())
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5516 - " + _("Could not send raw transaction: Invalid response from sendrawtransaction"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5516 - " + _("Could not send raw transaction: Invalid response from sendrawtransaction"));
 	UniValue res(UniValue::VOBJ);
 	res.push_back(Pair("txid", returnRes.get_str()));
 	// check for alias registration, if so save the info in this node for alias activation calls after a block confirmation
@@ -2312,27 +2312,27 @@ UniValue syscoinsendrawtransaction(const JSONRPCRequest& request) {
 	
 	return res;
 }
-string GenerateSyscoinGuid()
+string GenerateMartkistGuid()
 {
 	int64_t rand = GetRand(std::numeric_limits<int64_t>::max());
 	vector<unsigned char> vchGuidRand = CScriptNum(rand).getvch();
 	return HexStr(vchGuidRand);
 }
-UniValue prunesyscoinservices(const JSONRPCRequest& request)
+UniValue prunemartkistservices(const JSONRPCRequest& request)
 {
 	const UniValue &params = request.params;
 	if (request.fHelp || params.size() > 0)
 		throw runtime_error(
-			"prunesyscoinservices\n"
-			"\nPrune expired Syscoin service data from the internal database.\n"
-			+ HelpExampleCli("prunesyscoinservices", "")
+			"prunemartkistservices\n"
+			"\nPrune expired Martkist service data from the internal database.\n"
+			+ HelpExampleCli("prunemartkistservices", "")
 		);
 	int servicesCleaned = 0;
-	CleanupSyscoinServiceDatabases(servicesCleaned);
+	CleanupMartkistServiceDatabases(servicesCleaned);
 	UniValue res(UniValue::VOBJ);
 	res.push_back(Pair("services_cleaned", servicesCleaned));
 	if (fDebug)
-		LogPrintf("prunesyscoinservices # cleaned: %d\n", servicesCleaned);
+		LogPrintf("prunemartkistservices # cleaned: %d\n", servicesCleaned);
 	return res;
 }
 UniValue aliasbalancemulti(const JSONRPCRequest& request)
@@ -2343,7 +2343,7 @@ UniValue aliasbalancemulti(const JSONRPCRequest& request)
 			"aliasbalancemulti { \"aliases\" : [\"aliasname1\",\"aliasname2\",...] } instantsend\n"
 			"\nReturns an array of balances based on an array of aliases passed in, internally calls aliasbalance for each alias.\n"
 			"\nArguments:\n"
-			"1. \"aliases\"  (array, required) The syscoin aliases to find balances for. Must be an array.\n"
+			"1. \"aliases\"  (array, required) The martkist aliases to find balances for. Must be an array.\n"
 			"2. \"instantsend\"  (boolean, optional) Check for balance available to instant send. Default is false.\n"
 		);
 	UniValue resArray(UniValue::VARR);
@@ -2375,7 +2375,7 @@ UniValue aliasbalance(const JSONRPCRequest& request)
             "aliasbalance \"alias\"\n"
             "\nReturns the total amount received by the given alias in transactions.\n"
             "\nArguments:\n"
-            "1. \"alias\"  (string, required) The syscoin alias for transactions.\n"
+            "1. \"alias\"  (string, required) The martkist alias for transactions.\n"
 			"2. \"instantsend\"  (boolean, optional) Check for balance available to instant send. Default is false.\n"
        );
 	vector<unsigned char> vchAlias = vchFromValue(params[0]);
@@ -2454,11 +2454,11 @@ UniValue aliasinfo(const JSONRPCRequest& request) {
 	ToLowerCase(vchAlias);
 	CAliasIndex txPos;
 	if (!paliasdb)
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5517 - " + _("Failed to read from alias DB"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5517 - " + _("Failed to read from alias DB"));
 
 	UniValue oName(UniValue::VOBJ);
 	if(!paliasdb->ReadAlias(vchAlias, txPos) || !BuildAliasJson(txPos, oName))
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5518 - " + _("Could not find this alias"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5518 - " + _("Could not find this alias"));
 		
 	return oName;
 }
@@ -2583,7 +2583,7 @@ UniValue aliaspay_helper(const string strFromAddress, vector<CRecipient> &vecSen
 
 	JSONRPCRequest request;
 	request.params = paramsFund;
-	return syscointxfund(request);
+	return martkisttxfund(request);
 }
 UniValue aliaspay(const JSONRPCRequest& request) {
 	const UniValue &params = request.params;
@@ -2596,13 +2596,13 @@ UniValue aliaspay(const JSONRPCRequest& request) {
 			"1. \"aliasfrom\"			(string, required) Alias to pay from\n"
             "2. \"amounts\"             (string, required) A json object with aliases and amounts\n"
             "    {\n"
-            "      \"address\":amount   (numeric or string) The syscoin address is the key, the numeric amount (can be string) in SYS is the value\n"
+            "      \"address\":amount   (numeric or string) The martkist address is the key, the numeric amount (can be string) in MARTK is the value\n"
             "      ,...\n"
             "    }\n"
 			"3. instantsend				(boolean, optional) Set to true to use InstantSend to send this transaction or false otherwise. Default is false.\n"
 			"4. subtractfeefromamount   (string, optional) A json array with addresses.\n"
 			"                           The fee will be equally deducted from the amount of each selected address.\n"
-			"                           Those recipients will receive less syscoins than you enter in their corresponding amount field.\n"
+			"                           Those recipients will receive less martkists than you enter in their corresponding amount field.\n"
 			"                           If no addresses are specified here, the sender pays the fee.\n"
 			"    [\n"
 			"      \"address\"            (string) Subtract fee from this address\n"
@@ -2627,7 +2627,7 @@ UniValue aliaspay(const JSONRPCRequest& request) {
 	boost::algorithm::to_lower(strFrom);
 	CAliasIndex theAlias;
 	if (!GetAlias(vchFromString(strFrom), theAlias))
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5519 - " + _("Invalid fromalias"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5519 - " + _("Invalid fromalias"));
 	string strFromAddress = EncodeBase58(theAlias.vchAddress);
     UniValue sendTo = params[1].get_obj();
 
@@ -2641,22 +2641,22 @@ UniValue aliaspay(const JSONRPCRequest& request) {
 
 
 	CWalletTx wtx;
-    set<CSyscoinAddress> setAddress;
+    set<CMartkistAddress> setAddress;
     vector<CRecipient> vecSend;
 
     CAmount totalAmount = 0;
     vector<string> keys = sendTo.getKeys();
     BOOST_FOREACH(const string& name_, keys)
     {
-        CSyscoinAddress address(name_);
+        CMartkistAddress address(name_);
 		vector<unsigned char> vchPubKey;
 		string strAddress = name_;
 		if (GetAddressFromAlias(name_, strAddress, vchPubKey))
 		{
-			address = CSyscoinAddress(strAddress);
+			address = CMartkistAddress(strAddress);
 		}
         if (!address.IsValid())
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid Syscoin address: ")+name_);
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid Martkist address: ")+name_);
 
         if (setAddress.count(address))
             throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, duplicated address: ")+name_);
@@ -2727,16 +2727,16 @@ UniValue aliasupdatewhitelist(const JSONRPCRequest& request) {
 	vchWitness = vchFromValue(params[2]);
 	CWalletTx wtx;
 
-	// this is a syscoin txn
+	// this is a martkist txn
 	CScript scriptPubKeyOrig;
 
 
 	CAliasIndex theAlias;
 	ToLowerCase(vchOwnerAlias);
 	if (!GetAlias(vchOwnerAlias, theAlias))
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR ERRCODE: 5520 - " + _("Could not find an alias with this guid"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR ERRCODE: 5520 - " + _("Could not find an alias with this guid"));
 
-	CSyscoinAddress aliasAddress;
+	CMartkistAddress aliasAddress;
 	GetAddress(theAlias, &aliasAddress, scriptPubKeyOrig);
 	CAliasIndex copyAlias = theAlias;
 	theAlias.ClearAlias();
@@ -2757,7 +2757,7 @@ UniValue aliasupdatewhitelist(const JSONRPCRequest& request) {
 		theAlias.offerWhitelist.PutWhitelistEntry(entry);
 
 		if (!theAlias.offerWhitelist.GetLinkEntryByHash(vchFromString(aliasEntryName), entry))
-			throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR ERRCODE: 5521 - " + _("This alias entry was not added to affiliate list: ") + aliasEntryName);
+			throw runtime_error("MARTKIST_ALIAS_RPC_ERROR ERRCODE: 5521 - " + _("This alias entry was not added to affiliate list: ") + aliasEntryName);
 	}
 	vector<unsigned char> data;
 	theAlias.Serialize(data);
@@ -2765,7 +2765,7 @@ UniValue aliasupdatewhitelist(const JSONRPCRequest& request) {
 	vector<unsigned char> vchHashAlias = vchFromString(hash.GetHex());
 
 	CScript scriptPubKey;
-	scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << copyAlias.vchAlias << copyAlias.vchGUID << vchHashAlias << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
+	scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << copyAlias.vchAlias << copyAlias.vchGUID << vchHashAlias << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
 	scriptPubKey += scriptPubKeyOrig;
 
 	vector<CRecipient> vecSend;
@@ -2778,7 +2778,7 @@ UniValue aliasupdatewhitelist(const JSONRPCRequest& request) {
 	vecSend.push_back(fee);
 	vecSend.push_back(recipient);
 
-	return syscointxfund_helper(copyAlias.vchAlias, vchWitness, recipient, vecSend);
+	return martkisttxfund_helper(copyAlias.vchAlias, vchWitness, recipient, vecSend);
 }
 UniValue aliasclearwhitelist(const JSONRPCRequest& request) {
 	const UniValue &params = request.params;
@@ -2791,7 +2791,7 @@ UniValue aliasclearwhitelist(const JSONRPCRequest& request) {
 	vector<unsigned char> vchAlias = vchFromValue(params[0]);
 	vector<unsigned char> vchWitness;
 	vchWitness = vchFromValue(params[1]);
-	// this is a syscoind txn
+	// this is a martkistd txn
 	CWalletTx wtx;
 	CScript scriptPubKeyOrig;
 
@@ -2799,10 +2799,10 @@ UniValue aliasclearwhitelist(const JSONRPCRequest& request) {
 	CAliasIndex theAlias;
 	ToLowerCase(vchAlias);
 	if (!GetAlias(vchAlias, theAlias))
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR ERRCODE: 5522 - " + _("Could not find an alias with this name"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR ERRCODE: 5522 - " + _("Could not find an alias with this name"));
 
 
-	CSyscoinAddress aliasAddress;
+	CMartkistAddress aliasAddress;
 	GetAddress(theAlias, &aliasAddress, scriptPubKeyOrig);
 
 	COfferLinkWhitelistEntry entry;
@@ -2817,7 +2817,7 @@ UniValue aliasclearwhitelist(const JSONRPCRequest& request) {
 	vector<unsigned char> vchHashAlias = vchFromString(hash.GetHex());
 
 	CScript scriptPubKey;
-	scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << copyAlias.vchAlias << copyAlias.vchGUID << vchHashAlias << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
+	scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << copyAlias.vchAlias << copyAlias.vchGUID << vchHashAlias << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
 	scriptPubKey += scriptPubKeyOrig;
 
 	vector<CRecipient> vecSend;
@@ -2830,7 +2830,7 @@ UniValue aliasclearwhitelist(const JSONRPCRequest& request) {
 	vecSend.push_back(fee);
 	vecSend.push_back(recipient);
 
-	return syscointxfund_helper(copyAlias.vchAlias, vchWitness, recipient, vecSend);
+	return martkisttxfund_helper(copyAlias.vchAlias, vchWitness, recipient, vecSend);
 }
 bool DoesAliasExist(const string &strAddress) {
 	vector<unsigned char> vchMyAlias;
@@ -2838,12 +2838,12 @@ bool DoesAliasExist(const string &strAddress) {
 	DecodeBase58(strAddress, vchAddress);
 	return paliasdb->ReadAddress(vchAddress, vchMyAlias);
 }
-UniValue syscoinlistreceivedbyaddress(const JSONRPCRequest& request)
+UniValue martkistlistreceivedbyaddress(const JSONRPCRequest& request)
 {
 	const UniValue &params = request.params;
 	if (request.fHelp || params.size() != 0)
 		throw runtime_error(
-			"syscoinlistreceivedbyaddress\n"
+			"martkistlistreceivedbyaddress\n"
 			"\nList balances by receiving address.\n"
 			"\nResult:\n"
 			"[\n"
@@ -2857,10 +2857,10 @@ UniValue syscoinlistreceivedbyaddress(const JSONRPCRequest& request)
 			"]\n"
 
 			"\nExamples:\n"
-			+ HelpExampleCli("syscoinlistreceivedbyaddress", "")
+			+ HelpExampleCli("martkistlistreceivedbyaddress", "")
 		);
 
-	return SyscoinListReceived();
+	return MartkistListReceived();
 }
 UniValue aliaswhitelist(const JSONRPCRequest& request) {
 	const UniValue &params = request.params;
@@ -2898,7 +2898,7 @@ bool COfferLinkWhitelist::GetLinkEntryByHash(const std::vector<unsigned char> &a
 	}
 	return false;
 }
-string GetSyscoinTransactionDescription(const CTransaction& tx, const int op, string& responseEnglish, const char &type, string& responseGUID)
+string GetMartkistTransactionDescription(const CTransaction& tx, const int op, string& responseEnglish, const char &type, string& responseGUID)
 {
 	if (tx.IsNull()) {
 		return "Null Tx";
@@ -3168,13 +3168,13 @@ UniValue listaliases(const JSONRPCRequest& request) {
 			count = INT_MAX;
 		} else
 		if (count < 0) {
-			throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5522 - " + _("'count' must be 0 or greater"));
+			throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5522 - " + _("'count' must be 0 or greater"));
 		}
 	}
 	if (params.size() > 1) {
 		from = params[1].get_int();
 		if (from < 0) {
-			throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5522 - " + _("'from' must be 0 or greater"));
+			throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5522 - " + _("'from' must be 0 or greater"));
 		}
 	}
 	if (params.size() > 2) {
@@ -3183,7 +3183,7 @@ UniValue listaliases(const JSONRPCRequest& request) {
 
 	UniValue oRes(UniValue::VARR);
 	if (!paliasdb->ScanAliases(count, from, options, oRes))
-		throw runtime_error("SYSCOIN_ALIAS_RPC_ERROR: ERRCODE: 5522 - " + _("Scan failed"));
+		throw runtime_error("MARTKIST_ALIAS_RPC_ERROR: ERRCODE: 5522 - " + _("Scan failed"));
 	return oRes;
 }
 

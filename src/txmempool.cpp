@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,7 +21,7 @@
 #include "utiltime.h"
 #include "version.h"
 #include "hash.h"
-extern bool RemoveSyscoinScript(const CScript& scriptPubKeyIn, CScript& scriptPubKeyOut);
+extern bool RemoveMartkistScript(const CScript& scriptPubKeyIn, CScript& scriptPubKeyOut);
 CTxMemPoolEntry::CTxMemPoolEntry(const CTransactionRef& _tx, const CAmount& _nFee,
                                  int64_t _nTime, double _entryPriority, unsigned int _entryHeight,
                                  CAmount _inChainInputValue,
@@ -454,10 +454,10 @@ void CTxMemPool::addAddressIndex(const CTxMemPoolEntry &entry, const CCoinsViewC
         const Coin& coin = view.AccessCoin(input.prevout);
         const CTxOut &prevout = coin.out;
         if (prevout.scriptPubKey.IsPayToScriptHash()) {
-			// SYSCOIN
+			// MARTKIST
 			CScript scriptOut;
 			CScript scriptPubKeyOut;
-			if (RemoveSyscoinScript(prevout.scriptPubKey, scriptPubKeyOut))
+			if (RemoveMartkistScript(prevout.scriptPubKey, scriptPubKeyOut))
 				scriptOut = scriptPubKeyOut;
 			else
 				scriptOut = prevout.scriptPubKey;
@@ -467,10 +467,10 @@ void CTxMemPool::addAddressIndex(const CTxMemPoolEntry &entry, const CCoinsViewC
             mapAddress.insert(std::make_pair(key, delta));
             inserted.push_back(key);
         } else if (prevout.scriptPubKey.IsPayToPublicKeyHash()) {
-			// SYSCOIN
+			// MARTKIST
 			CScript scriptOut;
 			CScript scriptPubKeyOut;
-			if (RemoveSyscoinScript(prevout.scriptPubKey, scriptPubKeyOut))
+			if (RemoveMartkistScript(prevout.scriptPubKey, scriptPubKeyOut))
 				scriptOut = scriptPubKeyOut;
 			else
 				scriptOut = prevout.scriptPubKey;
@@ -480,10 +480,10 @@ void CTxMemPool::addAddressIndex(const CTxMemPoolEntry &entry, const CCoinsViewC
             mapAddress.insert(std::make_pair(key, delta));
             inserted.push_back(key);
         } else if (prevout.scriptPubKey.IsPayToPublicKey()) {
-			// SYSCOIN
+			// MARTKIST
 			CScript scriptOut;
 			CScript scriptPubKeyOut;
-			if (RemoveSyscoinScript(prevout.scriptPubKey, scriptPubKeyOut))
+			if (RemoveMartkistScript(prevout.scriptPubKey, scriptPubKeyOut))
 				scriptOut = scriptPubKeyOut;
 			else
 				scriptOut = prevout.scriptPubKey;
@@ -498,10 +498,10 @@ void CTxMemPool::addAddressIndex(const CTxMemPoolEntry &entry, const CCoinsViewC
     for (unsigned int k = 0; k < tx.vout.size(); k++) {
         const CTxOut &out = tx.vout[k];
         if (out.scriptPubKey.IsPayToScriptHash()) {
-			// SYSCOIN
+			// MARTKIST
 			CScript scriptOut;
 			CScript scriptPubKeyOut;
-			if (RemoveSyscoinScript(out.scriptPubKey, scriptPubKeyOut))
+			if (RemoveMartkistScript(out.scriptPubKey, scriptPubKeyOut))
 				scriptOut = scriptPubKeyOut;
 			else
 				scriptOut = out.scriptPubKey;
@@ -510,10 +510,10 @@ void CTxMemPool::addAddressIndex(const CTxMemPoolEntry &entry, const CCoinsViewC
             mapAddress.insert(std::make_pair(key, CMempoolAddressDelta(entry.GetTime(), out.nValue)));
             inserted.push_back(key);
         } else if (out.scriptPubKey.IsPayToPublicKeyHash()) {
-			// SYSCOIN
+			// MARTKIST
 			CScript scriptOut;
 			CScript scriptPubKeyOut;
-			if (RemoveSyscoinScript(out.scriptPubKey, scriptPubKeyOut))
+			if (RemoveMartkistScript(out.scriptPubKey, scriptPubKeyOut))
 				scriptOut = scriptPubKeyOut;
 			else
 				scriptOut = out.scriptPubKey;
@@ -523,10 +523,10 @@ void CTxMemPool::addAddressIndex(const CTxMemPoolEntry &entry, const CCoinsViewC
             mapAddress.insert(std::make_pair(key, CMempoolAddressDelta(entry.GetTime(), out.nValue)));
             inserted.push_back(key);
         } else if (out.scriptPubKey.IsPayToPublicKey()) {
-			// SYSCOIN
+			// MARTKIST
 			CScript scriptOut;
 			CScript scriptPubKeyOut;
-			if (RemoveSyscoinScript(out.scriptPubKey, scriptPubKeyOut))
+			if (RemoveMartkistScript(out.scriptPubKey, scriptPubKeyOut))
 				scriptOut = scriptPubKeyOut;
 			else
 				scriptOut = out.scriptPubKey;
@@ -587,30 +587,30 @@ void CTxMemPool::addSpentIndex(const CTxMemPoolEntry &entry, const CCoinsViewCac
         int addressType;
 
         if (prevout.scriptPubKey.IsPayToScriptHash()) {
-			// SYSCOIN
+			// MARTKIST
 			CScript scriptOut;
 			CScript scriptPubKeyOut;
-			if (RemoveSyscoinScript(prevout.scriptPubKey, scriptPubKeyOut))
+			if (RemoveMartkistScript(prevout.scriptPubKey, scriptPubKeyOut))
 				scriptOut = scriptPubKeyOut;
 			else
 				scriptOut = prevout.scriptPubKey;
             addressHash = uint160(std::vector<unsigned char> (scriptOut.begin()+2, scriptOut.begin()+22));
             addressType = 2;
         } else if (prevout.scriptPubKey.IsPayToPublicKeyHash()) {
-			// SYSCOIN
+			// MARTKIST
 			CScript scriptOut;
 			CScript scriptPubKeyOut;
-			if (RemoveSyscoinScript(prevout.scriptPubKey, scriptPubKeyOut))
+			if (RemoveMartkistScript(prevout.scriptPubKey, scriptPubKeyOut))
 				scriptOut = scriptPubKeyOut;
 			else
 				scriptOut = prevout.scriptPubKey;
             addressHash = uint160(std::vector<unsigned char> (scriptOut.begin()+3, scriptOut.begin()+23));
             addressType = 1;
         } else if (prevout.scriptPubKey.IsPayToPublicKey()) {
-			// SYSCOIN
+			// MARTKIST
 			CScript scriptOut;
 			CScript scriptPubKeyOut;
-			if (RemoveSyscoinScript(prevout.scriptPubKey, scriptPubKeyOut))
+			if (RemoveMartkistScript(prevout.scriptPubKey, scriptPubKeyOut))
 				scriptOut = scriptPubKeyOut;
 			else
 				scriptOut = prevout.scriptPubKey;

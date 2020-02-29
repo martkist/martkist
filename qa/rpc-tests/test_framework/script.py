@@ -1,7 +1,7 @@
 #
 # script.py
 #
-# This file is modified from python-syscoinlib.
+# This file is modified from python-martkistlib.
 #
 # Distributed under the MIT/X11 software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.

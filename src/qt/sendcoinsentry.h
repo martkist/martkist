@@ -1,10 +1,10 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_SENDCOINSENTRY_H
-#define SYSCOIN_QT_SENDCOINSENTRY_H
+#ifndef MARTKIST_QT_SENDCOINSENTRY_H
+#define MARTKIST_QT_SENDCOINSENTRY_H
 
 #include "walletmodel.h"
 
@@ -18,7 +18,7 @@ namespace Ui {
 }
 
 /**
- * A single entry in the dialog for sending syscoins.
+ * A single entry in the dialog for sending martkists.
  * Stacked widget, with different UIs for payment requests
  * with a strong payee identity.
  */
@@ -71,4 +71,4 @@ private:
     bool updateLabel(const QString &address);
 };
 
-#endif // SYSCOIN_QT_SENDCOINSENTRY_H
+#endif // MARTKIST_QT_SENDCOINSENTRY_H

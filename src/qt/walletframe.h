@@ -1,15 +1,15 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_WALLETFRAME_H
-#define SYSCOIN_QT_WALLETFRAME_H
+#ifndef MARTKIST_QT_WALLETFRAME_H
+#define MARTKIST_QT_WALLETFRAME_H
 
 #include <QFrame>
 #include <QMap>
 
-class SyscoinGUI;
+class MartkistGUI;
 class ClientModel;
 class PlatformStyle;
 class SendCoinsRecipient;
@@ -22,9 +22,9 @@ QT_END_NAMESPACE
 
 /**
  * A container for embedding all wallet-related
- * controls into SyscoinGUI. The purpose of this class is to allow future
+ * controls into MartkistGUI. The purpose of this class is to allow future
  * refinements of the wallet controls with minimal need for further
- * modifications to SyscoinGUI, thus greatly simplifying merges while
+ * modifications to MartkistGUI, thus greatly simplifying merges while
  * reducing the risk of breaking top-level stuff.
  */
 class WalletFrame : public QFrame
@@ -32,7 +32,7 @@ class WalletFrame : public QFrame
     Q_OBJECT
 
 public:
-    explicit WalletFrame(const PlatformStyle *platformStyle, SyscoinGUI *_gui = 0);
+    explicit WalletFrame(const PlatformStyle *platformStyle, MartkistGUI *_gui = 0);
     ~WalletFrame();
 
     void setClientModel(ClientModel *clientModel);
@@ -52,7 +52,7 @@ Q_SIGNALS:
 
 private:
     QStackedWidget *walletStack;
-    SyscoinGUI *gui;
+    MartkistGUI *gui;
     ClientModel *clientModel;
     QMap<QString, WalletView*> mapWalletViews;
 
@@ -98,4 +98,4 @@ public Q_SLOTS:
     void outOfSyncWarningClicked();
 };
 
-#endif // SYSCOIN_QT_WALLETFRAME_H
+#endif // MARTKIST_QT_WALLETFRAME_H

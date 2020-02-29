@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_UNDO_H
-#define SYSCOIN_UNDO_H
+#ifndef MARTKIST_UNDO_H
+#define MARTKIST_UNDO_H
 
 #include "compressor.h" 
 #include "consensus/consensus.h"
@@ -109,4 +109,4 @@ public:
     }
 };
 
-#endif // SYSCOIN_UNDO_H
+#endif // MARTKIST_UNDO_H

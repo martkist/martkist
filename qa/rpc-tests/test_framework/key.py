@@ -2,7 +2,7 @@
 #
 # key.py - OpenSSL wrapper
 #
-# This file is modified from python-syscoinlib.
+# This file is modified from python-martkistlib.
 #
 
 """ECC secp256k1 crypto routines

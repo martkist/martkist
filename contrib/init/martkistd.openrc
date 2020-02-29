@@ -1,0 +1,92 @@
+#!/sbin/runscript
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/martkistcore/.martkistcore" ]; then
+	MARTKISTD_DEFAULT_DATADIR="/var/lib/martkistcore/.martkistcore"
+else
+	MARTKISTD_DEFAULT_DATADIR="/var/lib/martkistd"
+fi
+
+MARTKISTD_CONFIGFILE=${MARTKISTD_CONFIGFILE:-/etc/martkistcore/martkist.conf}
+MARTKISTD_PIDDIR=${MARTKISTD_PIDDIR:-/var/run/martkistd}
+MARTKISTD_PIDFILE=${MARTKISTD_PIDFILE:-${MARTKISTD_PIDDIR}/martkistd.pid}
+MARTKISTD_DATADIR=${MARTKISTD_DATADIR:-${MARTKISTD_DEFAULT_DATADIR}}
+MARTKISTD_USER=${MARTKISTD_USER:-${MARTKIST_USER:-martkistcore}}
+MARTKISTD_GROUP=${MARTKISTD_GROUP:-martkistcore}
+MARTKISTD_BIN=${MARTKISTD_BIN:-/usr/bin/martkistd}
+MARTKISTD_NICE=${MARTKISTD_NICE:-${NICELEVEL:-0}}
+MARTKISTD_OPTS="${MARTKISTD_OPTS:-${MARTKIST_OPTS}}"
+
+name="Martkist Core Daemon"
+description="Martkist cryptocurrency P2P network daemon"
+
+command="/usr/bin/martkistd"
+command_args="-pid=\"${MARTKISTD_PIDFILE}\" \
+		-conf=\"${MARTKISTD_CONFIGFILE}\" \
+		-datadir=\"${MARTKISTD_DATADIR}\" \
+		-daemon \
+		${MARTKISTD_OPTS}"
+
+required_files="${MARTKISTD_CONFIGFILE}"
+start_stop_daemon_args="-u ${MARTKISTD_USER} \
+			-N ${MARTKISTD_NICE} -w 2000"
+pidfile="${MARTKISTD_PIDFILE}"
+
+# The retry schedule to use when stopping the daemon. Could be either
+# a timeout in seconds or multiple signal/timeout pairs (like
+# "SIGKILL/180 SIGTERM/300")
+retry="${MARTKISTD_SIGTERM_TIMEOUT}"
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${MARTKISTD_USER}:${MARTKISTD_GROUP}" \
+	"${MARTKISTD_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${MARTKISTD_USER}:${MARTKISTD_GROUP}" \
+	"${MARTKISTD_PIDDIR}"
+
+	checkpath -f \
+	-o ${MARTKISTD_USER}:${MARTKISTD_GROUP} \
+	-m 0660 \
+	${MARTKISTD_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${MARTKISTD_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run martkistd."
+		eerror "The setting must appear in ${MARTKISTD_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following"
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is also recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"Martkist Core Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}

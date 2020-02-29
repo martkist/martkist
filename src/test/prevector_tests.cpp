@@ -8,7 +8,7 @@
 #include "serialize.h"
 #include "streams.h"
 
-#include "test/test_syscoin.h"
+#include "test/test_martkist.h"
 #include "test/test_random.h"
 
 #include <boost/test/unit_test.hpp>

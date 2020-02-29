@@ -1,12 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/syscoin-config.h"
+#include "config/martkist-config.h"
 #endif
 
 #include "util.h"
@@ -110,7 +110,7 @@ namespace boost {
 
 
 
-//Syscoin only features
+//Martkist only features
 bool fMasternodeMode = false;
 bool fUnitTest = false;
 bool fTPSTest = false;
@@ -126,8 +126,8 @@ bool fLiteMode = false;
 */
 int nWalletBackups = 10;
 
-const char * const SYSCOIN_CONF_FILENAME = "syscoin.conf";
-const char * const SYSCOIN_PID_FILENAME = "syscoind.pid";
+const char * const MARTKIST_CONF_FILENAME = "martkist.conf";
+const char * const MARTKIST_PID_FILENAME = "martkistd.pid";
 
 CCriticalSection cs_args;
 std::map<std::string, std::string> mapArgs;
@@ -283,8 +283,8 @@ bool LogAcceptCategory(const char* category)
                 const std::vector<std::string>& categories = mapMultiArgs.at("-debug");
                 ptrCategory.reset(new std::set<std::string>(categories.begin(), categories.end()));
                 // thread_specific_ptr automatically deletes the set when the thread ends.
-                // "syscoin" is a composite category enabling all Syscoin-related debug output
-                if(ptrCategory->count(std::string("syscoin"))) {
+                // "martkist" is a composite category enabling all Martkist-related debug output
+                if(ptrCategory->count(std::string("martkist"))) {
                     ptrCategory->insert(std::string("privatesend"));
                     ptrCategory->insert(std::string("instantsend"));
                     ptrCategory->insert(std::string("masternode"));
@@ -541,7 +541,7 @@ static std::string FormatException(const std::exception* pex, const char* pszThr
     char pszModule[MAX_PATH] = "";
     GetModuleFileNameA(NULL, pszModule, sizeof(pszModule));
 #else
-    const char* pszModule = "syscoin";
+    const char* pszModule = "martkist";
 #endif
     if (pex)
         return strprintf(
@@ -561,13 +561,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 boost::filesystem::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\SyscoinCore
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\SyscoinCore
-    // Mac: ~/Library/Application Support/SyscoinCore
-    // Unix: ~/.syscoincore
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\MartkistCore
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\MartkistCore
+    // Mac: ~/Library/Application Support/MartkistCore
+    // Unix: ~/.martkistcore
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "SyscoinCore";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "MartkistCore";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -577,10 +577,10 @@ boost::filesystem::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/SyscoinCore";
+    return pathRet / "Library/Application Support/MartkistCore";
 #else
     // Unix
-    return pathRet / ".syscoincore";
+    return pathRet / ".martkistcore";
 #endif
 #endif
 }
@@ -658,7 +658,7 @@ void ReadConfigFile(const std::string& confPath)
 {
     boost::filesystem::ifstream streamConfig(GetConfigFile(confPath));
     if (!streamConfig.good()){
-        // Create empty syscoin.conf if it does not excist
+        // Create empty martkist.conf if it does not excist
         FILE* configFile = fopen(GetConfigFile(confPath).string().c_str(), "a");
         if (configFile != NULL)
             fclose(configFile);
@@ -672,7 +672,7 @@ void ReadConfigFile(const std::string& confPath)
 
         for (boost::program_options::detail::config_file_iterator it(streamConfig, setOptions), end; it != end; ++it)
         {
-            // Don't overwrite existing settings so command line settings override syscoin.conf
+            // Don't overwrite existing settings so command line settings override martkist.conf
             std::string strKey = std::string("-") + it->string_key;
             std::string strValue = it->value[0];
             InterpretNegativeSetting(strKey, strValue);
@@ -688,7 +688,7 @@ void ReadConfigFile(const std::string& confPath)
 #ifndef WIN32
 boost::filesystem::path GetPidFile()
 {
-    boost::filesystem::path pathPidFile(GetArg("-pid", SYSCOIN_PID_FILENAME));
+    boost::filesystem::path pathPidFile(GetArg("-pid", MARTKIST_PID_FILENAME));
     if (!pathPidFile.is_complete()) pathPidFile = GetDataDir() / pathPidFile;
     return pathPidFile;
 }
@@ -961,9 +961,9 @@ std::string CopyrightHolders(const std::string& strPrefix, unsigned int nStartYe
 {
     std::string strCopyrightHolders = strPrefix + strprintf(" %u-%u ", nStartYear, nEndYear) + strprintf(_(COPYRIGHT_HOLDERS), _(COPYRIGHT_HOLDERS_SUBSTITUTION));
 
-    // Check for untranslated substitution to make sure Syscoin Core copyright is not removed by accident
-    if (strprintf(COPYRIGHT_HOLDERS, COPYRIGHT_HOLDERS_SUBSTITUTION).find("Syscoin Core") == std::string::npos) {
-        strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2009, nEndYear) + "The Syscoin Core developers";
+    // Check for untranslated substitution to make sure Martkist Core copyright is not removed by accident
+    if (strprintf(COPYRIGHT_HOLDERS, COPYRIGHT_HOLDERS_SUBSTITUTION).find("Martkist Core") == std::string::npos) {
+        strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2009, nEndYear) + "The Martkist Core developers";
     }
     return strCopyrightHolders;
 }

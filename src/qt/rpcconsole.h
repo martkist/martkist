@@ -1,10 +1,10 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_RPCCONSOLE_H
-#define SYSCOIN_QT_RPCCONSOLE_H
+#ifndef MARTKIST_QT_RPCCONSOLE_H
+#define MARTKIST_QT_RPCCONSOLE_H
 
 #include "guiutil.h"
 #include "peertablemodel.h"
@@ -29,7 +29,7 @@ class QMenu;
 class QItemSelection;
 QT_END_NAMESPACE
 
-/** Local Syscoin RPC console. */
+/** Local Martkist RPC console. */
 class RPCConsole: public QWidget
 {
     Q_OBJECT
@@ -175,4 +175,4 @@ private:
     void updateNetworkState();
 };
 
-#endif // SYSCOIN_QT_RPCCONSOLE_H
+#endif // MARTKIST_QT_RPCCONSOLE_H

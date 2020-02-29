@@ -1,6 +1,6 @@
 // Automatically generated file. Do not modify.
-#ifndef SYSCOIN_UNIVALUE_UNIVALUE_ESCAPES_H
-#define SYSCOIN_UNIVALUE_UNIVALUE_ESCAPES_H
+#ifndef MARTKIST_UNIVALUE_UNIVALUE_ESCAPES_H
+#define MARTKIST_UNIVALUE_UNIVALUE_ESCAPES_H
 static const char *escapes[256] = {
 	"\\u0000",
 	"\\u0001",
@@ -259,4 +259,4 @@ static const char *escapes[256] = {
 	NULL,
 	NULL,
 };
-#endif // SYSCOIN_UNIVALUE_UNIVALUE_ESCAPES_H
+#endif // MARTKIST_UNIVALUE_UNIVALUE_ESCAPES_H

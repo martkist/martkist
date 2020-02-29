@@ -1,7 +1,7 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -169,16 +169,16 @@ static const CRPCConvertParam vRPCConvertParams[] =
 	{ "aliaspay", 1, "addresses" },
 	{ "aliaspay", 2, "instantsend" },
 	{ "aliaspay", 3, "subtractfeefromamount" },
-	{ "syscoinsendrawtransaction", 1, "allowhighfees" },
-	{ "syscoinsendrawtransaction", 2, "instantsend" },
+	{ "martkistsendrawtransaction", 1, "allowhighfees" },
+	{ "martkistsendrawtransaction", 2, "instantsend" },
 	{ "escrowcreaterawtransaction", 2, "inputs" },
 	{ "aliasupdatewhitelist", 1, "aliases" },
 	{ "aliasnew", 2, "accept_transfers_flags" },
 	{ "aliasnew", 3, "expire_timestamp" },
 	{ "aliasnewestimatedfee", 2, "accept_transfers_flags" },
 	{ "aliasnewestimatedfee", 3, "expire_timestamp" },
-	{ "syscointxfund", 1, "addresses" },
-	{ "syscointxfund", 2, "instantsend" },
+	{ "martkisttxfund", 1, "addresses" },
+	{ "martkisttxfund", 2, "instantsend" },
 	{ "aliasbalance", 1, "instantsend" },
 	{ "aliasbalancemulti", 0, "aliases" },
 	{ "aliasbalancemulti", 1, "instantsend" },

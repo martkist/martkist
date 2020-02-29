@@ -1,17 +1,17 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_WALLETVIEW_H
-#define SYSCOIN_QT_WALLETVIEW_H
+#ifndef MARTKIST_QT_WALLETVIEW_H
+#define MARTKIST_QT_WALLETVIEW_H
 
 #include "amount.h"
 #include "masternodelist.h"
 
 #include <QStackedWidget>
 
-class SyscoinGUI;
+class MartkistGUI;
 class ClientModel;
 class OverviewPage;
 class PlatformStyle;
@@ -42,13 +42,13 @@ public:
     explicit WalletView(const PlatformStyle *platformStyle, QWidget *parent);
     ~WalletView();
 
-    void setSyscoinGUI(SyscoinGUI *gui);
+    void setMartkistGUI(MartkistGUI *gui);
     /** Set the client model.
         The client model represents the part of the core that communicates with the P2P network, and is wallet-agnostic.
     */
     void setClientModel(ClientModel *clientModel);
     /** Set the wallet model.
-        The wallet model represents a syscoin wallet, and offers access to the list of transactions, address book and sending
+        The wallet model represents a martkist wallet, and offers access to the list of transactions, address book and sending
         functionality.
     */
     void setWalletModel(WalletModel *walletModel);
@@ -123,7 +123,7 @@ public Q_SLOTS:
     void requestedSyncWarningInfo();
 
 
-    /** Update selected SYS amount from transactionview */
+    /** Update selected MARTK amount from transactionview */
     void trxAmount(QString amount);
 Q_SIGNALS:
     /** Signal that we want to show the main window */
@@ -140,4 +140,4 @@ Q_SIGNALS:
     void outOfSyncWarningClicked();
 };
 
-#endif // SYSCOIN_QT_WALLETVIEW_H
+#endif // MARTKIST_QT_WALLETVIEW_H

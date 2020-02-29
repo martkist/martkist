@@ -2,11 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_COMPAT_BYTESWAP_H
-#define SYSCOIN_COMPAT_BYTESWAP_H
+#ifndef MARTKIST_COMPAT_BYTESWAP_H
+#define MARTKIST_COMPAT_BYTESWAP_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/syscoin-config.h"
+#include "config/martkist-config.h"
 #endif
 
 #include <stdint.h>
@@ -63,4 +63,4 @@ inline uint64_t bswap_64(uint64_t x)
 
 #endif // defined(__APPLE__)
 
-#endif // SYSCOIN_COMPAT_BYTESWAP_H
+#endif // MARTKIST_COMPAT_BYTESWAP_H

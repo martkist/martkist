@@ -1,10 +1,10 @@
 // Copyright (c) 2012-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_BLOOM_H
-#define SYSCOIN_BLOOM_H
+#ifndef MARTKIST_BLOOM_H
+#define MARTKIST_BLOOM_H
 
 #include "serialize.h"
 
@@ -141,4 +141,4 @@ private:
     int nHashFuncs;
 };
 
-#endif // SYSCOIN_BLOOM_H
+#endif // MARTKIST_BLOOM_H

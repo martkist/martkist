@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,8 +13,8 @@
 #include "pubkey.h"
 #include "script/script.h"
 #include "uint256.h"
-// SYSCOIN services
-extern bool RemoveSyscoinScript(const CScript& scriptPubKeyIn, CScript& scriptPubKeyOut);
+// MARTKIST services
+extern bool RemoveMartkistScript(const CScript& scriptPubKeyIn, CScript& scriptPubKeyOut);
 typedef std::vector<unsigned char> valtype;
 
 namespace {
@@ -91,7 +91,7 @@ bool static IsCompressedOrUncompressedPubKey(const valtype &vchPubKey) {
  * excessively padded (do not start with a 0 byte, unless an otherwise negative number follows,
  * in which case a single 0 byte is necessary and even required).
  * 
- * See https://syscointalk.org/index.php?topic=8392.msg127623#msg127623
+ * See https://martkisttalk.org/index.php?topic=8392.msg127623#msg127623
  *
  * This function is consensus-critical since BIP66.
  */
@@ -1253,10 +1253,10 @@ bool TransactionSignatureChecker::CheckSequence(const CScriptNum& nSequence) con
 
 bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKeyIn, unsigned int flags, const BaseSignatureChecker& checker, ScriptError* serror)
 {
-	// SYSCOIN
+	// MARTKIST
 	CScript scriptPubKey;
 	CScript scriptPubKeyOut;
-	if (RemoveSyscoinScript(scriptPubKeyIn, scriptPubKeyOut))
+	if (RemoveMartkistScript(scriptPubKeyIn, scriptPubKeyOut))
 		scriptPubKey = scriptPubKeyOut;
 	else
 		scriptPubKey = scriptPubKeyIn;

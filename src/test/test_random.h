@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_TEST_RANDOM_H
-#define SYSCOIN_TEST_RANDOM_H
+#ifndef MARTKIST_TEST_RANDOM_H
+#define MARTKIST_TEST_RANDOM_H
 
 #include "random.h"
 

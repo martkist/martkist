@@ -146,7 +146,7 @@ static bool RPCAuthorized(const std::string& strAuth, std::string& strAuthUserna
     }
     return multiUserAuthorized(strUserPass);
 }
-// Syscoin This is not a CORS check. Only check if OPTIONS are
+// Martkist This is not a CORS check. Only check if OPTIONS are
 // set in order to allow localhost to localhost communications
 static bool checkPreflight(HTTPRequest* req)
 {
@@ -154,7 +154,7 @@ static bool checkPreflight(HTTPRequest* req)
 
     // 1. If the Origin header is not present terminate this set of steps.
     // The request is outside the scope of this specification.
-    // Syscoin Keep origin so as not to have to set Access-Control-Allow-Origin
+    // Martkist Keep origin so as not to have to set Access-Control-Allow-Origin
     // to *
     std::pair<bool, std::string> origin = req->GetHeader("origin");
     if (!origin.first) {
@@ -166,7 +166,7 @@ static bool checkPreflight(HTTPRequest* req)
     // and terminate this set of steps.
     // Note: Always matching is acceptable since the list of origins can be
     // unbounded.
-    // Syscoin We are only satifying the OPTIONS request in this method in order to
+    // Martkist We are only satifying the OPTIONS request in this method in order to
     // allow localhost to localhost communications. If CORS is implemented origin
     // would be checked against an acceptable domain
     // if (origin.second != strRPCCORSDomain) {
@@ -225,7 +225,7 @@ static bool checkPreflight(HTTPRequest* req)
         // Access-Control-Allow-Credentials header with the case-sensitive
         // string "true" as value.
         req->WriteHeader("Access-Control-Allow-Origin", origin.second);
-        // Syscoin as we are only handling OPTIONS there is
+        // Martkist as we are only handling OPTIONS there is
         // no need to expose the response
         //req->WriteHeader("Access-Control-Allow-Credentials", "true");
 
@@ -268,7 +268,7 @@ static bool checkPreflight(HTTPRequest* req)
     // header as value, and add a single Access-Control-Allow-Credentials
     // header with the case-sensitive string "true" as value.
     req->WriteHeader("Access-Control-Allow-Origin", origin.second);
-    // Syscoin as we are only handling OPTIONS there is
+    // Martkist as we are only handling OPTIONS there is
     // no need to expose the response
     // req->WriteHeader("Access-Control-Allow-Credentials", "true");
 

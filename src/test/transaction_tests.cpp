@@ -1,11 +1,11 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "data/tx_invalid.json.h"
 #include "data/tx_valid.json.h"
-#include "test/test_syscoin.h"
+#include "test/test_martkist.h"
 
 #include "clientversion.h"
 #include "consensus/validation.h"
@@ -335,7 +335,7 @@ BOOST_AUTO_TEST_CASE(test_IsStandard)
 
     // Check dust with default relay fee:
     CAmount nDustThreshold = 182 * dustRelayFee.GetFeePerK()/1000 * 3;
-	// SYSCOIN
+	// MARTKIST
     BOOST_CHECK_EQUAL(nDustThreshold, 5460);
     // dust:
     t.vout[0].nValue = nDustThreshold - 1;
@@ -348,11 +348,11 @@ BOOST_AUTO_TEST_CASE(test_IsStandard)
     // nDustThreshold = 182 * 1234 / 1000 * 3
     minRelayTxFee = CFeeRate(1234);
     // dust:
-	// SYSCOIN
+	// MARTKIST
     t.vout[0].nValue = 5460 - 1;
     BOOST_CHECK(!IsStandardTx(t, reason));
     // not dust:
-	// SYSCOIN
+	// MARTKIST
     t.vout[0].nValue = 5460;
     BOOST_CHECK(IsStandardTx(t, reason));
     minRelayTxFee = CFeeRate(DUST_RELAY_TX_FEE);

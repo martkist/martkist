@@ -1,10 +1,10 @@
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_CORE_IO_H
-#define SYSCOIN_CORE_IO_H
+#ifndef MARTKIST_CORE_IO_H
+#define MARTKIST_CORE_IO_H
 
 #include <string>
 #include <vector>
@@ -31,4 +31,4 @@ std::string EncodeHexTx(const CTransaction& tx);
 void ScriptPubKeyToUniv(const CScript& scriptPubKey, UniValue& out, bool fIncludeHex);
 void TxToUniv(const CTransaction& tx, const uint256& hashBlock, UniValue& entry);
 
-#endif // SYSCOIN_CORE_IO_H
+#endif // MARTKIST_CORE_IO_H

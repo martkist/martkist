@@ -1,13 +1,13 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Syscoin
+Upstream-Name: Martkist
 Upstream-Contact: Satoshi Nakamoto <satoshin@gmx.com>
- irc://#syscoin@freenode.net
-Source: https://github.com/syscoin/syscoin
+ irc://#martkist@freenode.net
+Source: https://github.com/martkist/martkist
 
 Files: *
-Copyright: 2009-2016, Syscoin Core Developers
+Copyright: 2009-2016, Martkist Core Developers
 License: Expat
-Comment: The Syscoin Core Developers encompasses the current developers listed on syscoin.org,
+Comment: The Martkist Core Developers encompasses the current developers listed on martkist.org,
          as well as the numerous contributors to the project.
 
 Files: debian/*
@@ -72,12 +72,12 @@ License: Expat
 Comment: Modifications of Stephan Hutchings Typicons
 
 Files: src/qt/res/icons/about.png
-       src/qt/res/icons/syscoin.*
-       share/pixmaps/syscoin*
-       src/qt/res/src/syscoin.svg
+       src/qt/res/icons/martkist.*
+       share/pixmaps/martkist*
+       src/qt/res/src/martkist.svg
 Copyright: Bitboy, Jonas Schnelli
 License: public-domain
-Comment: Site: https://syscointalk.org/?topic=1756.0
+Comment: Site: https://martkisttalk.org/?topic=1756.0
 
 
 License: Expat

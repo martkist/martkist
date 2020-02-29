@@ -1,16 +1,16 @@
 Bash Completion
 ---------------------
 
-The following script provide bash completion functionality for `sycoind` and `syscoin-cli`.
+The following script provide bash completion functionality for `sycoind` and `martkist-cli`.
 
-* `contrib/syscoind.bash-completion`
-* `contrib/syscoin-cli.bash-completion`
+* `contrib/martkistd.bash-completion`
+* `contrib/martkist-cli.bash-completion`
 * `contrib/_osx.bash-completion`
 
 ### OSX ###
 Use `brew` to install `bash-completion` then update `~/.bashrc` to include the completion scripts and helper functions to provide `have()` and `_have()` on OSX.
 
-The example assumes Syscoin was compiled in `~/syscoin` and the scripts will be availabe in `~/syscoin/contrib`, however they can be moved to a different location.
+The example assumes Martkist was compiled in `~/martkist` and the scripts will be availabe in `~/martkist/contrib`, however they can be moved to a different location.
 
 ```
 brew install bash bash-completion
@@ -21,9 +21,9 @@ BASHRC=$(cat <<EOF
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
   . $(brew --prefix)/etc/bash_completion
 fi
-. ~/syscoin/contrib/_osx.bash-completion
-. ~/syscoin/contrib/syscoind.bash-completion
-. ~/syscoin/contrib/syscoin-cli.bash-completion
+. ~/martkist/contrib/_osx.bash-completion
+. ~/martkist/contrib/martkistd.bash-completion
+. ~/martkist/contrib/martkist-cli.bash-completion
 EOF
 )
 

@@ -2,7 +2,7 @@
 // Copyright (c) 2011 Vince Durham
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2017 Daniel Kraft
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file license.txt or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,7 +20,7 @@
 #include <validation.h>
 
 #include <algorithm>
-// SYSCOIN 
+// MARTKIST 
 #include "instantx.h"
 typedef std::vector<unsigned char> valtype;
 /* Moved from wallet.cpp.  CMerkleTx is necessary for auxpow, independent

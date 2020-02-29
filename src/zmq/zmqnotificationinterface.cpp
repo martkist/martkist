@@ -41,19 +41,19 @@ CZMQNotificationInterface* CZMQNotificationInterface::Create()
     factories["pubrawblock"] = CZMQAbstractNotifier::Create<CZMQPublishRawBlockNotifier>;
     factories["pubrawtx"] = CZMQAbstractNotifier::Create<CZMQPublishRawTransactionNotifier>;
     factories["pubrawtxlock"] = CZMQAbstractNotifier::Create<CZMQPublishRawTransactionLockNotifier>;
-    factories["pubaliashistory"] = CZMQAbstractNotifier::Create<CZMQPublishRawSyscoinNotifier>;
-    factories["pubaliasrecord"] = CZMQAbstractNotifier::Create<CZMQPublishRawSyscoinNotifier>;
-    factories["pubaliastxhistory"] = CZMQAbstractNotifier::Create<CZMQPublishRawSyscoinNotifier>;
-    factories["pubassetallocation"] = CZMQAbstractNotifier::Create<CZMQPublishRawSyscoinNotifier>;
-    factories["pubassethistory"] = CZMQAbstractNotifier::Create<CZMQPublishRawSyscoinNotifier>;
-    factories["pubassetrecord"] = CZMQAbstractNotifier::Create<CZMQPublishRawSyscoinNotifier>;
-    factories["pubcerthistory"] = CZMQAbstractNotifier::Create<CZMQPublishRawSyscoinNotifier>;
-    factories["pubcertrecord"] = CZMQAbstractNotifier::Create<CZMQPublishRawSyscoinNotifier>;
-    factories["pubescrowbid"] = CZMQAbstractNotifier::Create<CZMQPublishRawSyscoinNotifier>;
-    factories["pubescrowfeedback"] = CZMQAbstractNotifier::Create<CZMQPublishRawSyscoinNotifier>;
-    factories["pubescrowrecord"] = CZMQAbstractNotifier::Create<CZMQPublishRawSyscoinNotifier>;
-    factories["pubofferhistory"] = CZMQAbstractNotifier::Create<CZMQPublishRawSyscoinNotifier>;
-    factories["pubofferrecord"] = CZMQAbstractNotifier::Create<CZMQPublishRawSyscoinNotifier>;
+    factories["pubaliashistory"] = CZMQAbstractNotifier::Create<CZMQPublishRawMartkistNotifier>;
+    factories["pubaliasrecord"] = CZMQAbstractNotifier::Create<CZMQPublishRawMartkistNotifier>;
+    factories["pubaliastxhistory"] = CZMQAbstractNotifier::Create<CZMQPublishRawMartkistNotifier>;
+    factories["pubassetallocation"] = CZMQAbstractNotifier::Create<CZMQPublishRawMartkistNotifier>;
+    factories["pubassethistory"] = CZMQAbstractNotifier::Create<CZMQPublishRawMartkistNotifier>;
+    factories["pubassetrecord"] = CZMQAbstractNotifier::Create<CZMQPublishRawMartkistNotifier>;
+    factories["pubcerthistory"] = CZMQAbstractNotifier::Create<CZMQPublishRawMartkistNotifier>;
+    factories["pubcertrecord"] = CZMQAbstractNotifier::Create<CZMQPublishRawMartkistNotifier>;
+    factories["pubescrowbid"] = CZMQAbstractNotifier::Create<CZMQPublishRawMartkistNotifier>;
+    factories["pubescrowfeedback"] = CZMQAbstractNotifier::Create<CZMQPublishRawMartkistNotifier>;
+    factories["pubescrowrecord"] = CZMQAbstractNotifier::Create<CZMQPublishRawMartkistNotifier>;
+    factories["pubofferhistory"] = CZMQAbstractNotifier::Create<CZMQPublishRawMartkistNotifier>;
+    factories["pubofferrecord"] = CZMQAbstractNotifier::Create<CZMQPublishRawMartkistNotifier>;
 
     for (std::map<std::string, CZMQNotifierFactory>::const_iterator i=factories.begin(); i!=factories.end(); ++i)
     {
@@ -192,7 +192,7 @@ void CZMQNotificationInterface::NotifyTransactionLock(const CTransaction &tx)
         }
     }
 }
-void CZMQNotificationInterface::NotifySyscoinUpdate(const char *value, const char *topic)
+void CZMQNotificationInterface::NotifyMartkistUpdate(const char *value, const char *topic)
 {
 
 	for (std::list<CZMQAbstractNotifier*>::iterator i = notifiers.begin(); i != notifiers.end(); )
@@ -206,7 +206,7 @@ void CZMQNotificationInterface::NotifySyscoinUpdate(const char *value, const cha
 			continue;
 		}
 
-		if (notifier->NotifySyscoinUpdate(value, topic))
+		if (notifier->NotifyMartkistUpdate(value, topic))
 		{
 			i++;
 		}

@@ -1,10 +1,10 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_RECENTREQUESTSTABLEMODEL_H
-#define SYSCOIN_QT_RECENTREQUESTSTABLEMODEL_H
+#ifndef MARTKIST_QT_RECENTREQUESTSTABLEMODEL_H
+#define MARTKIST_QT_RECENTREQUESTSTABLEMODEL_H
 
 #include "walletmodel.h"
 
@@ -53,7 +53,7 @@ private:
     Qt::SortOrder order;
 };
 
-/** Model for list of recently generated payment requests / syscoin: URIs.
+/** Model for list of recently generated payment requests / martkist: URIs.
  * Part of wallet model.
  */
 class RecentRequestsTableModel: public QAbstractTableModel
@@ -105,4 +105,4 @@ private:
     QString getAmountTitle();
 };
 
-#endif // SYSCOIN_QT_RECENTREQUESTSTABLEMODEL_H
+#endif // MARTKIST_QT_RECENTREQUESTSTABLEMODEL_H

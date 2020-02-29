@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
-# Copyright (c) 2014-2015 The Bitcoin Core developers
-# Copyright (c) 2014-2016 The Syscoin Core developers
+# Copyright (c) 2014-2020 The Bitcoin Core developers
+# Copyright (c) 2014-2020 The Martkist Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,13 +8,13 @@
 # on chains of different lengths, and join the network together again.
 # This gives us two tips, verify that it works.
 
-from test_framework.test_framework import SyscoinTestFramework
+from test_framework.test_framework import MartkistTestFramework
 from test_framework.util import assert_equal
 
-class GetChainTipsTest (SyscoinTestFramework):
+class GetChainTipsTest (MartkistTestFramework):
 
     def run_test (self):
-        SyscoinTestFramework.run_test (self)
+        MartkistTestFramework.run_test (self)
 
         tips = self.nodes[0].getchaintips ()
         assert_equal (len (tips), 1)

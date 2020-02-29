@@ -38,17 +38,17 @@ from the root of the repository.
 
 **Note**: You only need Berkeley DB if the wallet is enabled (see the section *Disable-Wallet mode* below).
 
-Build Syscoin Core
+Build Martkist Core
 ------------------------
 
-1. Clone the syscoin source code and cd into `syscoin`
+1. Clone the martkist source code and cd into `martkist`
 
-        git clone https://github.com/syscoin/syscoin
-        cd syscoin
+        git clone https://github.com/martkist/martkist
+        cd martkist
 
-2.  Build syscoin-core:
+2.  Build martkist-core:
 
-    Configure and build the headless syscoin binaries as well as the GUI (if Qt is found).
+    Configure and build the headless martkist binaries as well as the GUI (if Qt is found).
 
     You can disable the GUI build by passing `--without-gui` to configure.
 
@@ -63,30 +63,30 @@ Build Syscoin Core
 Running
 -------
 
-Syscoin Core is now available at `./src/syscoind`
+Martkist Core is now available at `./src/martkistd`
 
 Before running, it's recommended you create an RPC configuration file.
 
-    echo -e "rpcuser=syscoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/SyscoinCore/syscoin.conf"
+    echo -e "rpcuser=martkistrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/MartkistCore/martkist.conf"
 
-    chmod 600 "/Users/${USER}/Library/Application Support/SyscoinCore/syscoin.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/MartkistCore/martkist.conf"
 
-The first time you run syscoind, it will start downloading the blockchain. This process could take several hours.
+The first time you run martkistd, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
-    tail -f $HOME/Library/Application\ Support/Syscoin/debug.log
+    tail -f $HOME/Library/Application\ Support/Martkist/debug.log
 
 Other commands:
 -------
 
-    ./src/syscoind -daemon # Starts the syscoin daemon.
-    ./src/syscoin-cli --help # Outputs a list of command-line options.
-    ./src/syscoin-cli help # Outputs a list of RPC commands when the daemon is running.
+    ./src/martkistd -daemon # Starts the martkist daemon.
+    ./src/martkist-cli --help # Outputs a list of command-line options.
+    ./src/martkist-cli help # Outputs a list of RPC commands when the daemon is running.
 
 Notes
 -----
 
 * Tested on OS X 10.10 Yosemite through macOS 10.13 High Sierra on 64-bit Intel processors only.
 
-* Building with downloaded Qt binaries is not officially supported. See the notes in [#7714](https://github.com/syscoin/syscoin/issues/7714)
+* Building with downloaded Qt binaries is not officially supported. See the notes in [#7714](https://github.com/martkist/martkist/issues/7714)

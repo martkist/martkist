@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 The Syscoin Core developers
+// Copyright (c) 2015-2018 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -31,7 +31,7 @@ bool IsOfferOp(int op);
 std::string offerFromOp(int op);
 void OfferTxToJSON(const int op, const std::vector<unsigned char> &vchData, const std::vector<unsigned char> &vchHash, UniValue &entry);
 bool RemoveOfferScriptPrefix(const CScript& scriptIn, CScript& scriptOut);
-#define PAYMENTOPTION_SYS 0x01
+#define PAYMENTOPTION_MARTK 0x01
 #define PAYMENTOPTION_BTC 0x02
 #define PAYMENTOPTION_ZEC 0x04
 

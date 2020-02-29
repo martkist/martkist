@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_MERKLE
-#define SYSCOIN_MERKLE
+#ifndef MARTKIST_MERKLE
+#define MARTKIST_MERKLE
 
 #include <stdint.h>
 #include <vector>

@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_CUCKOOCACHE_H
-#define SYSCOIN_CUCKOOCACHE_H
+#ifndef MARTKIST_CUCKOOCACHE_H
+#define MARTKIST_CUCKOOCACHE_H
 
 #include <array>
 #include <algorithm>
@@ -479,4 +479,4 @@ namespace CuckooCache
 	};
 } // namespace CuckooCache
 
-#endif // SYSCOIN_CUCKOOCACHE_H
+#endif // MARTKIST_CUCKOOCACHE_H

@@ -1,11 +1,11 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_RPCSERVER_H
-#define SYSCOIN_RPCSERVER_H
+#ifndef MARTKIST_RPCSERVER_H
+#define MARTKIST_RPCSERVER_H
 
 #include "amount.h"
 #include "rpc/protocol.h"
@@ -144,7 +144,7 @@ public:
 };
 
 /**
- * Syscoin RPC command dispatcher.
+ * Martkist RPC command dispatcher.
  */
 class CRPCTable
 {
@@ -178,17 +178,17 @@ public:
 };
 
 extern CRPCTable tableRPC;
-// SYSCOIN service rpc functions
+// MARTKIST service rpc functions
 extern UniValue aliasnew(const JSONRPCRequest& request);
 extern UniValue aliasnewestimatedfee(const JSONRPCRequest& request);
-extern UniValue syscointxfund(const JSONRPCRequest& request);
+extern UniValue martkisttxfund(const JSONRPCRequest& request);
 
 extern UniValue aliasupdate(const JSONRPCRequest& request);
 extern UniValue aliasupdateestimatedfee(const JSONRPCRequest& request);
 extern UniValue aliasinfo(const JSONRPCRequest& request);
 extern UniValue aliasbalance(const JSONRPCRequest& request);
 extern UniValue aliasbalancemulti(const JSONRPCRequest& request);
-extern UniValue prunesyscoinservices(const JSONRPCRequest& request);
+extern UniValue prunemartkistservices(const JSONRPCRequest& request);
 extern UniValue aliaspay(const JSONRPCRequest& request);
 extern UniValue aliasaddscript(const JSONRPCRequest& request);
 extern UniValue aliasupdatewhitelist(const JSONRPCRequest& request);
@@ -196,11 +196,11 @@ extern UniValue aliasclearwhitelist(const JSONRPCRequest& request);
 extern UniValue aliaswhitelist(const JSONRPCRequest& request);
 extern UniValue listaliases(const JSONRPCRequest& request);
 
-extern UniValue syscoinlistreceivedbyaddress(const JSONRPCRequest& request);
+extern UniValue martkistlistreceivedbyaddress(const JSONRPCRequest& request);
 extern UniValue sendrawtransaction(const JSONRPCRequest& request);
 extern UniValue createrawtransaction(const JSONRPCRequest& request);
-extern UniValue syscoinsendrawtransaction(const JSONRPCRequest& request);
-extern UniValue syscoindecoderawtransaction(const JSONRPCRequest& request);
+extern UniValue martkistsendrawtransaction(const JSONRPCRequest& request);
+extern UniValue martkistdecoderawtransaction(const JSONRPCRequest& request);
 
 extern UniValue offernew(const JSONRPCRequest& request);
 extern UniValue offerupdate(const JSONRPCRequest& request);
@@ -267,4 +267,4 @@ void StopRPC();
 std::string JSONRPCExecBatch(const UniValue& vReq);
 void RPCNotifyBlockChange(bool ibd, const CBlockIndex *);
 
-#endif // SYSCOIN_RPCSERVER_H
+#endif // MARTKIST_RPCSERVER_H

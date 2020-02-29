@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,7 +11,7 @@
 #include "utilstrencodings.h"
 #include "crypto/common.h"
 
-// SYSCOIN setauxpow and remove gethash (moved to pureheader.cpp)
+// MARTKIST setauxpow and remove gethash (moved to pureheader.cpp)
 void CBlockHeader::SetAuxpow(CAuxPow* apow)
 {
 	if (apow)

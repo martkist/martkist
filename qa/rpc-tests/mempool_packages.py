@@ -1,19 +1,19 @@
 #!/usr/bin/env python2
-# Copyright (c) 2014-2015 The Bitcoin Core developers
-# Copyright (c) 2014-2016 The Syscoin Core developers
+# Copyright (c) 2014-2020 The Bitcoin Core developers
+# Copyright (c) 2014-2020 The Martkist Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 # Test descendant package tracking code
 
-from test_framework.test_framework import SyscoinTestFramework
+from test_framework.test_framework import MartkistTestFramework
 from test_framework.util import *
 from test_framework.mininode import COIN
 
 MAX_ANCESTORS = 25
 MAX_DESCENDANTS = 25
 
-class MempoolPackagesTest(SyscoinTestFramework):
+class MempoolPackagesTest(MartkistTestFramework):
 
     def setup_network(self):
         self.nodes = []

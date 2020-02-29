@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_SCHEDULER_H
-#define SYSCOIN_SCHEDULER_H
+#ifndef MARTKIST_SCHEDULER_H
+#define MARTKIST_SCHEDULER_H
 
 //
 // NOTE:

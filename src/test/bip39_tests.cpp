@@ -1,5 +1,5 @@
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2017-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2017-2018 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,7 +8,7 @@
 #include "key.h"
 #include "util.h"
 #include "utilstrencodings.h"
-#include "test/test_syscoin.h"
+#include "test/test_martkist.h"
 #include "bip39.h"
 
 #include <boost/test/unit_test.hpp>
@@ -58,9 +58,9 @@ BOOST_AUTO_TEST_CASE(bip39_vectors)
         key.SetMaster(&seed[0], 64);
         pubkey = key.Neuter();
 
-        CSyscoinExtKey b58key;
+        CMartkistExtKey b58key;
         b58key.SetKey(key);
-        // printf("CSyscoinExtKey: %s\n", b58key.ToString().c_str());
+        // printf("CMartkistExtKey: %s\n", b58key.ToString().c_str());
         BOOST_CHECK(b58key.ToString() == test[3].get_str());
     }
 }

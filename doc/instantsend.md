@@ -11,9 +11,9 @@ When a "Transaction Lock" occurs the hash of the related transaction is broadcas
 * `zmqpubrawtxlock`: publishes the raw transaction when locked via InstantSend
 * `zmqpubhashtxlock`: publishes the transaction hash when locked via InstantSend
 
-This mechanism has been integrated into Bitcore-Node-Syscoin which allows for notification to be broadcast through Insight API in one of two ways:
-* WebSocket: [https://github.com/syscoin/insight-api-syscoin#web-socket-api](https://github.com/syscoin/insight-api-syscoin#web-socket-api) 
-* API: [https://github.com/syscoin/insight-api-syscoin#instantsend-transactions](https://github.com/syscoin/insight-api-syscoin#instantsend-transactions) 
+This mechanism has been integrated into Bitcore-Node-Martkist which allows for notification to be broadcast through Insight API in one of two ways:
+* WebSocket: [https://github.com/martkist/insight-api-martkist#web-socket-api](https://github.com/martkist/insight-api-martkist#web-socket-api) 
+* API: [https://github.com/martkist/insight-api-martkist#instantsend-transactions](https://github.com/martkist/insight-api-martkist#instantsend-transactions) 
 
 #### Command line option
 

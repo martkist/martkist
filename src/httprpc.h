@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_HTTPRPC_H
-#define SYSCOIN_HTTPRPC_H
+#ifndef MARTKIST_HTTPRPC_H
+#define MARTKIST_HTTPRPC_H
 
 #include <string>
 #include <map>

@@ -1,12 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_WALLET_WALLET_ISMINE_H
-#define SYSCOIN_WALLET_WALLET_ISMINE_H
+#ifndef MARTKIST_WALLET_WALLET_ISMINE_H
+#define MARTKIST_WALLET_WALLET_ISMINE_H
 
 #include "script/standard.h"
 
@@ -33,4 +33,4 @@ typedef uint8_t isminefilter;
 isminetype IsMine(const CKeyStore& keystore, const CScript& scriptPubKey);
 isminetype IsMine(const CKeyStore& keystore, const CTxDestination& dest);
 
-#endif // SYSCOIN_WALLET_WALLET_ISMINE_H
+#endif // MARTKIST_WALLET_WALLET_ISMINE_H

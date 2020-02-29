@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_DSNOTIFICATIONINTERFACE_H
-#define SYSCOIN_DSNOTIFICATIONINTERFACE_H
+#ifndef MARTKIST_DSNOTIFICATIONINTERFACE_H
+#define MARTKIST_DSNOTIFICATIONINTERFACE_H
 
 #include "validationinterface.h"
 
@@ -27,4 +27,4 @@ private:
     CConnman& connman;
 };
 
-#endif // SYSCOIN_DSNOTIFICATIONINTERFACE_H
+#endif // MARTKIST_DSNOTIFICATIONINTERFACE_H

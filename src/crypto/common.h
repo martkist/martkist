@@ -1,5 +1,5 @@
-// Copyright (c) 2014-2017 The Bitcoin Core developers
-// Copyright (c) 2014-2015 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Bitcoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,7 +7,7 @@
 #define BITCOIN_CRYPTO_COMMON_H
 
 #if defined(HAVE_CONFIG_H)
-#include <config/syscoin-config.h>
+#include <config/martkist-config.h>
 #endif
 
 #include <stdint.h>

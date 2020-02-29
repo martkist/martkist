@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -53,7 +53,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/math/distributions/poisson.hpp>
 #include <boost/thread.hpp>
-// SYSCOIN
+// MARTKIST
 #include "auxpow.h"
 #include "offer.h"
 #include "cert.h"
@@ -69,7 +69,7 @@
 #include <functional>
 #include "cuckoocache.h"
 #if defined(NDEBUG)
-# error "Syscoin Core cannot be compiled without assertions."
+# error "Martkist Core cannot be compiled without assertions."
 #endif
 std::vector<std::pair<uint256, int64_t> > vecTPSTestReceivedTimesMempool;
 int64_t nTPSTestingStartTime = 0;
@@ -84,7 +84,7 @@ CBlockIndex *pindexBestHeader = NULL;
 CWaitableCriticalSection csBestBlock;
 CConditionVariable cvBlockChange;
 int nScriptCheckThreads = 0;
-// SYSCOIN
+// MARTKIST
 int64_t nLastMultithreadMempoolFailure = 0;
 bool fLoaded = false;
 bool fLogThreadpool = false;
@@ -123,7 +123,7 @@ static void CheckBlockIndex(const Consensus::Params& consensusParams);
 /** Constant stuff for coinbase transactions we create: */
 CScript COINBASE_FLAGS;
 
-const std::string strMessageMagic = "Syscoin Signed Message:\n";
+const std::string strMessageMagic = "Martkist Signed Message:\n";
 
 // Internal stuff
 namespace {
@@ -592,8 +592,8 @@ void LimitMempoolSize(CTxMemPool& pool, size_t limit, unsigned long age) {
     BOOST_FOREACH(const COutPoint& removed, vNoSpendsRemaining)
         pcoinsTip->Uncache(removed);
 }
-// SYSCOIN
-bool CheckSyscoinInputs(const CTransaction& tx, CValidationState& state, const CCoinsViewCache &inputs, bool fJustCheck, int nHeight, const CBlock& block, bool bSanity)
+// MARTKIST
+bool CheckMartkistInputs(const CTransaction& tx, CValidationState& state, const CCoinsViewCache &inputs, bool fJustCheck, int nHeight, const CBlock& block, bool bSanity)
 {
 	// Ensure that we don't fail on verifydb which loads recent UTXO and will fail if the input is already spent, 
 	// but during runtime fLoaded should be true so it should check UTXO in correct state
@@ -614,7 +614,7 @@ bool CheckSyscoinInputs(const CTransaction& tx, CValidationState& state, const C
 	std::string errorMessage;
 	bool good = true;
 	const std::vector<unsigned char> &emptyVch = vchFromString("");
-	if (block.vtx.empty() && tx.nVersion == SYSCOIN_TX_VERSION) {
+	if (block.vtx.empty() && tx.nVersion == MARTKIST_TX_VERSION) {
 		bool foundAliasInput = true;
 		if (!DecodeAliasTx(tx, op, vvchAliasArgs))
 		{
@@ -667,7 +667,7 @@ bool CheckSyscoinInputs(const CTransaction& tx, CValidationState& state, const C
 			}
 		}
 		else
-			return state.DoS(100, false, REJECT_INVALID, "syscoin-inputs-error");
+			return state.DoS(100, false, REJECT_INVALID, "martkist-inputs-error");
 
 		if (!good || !errorMessage.empty())
 			return state.DoS(100, false, REJECT_INVALID, errorMessage);
@@ -685,7 +685,7 @@ bool CheckSyscoinInputs(const CTransaction& tx, CValidationState& state, const C
 			if (!sortedBlock.vtx.empty()) {
 				if (!DAGTopologicalSort(sortedBlock.vtx, conflictedIndexes, graph, mapTxIndex)) {
 					if (fDebug)
-						LogPrintf("CheckSyscoinInputs: Toposort failed");
+						LogPrintf("CheckMartkistInputs: Toposort failed");
 					return true;
 				}
 			}
@@ -696,7 +696,7 @@ bool CheckSyscoinInputs(const CTransaction& tx, CValidationState& state, const C
 		for (unsigned int i = 0; i < sortedBlock.vtx.size(); i++)
 		{
 			const CTransaction &tx = *sortedBlock.vtx[i];
-			if (tx.nVersion == SYSCOIN_TX_VERSION)
+			if (tx.nVersion == MARTKIST_TX_VERSION)
 			{
 				bool foundAliasInput = true;
 				good = true;
@@ -766,8 +766,8 @@ bool CheckSyscoinInputs(const CTransaction& tx, CValidationState& state, const C
 			}
 		}
 		nFlushIndexBlocks++;
-		if ((nFlushIndexBlocks % 200) == 0 && !FlushSyscoinDBs())
-			return state.DoS(0, false, REJECT_INVALID, "Failed to flush syscoin databases");
+		if ((nFlushIndexBlocks % 200) == 0 && !FlushMartkistDBs())
+			return state.DoS(0, false, REJECT_INVALID, "Failed to flush martkist databases");
 	}
 	return true;
 }
@@ -877,9 +877,9 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
 							hash.ToString(), ptxConflicting->GetHash().ToString()),
 							REJECT_INVALID, "txlockreq-tx-mempool-conflict");
 					}
-					// SYSCOIN txs are not replacable
-					else if (ptxConflicting->nVersion == SYSCOIN_TX_VERSION) {
-						return state.DoS(0, error("AcceptToMemoryPool : Syscoin Transaction %s conflicts with Transaction request %s",
+					// MARTKIST txs are not replacable
+					else if (ptxConflicting->nVersion == MARTKIST_TX_VERSION) {
+						return state.DoS(0, error("AcceptToMemoryPool : Martkist Transaction %s conflicts with Transaction request %s",
 							hash.ToString(), ptxConflicting->GetHash().ToString()),
 							REJECT_INVALID, "txn-mempool-conflict");
 					}
@@ -1223,7 +1223,7 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
 			control.Add(vChecks);
 			if (!control.Wait())
 				return false;
-			if (!CheckSyscoinInputs(tx, state, view, true, chainActive.Height(), CBlock())) {
+			if (!CheckMartkistInputs(tx, state, view, true, chainActive.Height(), CBlock())) {
 				return false;
 			}
 		}
@@ -1275,8 +1275,8 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
 			static int totalCheckCount = 0;
 			static int totalCheckMicros = 0;
 
-			static int totalSyscoinCheckCount = 0;
-			static int totalSyscoinCheckMicros = 0;
+			static int totalMartkistCheckCount = 0;
+			static int totalMartkistCheckMicros = 0;
 
 			static int concurrentExecutionCount = 0;
 			static int maxConcurrentExecutionCount = 0;
@@ -1294,9 +1294,9 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
 					concurrentExecutionCount += 1;
 				}
 				int thisCheckCount = 0;
-				int thisSyscoinCheckCount = 0;
+				int thisMartkistCheckCount = 0;
 				int thisCheckMicros = 0;
-				int thisSyscoinCheckMicros = 0;
+				int thisMartkistCheckMicros = 0;
 				
 
 				CValidationState validationState;
@@ -1330,16 +1330,16 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
 
 				if (isCheckPassing)
 				{
-					int64_t syscoinCheckTime;
+					int64_t martkistCheckTime;
 					if (fLogThreadpool) {
-						syscoinCheckTime = GetTimeMicros();
-						thisSyscoinCheckCount += 1;
+						martkistCheckTime = GetTimeMicros();
+						thisMartkistCheckCount += 1;
 					}
-					if (!CheckSyscoinInputs(txIn, validationState, coinsViewCache, true, chainActive.Height(), CBlock()))
+					if (!CheckMartkistInputs(txIn, validationState, coinsViewCache, true, chainActive.Height(), CBlock()))
 					{
 						nLastMultithreadMempoolFailure = GetTime();
 						LOCK2(cs_main, mempool.cs);
-						LogPrint("mempool", "%s: %s\n", "CheckSyscoinInputs Error", hash.ToString());
+						LogPrint("mempool", "%s: %s\n", "CheckMartkistInputs Error", hash.ToString());
 						BOOST_FOREACH(const COutPoint& hashTx, coins_to_uncache)
 							pcoinsTip->Uncache(hashTx);
 						pool.removeRecursive(txIn, MemPoolRemovalReason::UNKNOWN);
@@ -1350,8 +1350,8 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
 					}
 					scriptExecutionCache.insert(hashCacheEntry);
 					if (fLogThreadpool) {
-						// how long did we run CheckSyscoinInputs()'s
-						thisSyscoinCheckMicros = GetTimeMicros() - syscoinCheckTime;
+						// how long did we run CheckMartkistInputs()'s
+						thisMartkistCheckMicros = GetTimeMicros() - martkistCheckTime;
 					}
 				}
 				if (fLogThreadpool) {
@@ -1368,8 +1368,8 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
 					}
 					totalCheckCount += thisCheckCount;
 					totalCheckMicros += thisCheckMicros;
-					totalSyscoinCheckCount += thisSyscoinCheckCount;
-					totalSyscoinCheckMicros += thisSyscoinCheckMicros;
+					totalMartkistCheckCount += thisMartkistCheckCount;
+					totalMartkistCheckMicros += thisMartkistCheckMicros;
 
 					totalExecutionMicros += thisExecutionMicros;
 
@@ -1381,15 +1381,15 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
 			if(fLogThreadpool)
 				totalExecutionCount ++;
 			// every 100th transaction or when not in unit test mode
-			if (fLogThreadpool && totalCheckCount > 0 && totalSyscoinCheckCount > 0 && totalExecutionCount > 0 && (!fUnitTest || (fUnitTest && totalExecutionCount % 100 == 0))) {
+			if (fLogThreadpool && totalCheckCount > 0 && totalMartkistCheckCount > 0 && totalExecutionCount > 0 && (!fUnitTest || (fUnitTest && totalExecutionCount % 100 == 0))) {
 				int avgCheckMicros = totalCheckMicros / totalCheckCount;
-				int avgSyscoinCheckMicros = totalSyscoinCheckMicros / totalSyscoinCheckCount;
+				int avgMartkistCheckMicros = totalMartkistCheckMicros / totalMartkistCheckCount;
 				int avgExecutionMicros = totalExecutionMicros / totalExecutionCount;
 				const std::string &messageCounts = "THREADPOOL::%s:Signature check executions - concurrent: %d, max concurrent: %d, total calls: %d\n";
-				const std::string &messageInternals = "THREADPOOL::%s:Signature check internals - check(%d): total %lld, avg %lld microseconds, syscoin(%d): total %lld, avg %lld microseconds\n";
+				const std::string &messageInternals = "THREADPOOL::%s:Signature check internals - check(%d): total %lld, avg %lld microseconds, martkist(%d): total %lld, avg %lld microseconds\n";
 				const std::string &messageMicros = "THREADPOOL::%s:Signature check timing - avg: %lld, min: %lld, max: %lld, total: %lld microseconds\n";
 				LogPrint("threadpool", messageCounts, hash.ToString(), concurrentExecutionCount, maxConcurrentExecutionCount, totalExecutionCount);
-				LogPrint("threadpool", messageInternals, hash.ToString(), totalCheckCount, totalCheckMicros, avgCheckMicros, totalSyscoinCheckCount, totalSyscoinCheckMicros, avgSyscoinCheckMicros);
+				LogPrint("threadpool", messageInternals, hash.ToString(), totalCheckCount, totalCheckMicros, avgCheckMicros, totalMartkistCheckCount, totalMartkistCheckMicros, avgMartkistCheckMicros);
 				LogPrint("threadpool", messageMicros, hash.ToString(), avgExecutionMicros, minExecutionMicros, maxExecutionMicros, totalExecutionMicros);
 			}
 
@@ -1425,7 +1425,7 @@ bool AcceptToMemoryPoolWithTime(CTxMemPool& pool, CValidationState &state, const
                         bool* pfMissingInputs, int64_t nAcceptTime, std::list<CTransactionRef>* plTxnReplaced,
                         bool fOverrideMempoolLimit, const CAmount nAbsurdFee, bool fDryRun, bool bMultiThreaded)
 {
-	// SYSCOIN if its been less 60 seconds since the last MT mempool verification failure then fallback to single threaded
+	// MARTKIST if its been less 60 seconds since the last MT mempool verification failure then fallback to single threaded
 	if (GetTime() - nLastMultithreadMempoolFailure < 60) {
 		LogPrint("mempool", "%s\n", "AcceptToMemoryPoolWithTime: switching to single thread verification...");
 		bMultiThreaded = false;
@@ -1705,7 +1705,7 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams, C
 	if (nHeight == 1)
 	{
 		std::string chain = ChainNameFromCommandLine();
-		// SYSCOIN 3 snapshot
+		// MARTKIST 3 snapshot
 		nTotalRewardWithMasternodes = 533000000 * COIN;
 		return nTotalRewardWithMasternodes;
 	}
@@ -2197,10 +2197,10 @@ static DisconnectResult DisconnectBlock(const CBlock& block, CValidationState& s
                 const CTxOut &out = tx.vout[k];
 
                 if (out.scriptPubKey.IsPayToScriptHash()) {
-					// SYSCOIN
+					// MARTKIST
 					CScript scriptOut;
 					CScript scriptPubKeyOut;
-					if (RemoveSyscoinScript(out.scriptPubKey, scriptPubKeyOut))
+					if (RemoveMartkistScript(out.scriptPubKey, scriptPubKeyOut))
 						scriptOut = scriptPubKeyOut;
 					else
 						scriptOut = out.scriptPubKey;
@@ -2213,10 +2213,10 @@ static DisconnectResult DisconnectBlock(const CBlock& block, CValidationState& s
                     addressUnspentIndex.push_back(std::make_pair(CAddressUnspentKey(2, uint160(hashBytes), hash, k), CAddressUnspentValue()));
 
                 } else if (out.scriptPubKey.IsPayToPublicKeyHash()) {
-					// SYSCOIN
+					// MARTKIST
 					CScript scriptOut;
 					CScript scriptPubKeyOut;
-					if (RemoveSyscoinScript(out.scriptPubKey, scriptPubKeyOut))
+					if (RemoveMartkistScript(out.scriptPubKey, scriptPubKeyOut))
 						scriptOut = scriptPubKeyOut;
 					else
 						scriptOut = out.scriptPubKey;
@@ -2229,10 +2229,10 @@ static DisconnectResult DisconnectBlock(const CBlock& block, CValidationState& s
                     addressUnspentIndex.push_back(std::make_pair(CAddressUnspentKey(1, uint160(hashBytes), hash, k), CAddressUnspentValue()));
 
                 } else if (out.scriptPubKey.IsPayToPublicKey()) {
-					// SYSCOIN
+					// MARTKIST
 					CScript scriptOut;
 					CScript scriptPubKeyOut;
-					if (RemoveSyscoinScript(out.scriptPubKey, scriptPubKeyOut))
+					if (RemoveMartkistScript(out.scriptPubKey, scriptPubKeyOut))
 						scriptOut = scriptPubKeyOut;
 					else
 						scriptOut = out.scriptPubKey;
@@ -2285,10 +2285,10 @@ static DisconnectResult DisconnectBlock(const CBlock& block, CValidationState& s
                     const Coin &coin = view.AccessCoin(tx.vin[j].prevout);
                     const CTxOut &prevout = coin.out;
                     if (prevout.scriptPubKey.IsPayToScriptHash()) {
-						// SYSCOIN
+						// MARTKIST
 						CScript scriptOut;
 						CScript scriptPubKeyOut;
-						if (RemoveSyscoinScript(prevout.scriptPubKey, scriptPubKeyOut))
+						if (RemoveMartkistScript(prevout.scriptPubKey, scriptPubKeyOut))
 							scriptOut = scriptPubKeyOut;
 						else
 							scriptOut = prevout.scriptPubKey;
@@ -2302,10 +2302,10 @@ static DisconnectResult DisconnectBlock(const CBlock& block, CValidationState& s
 
 
                     } else if (prevout.scriptPubKey.IsPayToPublicKeyHash()) {
-						// SYSCOIN
+						// MARTKIST
 						CScript scriptOut;
 						CScript scriptPubKeyOut;
-						if (RemoveSyscoinScript(prevout.scriptPubKey, scriptPubKeyOut))
+						if (RemoveMartkistScript(prevout.scriptPubKey, scriptPubKeyOut))
 							scriptOut = scriptPubKeyOut;
 						else
 							scriptOut = prevout.scriptPubKey;
@@ -2318,10 +2318,10 @@ static DisconnectResult DisconnectBlock(const CBlock& block, CValidationState& s
                         addressUnspentIndex.push_back(std::make_pair(CAddressUnspentKey(1, uint160(hashBytes), input.prevout.hash, input.prevout.n), CAddressUnspentValue(prevout.nValue, prevout.scriptPubKey, undoHeight)));
 
                     } else if (prevout.scriptPubKey.IsPayToPublicKey()) {
-						// SYSCOIN
+						// MARTKIST
 						CScript scriptOut;
 						CScript scriptPubKeyOut;
-						if (RemoveSyscoinScript(prevout.scriptPubKey, scriptPubKeyOut))
+						if (RemoveMartkistScript(prevout.scriptPubKey, scriptPubKeyOut))
 							scriptOut = scriptPubKeyOut;
 						else
 							scriptOut = prevout.scriptPubKey;
@@ -2383,7 +2383,7 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
 
 
 void ThreadScriptCheck() {
-    RenameThread("syscoin-scriptch");
+    RenameThread("martkist-scriptch");
     scriptcheckqueue.Thread();
 }
 
@@ -2521,7 +2521,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     }
     
 
-    /// END SYS
+    /// END MARTK
 
     int64_t nTime2 = GetTimeMicros(); nTimeForks += nTime2 - nTime1;
     LogPrint("bench", "    - Fork checks: %.2fms [%.2fs]\n", 0.001 * (nTime2 - nTime1), nTimeForks * 0.000001);
@@ -2586,30 +2586,30 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                     int addressType;
 
                     if (prevout.scriptPubKey.IsPayToScriptHash()) {
-						// SYSCOIN
+						// MARTKIST
 						CScript scriptOut;
 						CScript scriptPubKeyOut;
-						if (RemoveSyscoinScript(prevout.scriptPubKey, scriptPubKeyOut))
+						if (RemoveMartkistScript(prevout.scriptPubKey, scriptPubKeyOut))
 							scriptOut = scriptPubKeyOut;
 						else
 							scriptOut = prevout.scriptPubKey;
                         hashBytes = uint160(std::vector<unsigned char>(scriptOut.begin()+2, scriptOut.begin()+22));
                         addressType = 2;
                     } else if (prevout.scriptPubKey.IsPayToPublicKeyHash()) {
-						// SYSCOIN
+						// MARTKIST
 						CScript scriptOut;
 						CScript scriptPubKeyOut;
-						if (RemoveSyscoinScript(prevout.scriptPubKey, scriptPubKeyOut))
+						if (RemoveMartkistScript(prevout.scriptPubKey, scriptPubKeyOut))
 							scriptOut = scriptPubKeyOut;
 						else
 							scriptOut = prevout.scriptPubKey;
                         hashBytes = uint160(std::vector<unsigned char>(scriptOut.begin()+3, scriptOut.begin()+23));
                         addressType = 1;
                     } else if (prevout.scriptPubKey.IsPayToPublicKey()) {
-						// SYSCOIN
+						// MARTKIST
 						CScript scriptOut;
 						CScript scriptPubKeyOut;
-						if (RemoveSyscoinScript(prevout.scriptPubKey, scriptPubKeyOut))
+						if (RemoveMartkistScript(prevout.scriptPubKey, scriptPubKeyOut))
 							scriptOut = scriptPubKeyOut;
 						else
 							scriptOut = prevout.scriptPubKey;
@@ -2661,10 +2661,10 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                 const CTxOut &out = tx.vout[k];
 
                 if (out.scriptPubKey.IsPayToScriptHash()) {
-					// SYSCOIN
+					// MARTKIST
 					CScript scriptOut;
 					CScript scriptPubKeyOut;
-					if (RemoveSyscoinScript(out.scriptPubKey, scriptPubKeyOut))
+					if (RemoveMartkistScript(out.scriptPubKey, scriptPubKeyOut))
 						scriptOut = scriptPubKeyOut;
 					else
 						scriptOut = out.scriptPubKey;
@@ -2677,10 +2677,10 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                     addressUnspentIndex.push_back(std::make_pair(CAddressUnspentKey(2, uint160(hashBytes), txhash, k), CAddressUnspentValue(out.nValue, out.scriptPubKey, pindex->nHeight)));
 
                 } else if (out.scriptPubKey.IsPayToPublicKeyHash()) {
-					// SYSCOIN
+					// MARTKIST
 					CScript scriptOut;
 					CScript scriptPubKeyOut;
-					if (RemoveSyscoinScript(out.scriptPubKey, scriptPubKeyOut))
+					if (RemoveMartkistScript(out.scriptPubKey, scriptPubKeyOut))
 						scriptOut = scriptPubKeyOut;
 					else
 						scriptOut = out.scriptPubKey;
@@ -2693,10 +2693,10 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                     addressUnspentIndex.push_back(std::make_pair(CAddressUnspentKey(1, uint160(hashBytes), txhash, k), CAddressUnspentValue(out.nValue, out.scriptPubKey, pindex->nHeight)));
 
                 } else if (out.scriptPubKey.IsPayToPublicKey()) {
-					// SYSCOIN
+					// MARTKIST
 					CScript scriptOut;
 					CScript scriptPubKeyOut;
-					if (RemoveSyscoinScript(out.scriptPubKey, scriptPubKeyOut))
+					if (RemoveMartkistScript(out.scriptPubKey, scriptPubKeyOut))
 						scriptOut = scriptPubKeyOut;
 					else
 						scriptOut = out.scriptPubKey;
@@ -2723,13 +2723,13 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
 		return state.DoS(100, false);
 
 	CCoinsViewCache viewOld(pcoinsTip);
-	if (!CheckSyscoinInputs(*block.vtx[0], state, viewOld, fJustCheck, pindex->nHeight, block))
-		return error("ConnectBlock(): CheckSyscoinInputs on block %s failed\n",
+	if (!CheckMartkistInputs(*block.vtx[0], state, viewOld, fJustCheck, pindex->nHeight, block))
+		return error("ConnectBlock(): CheckMartkistInputs on block %s failed\n",
 			block.GetHash().ToString());
     int64_t nTime3 = GetTimeMicros(); nTimeConnect += nTime3 - nTime2;
     LogPrint("bench", "      - Connect %u transactions: %.2fms (%.3fms/tx, %.3fms/txin) [%.2fs]\n", (unsigned)block.vtx.size(), 0.001 * (nTime3 - nTime2), 0.001 * (nTime3 - nTime2) / block.vtx.size(), nInputs <= 1 ? 0 : 0.001 * (nTime3 - nTime2) / (nInputs-1), nTimeConnect * 0.000001);
 
-    // SYSCOIN : MODIFIED TO CHECK MASTERNODE PAYMENTS AND SUPERBLOCKS
+    // MARTKIST : MODIFIED TO CHECK MASTERNODE PAYMENTS AND SUPERBLOCKS
 
     // It's possible that we simply don't have enough data and this could fail
     // (i.e. block itself could be a correct one and we need to store it),
@@ -2745,15 +2745,15 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
 			LOCK(cs_main);
 			mapRejectedBlocks.insert(std::make_pair(block.GetHash(), GetTime()));
 		}
-		return state.DoS(0, error("ConnectBlock(SYS): couldn't find masternode or superblock payments"),
+		return state.DoS(0, error("ConnectBlock(MARTK): couldn't find masternode or superblock payments"),
 			REJECT_INVALID, "bad-cb-payee");
 	}
 
     std::string strError = "";
     if (!IsBlockValueValid(block, pindex->nHeight, nTotalRewardWithMasternodes, nFees, strError)) {
-        return state.DoS(0, error("ConnectBlock(SYS): %s", strError), REJECT_INVALID, "bad-cb-amount");
+        return state.DoS(0, error("ConnectBlock(MARTK): %s", strError), REJECT_INVALID, "bad-cb-amount");
     }
-    // END SYSCOIN
+    // END MARTKIST
 
     int64_t nTime4 = GetTimeMicros(); nTimeVerify += nTime4 - nTime2;
     LogPrint("bench", "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs]\n", nInputs - 1, 0.001 * (nTime4 - nTime2), nInputs <= 1 ? 0 : 0.001 * (nTime4 - nTime2) / (nInputs-1), nTimeVerify * 0.000001);
@@ -2917,9 +2917,9 @@ bool static FlushStateToDisk(CValidationState &state, FlushStateMode mode, int n
         // Flush the chainstate (which may refer to block index entries).
         if (!pcoinsTip->Flush())
             return AbortNode(state, "Failed to write to coin database");
-		// SYSCOIN
-		if (!FlushSyscoinDBs())
-			return AbortNode(state, "Failed to flush syscoin databases");
+		// MARTKIST
+		if (!FlushMartkistDBs())
+			return AbortNode(state, "Failed to flush martkist databases");
         nLastFlush = nNow;
     }
     if (fDoFullFlush || ((mode == FLUSH_STATE_ALWAYS || mode == FLUSH_STATE_PERIODIC) && nNow > nLastSetChain + (int64_t)DATABASE_WRITE_INTERVAL * 1000000)) {
@@ -2960,7 +2960,7 @@ void static UpdateTip(CBlockIndex *pindexNew, const CChainParams& chainParams) {
         int nUpgraded = 0;
         const CBlockIndex* pindex = chainActive.Tip();
         for (int bit = 0; bit < VERSIONBITS_NUM_BITS; bit++) {
-			// SYSCOIN, skip auxpow bit 8 or dummy bit 28
+			// MARTKIST, skip auxpow bit 8 or dummy bit 28
 			if (bit == 8 || bit == 28)
 				continue;
             WarningBitsConditionChecker checker(bit);
@@ -2981,7 +2981,7 @@ void static UpdateTip(CBlockIndex *pindexNew, const CChainParams& chainParams) {
         // Check the version of the last 100 blocks to see if we need to upgrade:
         for (int i = 0; i < 100 && pindex != NULL; i++)
         {
-			// SYSCOIN getbaseversion
+			// MARTKIST getbaseversion
 			const int32_t nExpectedVersion = ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus());
 			if (pindex->GetBaseVersion() > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->GetBaseVersion() & ~nExpectedVersion) != 0)
                 ++nUpgraded;
@@ -3721,7 +3721,7 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
 
 bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW)
 {
-	// SYSCOIN check auxpow first then fallback to normal check
+	// MARTKIST check auxpow first then fallback to normal check
 	if (fCheckPOW && !CheckProofOfWork(block, consensusParams))
 		return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
 
@@ -3778,7 +3778,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
             return state.DoS(100, false, REJECT_INVALID, "bad-cb-multiple", false, "more than one coinbase");
 
 
-    // SYS : CHECK TRANSACTIONS FOR INSTANTSEND
+    // MARTK : CHECK TRANSACTIONS FOR INSTANTSEND
 
     if(sporkManager.IsSporkActive(SPORK_3_INSTANTSEND_BLOCK_FILTERING)) {
         // We should never accept block which conflicts with completed transaction lock,
@@ -3801,10 +3801,10 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
             }
         }
     } else {
-        LogPrintf("CheckBlock(SYS): spork is off, skipping transaction locking checks\n");
+        LogPrintf("CheckBlock(MARTK): spork is off, skipping transaction locking checks\n");
     }
 
-    // END SYS
+    // END MARTK
 
     // Check transactions
     for (const auto& tx : block.vtx)
@@ -3848,7 +3848,7 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
     if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams))
         return state.DoS(100, false, REJECT_INVALID, "bad-diffbits", false, strprintf("incorrect proof of work at %d", nHeight));
     
-	// SYSCOIN
+	// MARTKIST
 	std::string chain = ChainNameFromCommandLine();
 	if (chain != CBaseChainParams::REGTEST) {
 		// Check timestamp against prev
@@ -3860,7 +3860,7 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
 			return state.Invalid(false, REJECT_INVALID, "time-too-new", "block timestamp too far in the future");
 	}
 
-    // SYSCOIN check for version 2, 3 and 4 upgrades
+    // MARTKIST check for version 2, 3 and 4 upgrades
    /* if((block.nVersion < 2 && nHeight >= consensusParams.BIP34Height) ||
        (block.nVersion < 3 && nHeight >= consensusParams.BIP66Height) ||
        (block.nVersion < 4 && nHeight >= consensusParams.BIP65Height))

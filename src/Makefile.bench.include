@@ -1,18 +1,18 @@
-# Copyright (c) 2015-2016 The Syscoin Core developers
-# Copyright (c) 2014-2017 The Syscoin Core developers
+# Copyright (c) 2015-2016 The Martkist Core developers
+# Copyright (c) 2014-2020 The Martkist Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-bin_PROGRAMS += bench/bench_syscoin
+bin_PROGRAMS += bench/bench_martkist
 BENCH_SRCDIR = bench
-BENCH_BINARY = bench/bench_syscoin$(EXEEXT)
+BENCH_BINARY = bench/bench_martkist$(EXEEXT)
 
 RAW_TEST_FILES = \
   bench/data/block813851.raw
 GENERATED_TEST_FILES = $(RAW_TEST_FILES:.raw=.raw.h)
 
-bench_bench_syscoin_SOURCES = \
-  bench/bench_syscoin.cpp \
+bench_bench_martkist_SOURCES = \
+  bench/bench_martkist.cpp \
   bench/bench.cpp \
   bench/bench.h \
   bench/checkblock.cpp \
@@ -27,16 +27,16 @@ bench_bench_syscoin_SOURCES = \
   bench/perf.cpp \
   bench/perf.h
 
-nodist_bench_bench_syscoin_SOURCES = $(GENERATED_TEST_FILES)
+nodist_bench_bench_martkist_SOURCES = $(GENERATED_TEST_FILES)
 
-bench_bench_syscoin_CPPFLAGS = $(AM_CPPFLAGS) $(SYSCOIN_INCLUDES) $(EVENT_CLFAGS) $(EVENT_PTHREADS_CFLAGS) -I$(builddir)/bench/
-bench_bench_syscoin_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-bench_bench_syscoin_LDADD = \
-  $(LIBSYSCOIN_SERVER) \
-  $(LIBSYSCOIN_COMMON) \
-  $(LIBSYSCOIN_UTIL) \
-  $(LIBSYSCOIN_CONSENSUS) \
-  $(LIBSYSCOIN_CRYPTO) \
+bench_bench_martkist_CPPFLAGS = $(AM_CPPFLAGS) $(MARTKIST_INCLUDES) $(EVENT_CLFAGS) $(EVENT_PTHREADS_CFLAGS) -I$(builddir)/bench/
+bench_bench_martkist_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+bench_bench_martkist_LDADD = \
+  $(LIBMARTKIST_SERVER) \
+  $(LIBMARTKIST_COMMON) \
+  $(LIBMARTKIST_UTIL) \
+  $(LIBMARTKIST_CONSENSUS) \
+  $(LIBMARTKIST_CRYPTO) \
   $(LIBLEVELDB) \
   $(LIBLEVELDB_SSE42) \
   $(LIBMEMENV) \
@@ -44,30 +44,30 @@ bench_bench_syscoin_LDADD = \
   $(LIBUNIVALUE)
 
 if ENABLE_ZMQ
-bench_bench_syscoin_LDADD += $(LIBSYSCOIN_ZMQ) $(ZMQ_LIBS)
+bench_bench_martkist_LDADD += $(LIBMARTKIST_ZMQ) $(ZMQ_LIBS)
 endif
 
 if ENABLE_WALLET
-bench_bench_syscoin_SOURCES += bench/coin_selection.cpp
-bench_bench_syscoin_LDADD += $(LIBSYSCOIN_WALLET) $(LIBSYSCOIN_CRYPTO)
+bench_bench_martkist_SOURCES += bench/coin_selection.cpp
+bench_bench_martkist_LDADD += $(LIBMARTKIST_WALLET) $(LIBMARTKIST_CRYPTO)
 endif
 
-bench_bench_syscoin_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
-bench_bench_syscoin_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+bench_bench_martkist_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
+bench_bench_martkist_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
-CLEAN_SYSCOIN_BENCH = bench/*.gcda bench/*.gcno $(GENERATED_TEST_FILES)
+CLEAN_MARTKIST_BENCH = bench/*.gcda bench/*.gcno $(GENERATED_TEST_FILES)
 
-CLEANFILES += $(CLEAN_SYSCOIN_BENCH)
+CLEANFILES += $(CLEAN_MARTKIST_BENCH)
 
 bench/checkblock.cpp: bench/data/block813851.raw.h
 
-syscoin_bench: $(BENCH_BINARY)
+martkist_bench: $(BENCH_BINARY)
 
 bench: $(BENCH_BINARY) FORCE
 	$(BENCH_BINARY)
 
-syscoin_bench_clean : FORCE
-	rm -f $(CLEAN_SYSCOIN_BENCH) $(bench_bench_syscoin_OBJECTS) $(BENCH_BINARY)
+martkist_bench_clean : FORCE
+	rm -f $(CLEAN_MARTKIST_BENCH) $(bench_bench_martkist_OBJECTS) $(BENCH_BINARY)
 
 bench/data/%.raw.h: bench/data/%.raw
 	@$(MKDIR_P) $(@D)

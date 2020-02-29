@@ -1,12 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2016 Daniel Kraft
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file license.txt or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_AUXPOW_H
-#define SYSCOIN_AUXPOW_H
+#ifndef MARTKIST_AUXPOW_H
+#define MARTKIST_AUXPOW_H
 
 #include <consensus/params.h>
 #include <primitives/pureheader.h>
@@ -84,7 +84,7 @@ public:
 	/**
 	* Actually compute the Merkle branch.  This is used for unit tests when
 	* constructing an auxpow.  It is not needed for actual production, since
-	* we do not care in the Syscoin client how the auxpow is constructed
+	* we do not care in the Martkist client how the auxpow is constructed
 	* by a miner.
 	*/
 	void InitMerkleBranch(const CBlock& block, int posInBlock);
@@ -205,4 +205,4 @@ public:
 
 };
 
-#endif // SYSCOIN_AUXPOW_H
+#endif // MARTKIST_AUXPOW_H

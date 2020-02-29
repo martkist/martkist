@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,7 +7,7 @@
 
 #include "addressbookpage.h"
 #include "askpassphrasedialog.h"
-#include "syscoingui.h"
+#include "martkistgui.h"
 #include "clientmodel.h"
 #include "guiutil.h"
 #include "masternodeconfig.h"
@@ -112,7 +112,7 @@ WalletView::~WalletView()
 {
 }
 
-void WalletView::setSyscoinGUI(SyscoinGUI *gui)
+void WalletView::setMartkistGUI(MartkistGUI *gui)
 {
     if (gui)
     {

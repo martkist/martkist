@@ -1,4 +1,4 @@
-// Copyright (c) 2017 The Syscoin Core developers
+// Copyright (c) 2017 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,9 +20,9 @@ enum GovernanceObjectType {
     ValueOverride = 1, 
 
     // -------------------------------
-    // SyscoinNetwork - is the root node
-    SyscoinNetwork = 1000,
-    SyscoinNetworkVariable = 1001,
+    // MartkistNetwork - is the root node
+    MartkistNetwork = 1000,
+    MartkistNetworkVariable = 1001,
     Category = 1002,
 
     // Actors

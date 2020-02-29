@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 The Syscoin Core developers
+// Copyright (c) 2015-2018 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -36,12 +36,12 @@ bool IsOfferOp(int op) {
 }
 
 bool ValidatePaymentOptionsMask(const uint64_t &paymentOptionsMask) {
-	uint64_t maxVal = PAYMENTOPTION_SYS | PAYMENTOPTION_BTC | PAYMENTOPTION_ZEC;
+	uint64_t maxVal = PAYMENTOPTION_MARTK | PAYMENTOPTION_BTC | PAYMENTOPTION_ZEC;
 	return !(paymentOptionsMask < 1 || paymentOptionsMask > maxVal);
 }
 
 bool IsValidPaymentOption(const uint64_t &paymentOptionsMask) {
-	return (paymentOptionsMask == PAYMENTOPTION_SYS || paymentOptionsMask == PAYMENTOPTION_BTC || paymentOptionsMask == PAYMENTOPTION_ZEC);
+	return (paymentOptionsMask == PAYMENTOPTION_MARTK || paymentOptionsMask == PAYMENTOPTION_BTC || paymentOptionsMask == PAYMENTOPTION_ZEC);
 }
 
 bool ValidatePaymentOptionsString(const std::string &paymentOptionsString) {
@@ -49,7 +49,7 @@ bool ValidatePaymentOptionsString(const std::string &paymentOptionsString) {
 	vector<string> strs;
 	boost::split(strs, paymentOptionsString, boost::is_any_of("+"));
 	for (size_t i = 0; i < strs.size(); i++) {
-		if(strs[i].compare("BTC") != 0 && strs[i].compare("SYS") != 0 && strs[i].compare("ZEC") != 0) {
+		if(strs[i].compare("BTC") != 0 && strs[i].compare("MARTK") != 0 && strs[i].compare("ZEC") != 0) {
 			retval = false;
 			break;
 		}
@@ -62,8 +62,8 @@ uint64_t GetPaymentOptionsMaskFromString(const std::string &paymentOptionsString
 	uint64_t retval = 0;
 	boost::split(strs, paymentOptionsString, boost::is_any_of("+"));
 	for (size_t i = 0; i < strs.size(); i++) {
-		if(!strs[i].compare("SYS")) {
-			retval |= PAYMENTOPTION_SYS;
+		if(!strs[i].compare("MARTK")) {
+			retval |= PAYMENTOPTION_MARTK;
 		}
 		else if(!strs[i].compare("BTC")) {
 			retval |= PAYMENTOPTION_BTC;
@@ -166,7 +166,7 @@ bool COffer::UnserializeFromTx(const CTransaction &tx) {
 	vector<unsigned char> vchData;
 	vector<unsigned char> vchHash;
 	int nOut;
-	if(!GetSyscoinData(tx, vchData, vchHash, nOut))
+	if(!GetMartkistData(tx, vchData, vchHash, nOut))
 	{
 		SetNull();
 		return false;
@@ -253,7 +253,7 @@ bool DecodeOfferScript(const CScript& script, int& op,
 	if (!script.GetOp(pc, opcode)) return false;
 	if (opcode < OP_1 || opcode > OP_16) return false;
 	op = CScript::DecodeOP_N(opcode);
-	if (op != OP_SYSCOIN_OFFER)
+	if (op != OP_MARTKIST_OFFER)
 		return false;
 	if (!script.GetOp(pc, opcode))
 		return false;
@@ -313,14 +313,14 @@ bool RevertOffer(const std::vector<unsigned char>& vchOffer, const int op, const
 	if (!pofferdb->ReadLastOffer(vchOffer, dbOffer)) {
 		if(!pofferdb->EraseOffer(vchOffer))
 		{
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 2022 - " + _("Failed to erase offer");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 2022 - " + _("Failed to erase offer");
 			return error(errorMessage.c_str());
 		}
 	}
 	// write the state back to previous state
 	else if (!pofferdb->WriteOffer(dbOffer, op, INT64_MAX, false, false))
 	{
-		errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 2022 - " + _("Failed to write to offer DB");
+		errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 2022 - " + _("Failed to write to offer DB");
 		return error(errorMessage.c_str());
 	}
 	pofferdb->EraseISArrivalTimes(vchOffer);
@@ -347,9 +347,9 @@ bool CheckOfferInputs(const CTransaction &tx, int op, const vector<vector<unsign
 	vector<unsigned char> vchHash;
 	CTxDestination payDest, commissionDest, dest, aliasDest;
 	int nDataOut;
-	if(!GetSyscoinData(tx, vchData, vchHash, nDataOut) || !theOffer.UnserializeFromData(vchData, vchHash))
+	if(!GetMartkistData(tx, vchData, vchHash, nDataOut) || !theOffer.UnserializeFromData(vchData, vchHash))
 	{
-		errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR ERRCODE: 1000 - " + _("Cannot unserialize data inside of this transaction relating to an offer");
+		errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR ERRCODE: 1000 - " + _("Cannot unserialize data inside of this transaction relating to an offer");
 		return true;
 	}
 
@@ -357,13 +357,13 @@ bool CheckOfferInputs(const CTransaction &tx, int op, const vector<vector<unsign
 	{
 		if(vvchArgs.size() != 1)
 		{
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1002 - " + _("Offer arguments incorrect size");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1002 - " + _("Offer arguments incorrect size");
 			return error(errorMessage.c_str());
 		}
 		
 		if(vchHash != vvchArgs[0])
 		{
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1005 - " + _("Hash provided doesn't match the calculated hash of the data");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1005 - " + _("Hash provided doesn't match the calculated hash of the data");
 			return true;
 		}
 	}
@@ -380,83 +380,83 @@ bool CheckOfferInputs(const CTransaction &tx, int op, const vector<vector<unsign
 	{
 		if(theOffer.sDescription.size() > MAX_VALUE_LENGTH)
 		{
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1007 - " + _("Offer description too long");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1007 - " + _("Offer description too long");
 			return error(errorMessage.c_str());
 		}
 		if(theOffer.sTitle.size() > MAX_NAME_LENGTH)
 		{
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1008 - " + _("Offer title too long");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1008 - " + _("Offer title too long");
 			return error(errorMessage.c_str());
 		}
 		if(theOffer.sCategory.size() > MAX_NAME_LENGTH)
 		{
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1009 - " + _("Offer category too long");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1009 - " + _("Offer category too long");
 			return error(errorMessage.c_str());
 		}
 		if (theOffer.fPrice <= 0)
 		{
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1009 - " + _("Offer price must be a positive number");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1009 - " + _("Offer price must be a positive number");
 			return error(errorMessage.c_str());
 		}
 		if(theOffer.vchLinkOffer.size() > MAX_GUID_LENGTH)
 		{
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1010 - " + _("Offer link guid hash too long");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1010 - " + _("Offer link guid hash too long");
 			return error(errorMessage.c_str());
 		}
 		if(theOffer.sCurrencyCode.size() > MAX_GUID_LENGTH)
 		{
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1011 - " + _("Offer currency code too long");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1011 - " + _("Offer currency code too long");
 			return error(errorMessage.c_str());
 		}
 		switch (op) {
 		case OP_OFFER_ACTIVATE:
 			if (theOffer.vchOffer.size() > MAX_GUID_LENGTH)
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 2004 - " + _("offer hex guid too long");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 2004 - " + _("offer hex guid too long");
 				return error(errorMessage.c_str());
 			}
 			if(!ValidatePaymentOptionsMask(theOffer.paymentOptions))
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1016 - " + _("Invalid payment option");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1016 - " + _("Invalid payment option");
 				return error(errorMessage.c_str());
 			}
 			if (!ValidateOfferTypeMask(theOffer.offerType))
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1016 - " + _("Invalid offer type");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1016 - " + _("Invalid offer type");
 				return error(errorMessage.c_str());
 			}
 			
 			if(theOffer.nCommission > 100 || theOffer.nCommission < -90)
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1019 - " + _("Commission percentage must be between -90 and 100");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1019 - " + _("Commission percentage must be between -90 and 100");
 				return error(errorMessage.c_str());
 			}		
 			if(theOffer.vchLinkOffer.empty())
 			{
 				if(theOffer.sCategory.size() < 1)
 				{
-					errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1020 - " + _("Offer category cannot be empty");
+					errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1020 - " + _("Offer category cannot be empty");
 					return error(errorMessage.c_str());
 				}
 				if(theOffer.sTitle.size() < 1)
 				{
-					errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1021 - " + _("Offer title cannot be empty");
+					errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1021 - " + _("Offer title cannot be empty");
 					return error(errorMessage.c_str());
 				}
 				if(theOffer.paymentOptions <= 0)
 				{
-					errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1022 - " + _("Invalid payment option specified");
+					errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1022 - " + _("Invalid payment option specified");
 					return error(errorMessage.c_str());
 				}
 			}
 			if(theOffer.nQty < -1)
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1023 - " + _("Quantity must be greater than or equal to -1");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1023 - " + _("Quantity must be greater than or equal to -1");
 				return error(errorMessage.c_str());
 			}
 			if(!theOffer.vchCert.empty() && theOffer.nQty != 1)
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Quantity must be 1 for a digital offer");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Quantity must be 1 for a digital offer");
 				return error(errorMessage.c_str());
 			}
 
@@ -464,17 +464,17 @@ bool CheckOfferInputs(const CTransaction &tx, int op, const vector<vector<unsign
 			{
 				if (theOffer.auctionOffer.fReservePrice < 0)
 				{
-					errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Reserve price must be greator or equal to 0");
+					errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Reserve price must be greator or equal to 0");
 					return error(errorMessage.c_str());
 				}
 				if (theOffer.auctionOffer.fDepositPercentage < 0)
 				{
-					errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Auction deposit percentage must be greator or equal to 0");
+					errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Auction deposit percentage must be greator or equal to 0");
 					return error(errorMessage.c_str());
 				}
 				if (theOffer.auctionOffer.nExpireTime > 0 && theOffer.auctionOffer.nExpireTime < nTime)
 				{
-					errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 4042 - " + _("Invalid auction expiry");
+					errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 4042 - " + _("Invalid auction expiry");
 					return error(errorMessage.c_str());
 				}
 			}
@@ -482,40 +482,40 @@ bool CheckOfferInputs(const CTransaction &tx, int op, const vector<vector<unsign
 		case OP_OFFER_UPDATE:		
 			if(theOffer.paymentOptions > 0 && !ValidatePaymentOptionsMask(theOffer.paymentOptions))
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1027 - " + _("Invalid payment option");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1027 - " + _("Invalid payment option");
 				return error(errorMessage.c_str());
 			}
 			if (!ValidateOfferTypeMask(theOffer.offerType))
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1027 - " + _("Invalid offer type");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1027 - " + _("Invalid offer type");
 				return error(errorMessage.c_str());
 			}
 
 			if(theOffer.nQty < -1)
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1031 - " + _("Quantity must be greater than or equal to -1");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1031 - " + _("Quantity must be greater than or equal to -1");
 				return error(errorMessage.c_str());
 			}
 			if(!theOffer.vchCert.empty() && theOffer.nQty != 1)
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1032 - " + _("Quantity must be 1 for a digital offer");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1032 - " + _("Quantity must be 1 for a digital offer");
 				return error(errorMessage.c_str());
 			}
 			if(theOffer.nCommission > 100 || theOffer.nCommission < -90)
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1034 - " + _("Commission percentage must be between -90 and 100");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1034 - " + _("Commission percentage must be between -90 and 100");
 				return error(errorMessage.c_str());
 			}
 			break;
 		default:
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1047 - " + _("Offer transaction has unknown op");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1047 - " + _("Offer transaction has unknown op");
 			return error(errorMessage.c_str());
 		}
 	}
 	if (!fJustCheck && !bSanityCheck) {
 		if (!RevertOffer(theOffer.vchOffer, op, tx.GetHash(), revertedOffers))
 		{
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 2028 - " + _("Failed to revert offer");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 2028 - " + _("Failed to revert offer");
 			return error(errorMessage.c_str());
 		}
 	}
@@ -528,20 +528,20 @@ bool CheckOfferInputs(const CTransaction &tx, int op, const vector<vector<unsign
 	string strResponseEnglish = "";
 	string strResponseGUID = "";
 	CTransaction txTmp;
-	GetSyscoinTransactionDescription(txTmp, op, strResponseEnglish, OFFER, strResponseGUID);
+	GetMartkistTransactionDescription(txTmp, op, strResponseEnglish, OFFER, strResponseGUID);
 	COffer dbOffer;
 	// load the offer data from the DB
 	if (!GetOffer(theOffer.vchOffer, dbOffer))
 	{
 		if (op == OP_OFFER_UPDATE) {
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1048 - " + _("Failed to read from offer DB");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1048 - " + _("Failed to read from offer DB");
 			return true;
 		}
 	}
 	if (op == OP_OFFER_UPDATE) {
 		if (dbOffer.vchAlias != vvchAlias)
 		{
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 2026 - " + _("Cannot edit this offer. Offer owner must sign off on this change.");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 2026 - " + _("Cannot edit this offer. Offer owner must sign off on this change.");
 			return true;
 		}
 
@@ -569,22 +569,22 @@ bool CheckOfferInputs(const CTransaction &tx, int op, const vector<vector<unsign
 		{
 			if (!IsOfferTypeInMask(theOffer.offerType, OFFERTYPE_AUCTION))
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Cannot change to this offer type until auction expires");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Cannot change to this offer type until auction expires");
 				return true;
 			}
 			if (theOffer.auctionOffer.fReservePrice < 0)
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Reserve price must be greator or equal to 0");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Reserve price must be greator or equal to 0");
 				return true;
 			}
 			if (theOffer.auctionOffer.fDepositPercentage < 0)
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Auction deposit percentage must be greator or equal to 0");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Auction deposit percentage must be greator or equal to 0");
 				return true;
 			}
 			if (dbOffer.auctionOffer.nExpireTime > 0 && dbOffer.auctionOffer.nExpireTime >= nTime && dbOffer.auctionOffer != theOffer.auctionOffer)
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Cannot modify auction parameters while it is active. Please wait until auction has expired before updating.");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Cannot modify auction parameters while it is active. Please wait until auction has expired before updating.");
 				return true;
 			}
 		}
@@ -596,13 +596,13 @@ bool CheckOfferInputs(const CTransaction &tx, int op, const vector<vector<unsign
 	{
 		if (theOffer.vchAlias != vvchAlias)
 		{
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 2026 - " + _("Cannot create this offer. Offer owner must sign off on this change.");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 2026 - " + _("Cannot create this offer. Offer owner must sign off on this change.");
 			return true;
 		}
 		COfferLinkWhitelistEntry entry;
 		if (GetOffer(theOffer.vchOffer, theOffer))
 		{
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1050 - " + _("Offer already exists");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1050 - " + _("Offer already exists");
 			return true;
 		}
 
@@ -610,34 +610,34 @@ bool CheckOfferInputs(const CTransaction &tx, int op, const vector<vector<unsign
 		{
 			if (!GetOffer(theOffer.vchLinkOffer, linkOffer))
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1051 - " + _("Linked offer not found. It may be expired");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1051 - " + _("Linked offer not found. It may be expired");
 				return true;
 			}
 			if (!GetAlias(linkOffer.vchAlias, theAlias))
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1051 - " + _("Linked offer alias not found. It may be expired");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1051 - " + _("Linked offer alias not found. It may be expired");
 				return true;
 			}
 			if (theAlias.offerWhitelist.GetLinkEntryByHash(vvchAlias, entry))
 			{
 				if (theOffer.nCommission <= -entry.nDiscountPct)
 				{
-					throw runtime_error("SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1514 - " + _("This resold offer must be of higher price than the original offer including any discount"));
+					throw runtime_error("MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1514 - " + _("This resold offer must be of higher price than the original offer including any discount"));
 				}
 			}
 			// make sure alias exists in the root offer affiliate list
 			else
 			{
-				throw runtime_error("SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1515 - " + _("Cannot find this alias in the parent offer affiliate list"));
+				throw runtime_error("MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1515 - " + _("Cannot find this alias in the parent offer affiliate list"));
 			}
 
 			if (!linkOffer.vchLinkOffer.empty())
 			{
-				throw runtime_error("SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1516 - " + _("Cannot link to an offer that is already linked to another offer"));
+				throw runtime_error("MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1516 - " + _("Cannot link to an offer that is already linked to another offer"));
 			}
 			else if (linkOffer.sCategory.size() > 0 && boost::algorithm::istarts_with(stringFromVch(linkOffer.sCategory), "wanted"))
 			{
-				throw runtime_error("SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1517 - " + _("Cannot link to a wanted offer"));
+				throw runtime_error("MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1517 - " + _("Cannot link to a wanted offer"));
 			}
 			// if creating a linked offer we set some mandatory fields from the parent
 			theOffer.nQty = linkOffer.nQty;
@@ -658,7 +658,7 @@ bool CheckOfferInputs(const CTransaction &tx, int op, const vector<vector<unsign
 		{
 			if (!GetOffer(theOffer.vchLinkOffer, linkOffer))
 			{
-				errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1096 - " + _("Linked offer not found. It may be expired");
+				errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1096 - " + _("Linked offer not found. It may be expired");
 				return true;
 			}
 			theOffer.nQty = linkOffer.nQty;
@@ -681,7 +681,7 @@ bool CheckOfferInputs(const CTransaction &tx, int op, const vector<vector<unsign
 		}
 		if (!pofferdb->WriteOffer(theOffer, op, ms, fJustCheck))
 		{
-			errorMessage = "SYSCOIN_OFFER_CONSENSUS_ERROR: ERRCODE: 1096 - " + _("Failed to write to offer DB");
+			errorMessage = "MARTKIST_OFFER_CONSENSUS_ERROR: ERRCODE: 1096 - " + _("Failed to write to offer DB");
 			return error(errorMessage.c_str());
 		}
 
@@ -701,7 +701,7 @@ UniValue offernew(const JSONRPCRequest& request) {
 	const UniValue &params = request.params;
 	if (request.fHelp || params.size() != 17)
 		throw runtime_error(
-			"offernew [alias] [category] [title] [quantity] [price] [description] [currency] [cert. guid] [payment options=SYS] [private=false] [units=1] [offertype=BUYNOW] [auction_expires=0] [auction_reserve=0] [auction_require_witness=false] [auction_deposit=0] [witness]\n"
+			"offernew [alias] [category] [title] [quantity] [price] [description] [currency] [cert. guid] [payment options=MARTK] [private=false] [units=1] [offertype=BUYNOW] [auction_expires=0] [auction_reserve=0] [auction_require_witness=false] [auction_deposit=0] [witness]\n"
 						"<alias> An alias you own.\n"
 						"<category> category, 256 characters max.\n"
 						"<title> title, 256 characters max.\n"
@@ -710,7 +710,7 @@ UniValue offernew(const JSONRPCRequest& request) {
 						"<description> description, 512 characters max.\n"
 						"<currency> The currency code that you want your offer to be in ie: USD.\n"
 						"<cert. guid> Set this to the guid of a certificate you wish to sell\n"
-						"<paymentOptions> 'SYS' to accept SYS only, 'BTC' for BTC only, 'ZEC' for zcash only, or a |-delimited string to accept multiple currencies (e.g. 'BTC|SYS' to accept BTC or SYS). Leave empty for default. Defaults to 'SYS'.\n"		
+						"<paymentOptions> 'MARTK' to accept MARTK only, 'BTC' for BTC only, 'ZEC' for zcash only, or a |-delimited string to accept multiple currencies (e.g. 'BTC|MARTK' to accept BTC or MARTK). Leave empty for default. Defaults to 'MARTK'.\n"		
 						"<private> set to Yes if this offer should be private not be searchable. Defaults to No.\n"
 						"<units> Units that 1 qty represents. For example if selling 1 BTC. Default is 1.\n"
 						"<offertype> Options of how an offer is sold. 'BUYNOW' for regular Buy It Now offer, 'AUCTION' to auction this offer while providing auction_expires/auction_reserve/auction_require_witness parameters, 'COIN' for offers selling cryptocurrency, or a | -delimited string to create an offer with multiple options(e.g. 'BUYNOW|AUCTION' to create an offer that is sold through an auction but has Buy It Now enabled as well).Leave empty for default. Defaults to 'BUYNOW'.\n"
@@ -727,7 +727,7 @@ UniValue offernew(const JSONRPCRequest& request) {
 	CAliasIndex alias;
 	ToLowerCase(vchAlias);
 	if (!GetAlias(vchAlias, alias))
-		throw runtime_error("SYSCOIN_OFFER_RPC_ERROR ERRCODE: 1500 - " + _("Could not find an alias with this name"));
+		throw runtime_error("MARTKIST_OFFER_RPC_ERROR ERRCODE: 1500 - " + _("Could not find an alias with this name"));
 
 	vector<unsigned char> vchCategory =  vchFromValue(params[1]);
 	vector<unsigned char> vchTitle =  vchFromValue(params[2]);
@@ -742,14 +742,14 @@ UniValue offernew(const JSONRPCRequest& request) {
 	CScript scriptPubKeyOrig;
 	CScript scriptPubKey;
 	vchCert = vchFromValue(params[7]);
-	// payment options - get payment options string if specified otherwise default to SYS
-	string paymentOptions = "SYS";
+	// payment options - get payment options string if specified otherwise default to MARTK
+	string paymentOptions = "MARTK";
 	paymentOptions = params[8].get_str();		
 	boost::algorithm::to_upper(paymentOptions);
 	// payment options - validate payment options string
 	if(!ValidatePaymentOptionsString(paymentOptions))
 	{
-		string err = "SYSCOIN_OFFER_RPC_ERROR ERRCODE: 1504 - " + _("Could not validate the payment options value");
+		string err = "MARTKIST_OFFER_RPC_ERROR ERRCODE: 1504 - " + _("Could not validate the payment options value");
 		throw runtime_error(err.c_str());
 	}
 	// payment options - and convert payment options string to a bitmask for the txn
@@ -764,7 +764,7 @@ UniValue offernew(const JSONRPCRequest& request) {
 	boost::algorithm::to_upper(offerType);
 	if (!ValidateOfferTypeString(offerType))
 	{
-		string err = "SYSCOIN_OFFER_RPC_ERROR ERRCODE: 1504 - " + _("Could not validate offer type");
+		string err = "MARTKIST_OFFER_RPC_ERROR ERRCODE: 1504 - " + _("Could not validate offer type");
 		throw runtime_error(err.c_str());
 	}
 	uint32_t offerTypeMask = GetOfferTypeMaskFromString(offerType);
@@ -792,27 +792,27 @@ UniValue offernew(const JSONRPCRequest& request) {
 	{
 		if (!GetCert( vchCert, theCert))
 		{
-			throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 1506 - " + _("Creating an offer with a cert that does not exist"));
+			throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 1506 - " + _("Creating an offer with a cert that does not exist"));
 		}
 		else if(!boost::algorithm::istarts_with(stringFromVch(vchCategory), "certificates"))
 		{
-			throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 1507 - " + _("Offer selling a certificate must use a certificate category"));
+			throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 1507 - " + _("Offer selling a certificate must use a certificate category"));
 		}
 		else if(theCert.vchAlias != vchAlias)
 		{
-			throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 1508 - " + _("Cannot create this offer because the certificate alias does not match the offer alias"));
+			throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 1508 - " + _("Cannot create this offer because the certificate alias does not match the offer alias"));
 		}
 	}
 	else if(boost::algorithm::istarts_with(stringFromVch(vchCategory), "certificates"))
 	{
-		throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 1509 - " + _("Offer not selling a certificate cannot use a certificate category"));
+		throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 1509 - " + _("Offer not selling a certificate cannot use a certificate category"));
 	}
 
-	// this is a syscoin transaction
+	// this is a martkist transaction
 	CWalletTx wtx;
 
 	// generate rand identifier
-	vector<unsigned char> vchOffer = vchFromString(GenerateSyscoinGuid());
+	vector<unsigned char> vchOffer = vchFromString(GenerateMartkistGuid());
 	
 
 
@@ -843,12 +843,12 @@ UniValue offernew(const JSONRPCRequest& request) {
     uint256 hash = Hash(data.begin(), data.end());
 
     vector<unsigned char> vchHashOffer = vchFromString(hash.GetHex());
-	CSyscoinAddress aliasAddress;
+	CMartkistAddress aliasAddress;
 	GetAddress(alias, &aliasAddress, scriptPubKeyOrig);
-	scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_OFFER) << CScript::EncodeOP_N(OP_OFFER_ACTIVATE) << vchHashOffer << OP_2DROP << OP_DROP;
+	scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_OFFER) << CScript::EncodeOP_N(OP_OFFER_ACTIVATE) << vchHashOffer << OP_2DROP << OP_DROP;
 	scriptPubKey += scriptPubKeyOrig;
 	CScript scriptPubKeyAlias;
-	scriptPubKeyAlias << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << alias.vchAlias << alias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
+	scriptPubKeyAlias << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << alias.vchAlias << alias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
 	scriptPubKeyAlias += scriptPubKeyOrig;
 
 	vector<CRecipient> vecSend;
@@ -865,7 +865,7 @@ UniValue offernew(const JSONRPCRequest& request) {
 	vecSend.push_back(fee);
 
 
-	UniValue res = syscointxfund_helper(vchAlias, vchWitness, aliasRecipient, vecSend);
+	UniValue res = martkisttxfund_helper(vchAlias, vchWitness, aliasRecipient, vecSend);
 	res.push_back(stringFromVch(vchOffer));
 	return res;
 }
@@ -885,14 +885,14 @@ UniValue offerlink(const JSONRPCRequest& request) {
 	CAliasIndex alias;
 	ToLowerCase(vchAlias);
 	if (!GetAlias(vchAlias, alias))
-		throw runtime_error("SYSCOIN_OFFER_RPC_ERROR ERRCODE: 1510 - " + _("Could not find an alias with this name"));
+		throw runtime_error("MARTKIST_OFFER_RPC_ERROR ERRCODE: 1510 - " + _("Could not find an alias with this name"));
  
 
 	vector<unsigned char> vchLinkOffer = vchFromValue(params[1]);
 	vector<unsigned char> vchDescription;
 	COffer linkOffer;
 	if (vchLinkOffer.empty() || !GetOffer( vchLinkOffer, linkOffer))
-		throw runtime_error("SYSCOIN_OFFER_RPC_ERROR ERRCODE: 1513 - " + _("Could not find offer with this guid"));
+		throw runtime_error("MARTKIST_OFFER_RPC_ERROR ERRCODE: 1513 - " + _("Could not find offer with this guid"));
 
 	int commissionInteger = params[2].get_int();
 	vchDescription = vchFromValue(params[3]);
@@ -906,12 +906,12 @@ UniValue offerlink(const JSONRPCRequest& request) {
 	CScript scriptPubKeyOrig;
 	CScript scriptPubKey;
 
-	// this is a syscoin transaction
+	// this is a martkist transaction
 	CWalletTx wtx;
 
 
 	// generate rand identifier
-	vector<unsigned char> vchOffer = vchFromString(GenerateSyscoinGuid());
+	vector<unsigned char> vchOffer = vchFromString(GenerateMartkistGuid());
 	
 
 	// build offer
@@ -931,12 +931,12 @@ UniValue offerlink(const JSONRPCRequest& request) {
     uint256 hash = Hash(data.begin(), data.end());
 
     vector<unsigned char> vchHashOffer = vchFromString(hash.GetHex());
-	CSyscoinAddress aliasAddress;
+	CMartkistAddress aliasAddress;
 	GetAddress(alias, &aliasAddress, scriptPubKeyOrig);
-	scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_OFFER) << CScript::EncodeOP_N(OP_OFFER_ACTIVATE) << vchHashOffer << OP_2DROP << OP_DROP;
+	scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_OFFER) << CScript::EncodeOP_N(OP_OFFER_ACTIVATE) << vchHashOffer << OP_2DROP << OP_DROP;
 	scriptPubKey += scriptPubKeyOrig;
 	CScript scriptPubKeyAlias;
-	scriptPubKeyAlias << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << alias.vchAlias << alias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
+	scriptPubKeyAlias << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << alias.vchAlias << alias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
 	scriptPubKeyAlias += scriptPubKeyOrig;
 
 
@@ -956,7 +956,7 @@ UniValue offerlink(const JSONRPCRequest& request) {
 	vecSend.push_back(fee);
 
 
-	UniValue res = syscointxfund_helper(vchAlias, vchWitness, aliasRecipient, vecSend);
+	UniValue res = martkisttxfund_helper(vchAlias, vchWitness, aliasRecipient, vecSend);
 	res.push_back(stringFromVch(vchOffer));
 	return res;
 }
@@ -991,7 +991,7 @@ UniValue offerupdate(const JSONRPCRequest& request) {
 	
 	if(!paymentOptions.empty() && !ValidatePaymentOptionsString(paymentOptions))
 	{
-		throw runtime_error("SYSCOIN_OFFER_RPC_ERROR ERRCODE: 1532 - " + _("Could not validate payment options string"));
+		throw runtime_error("MARTKIST_OFFER_RPC_ERROR ERRCODE: 1532 - " + _("Could not validate payment options string"));
 	}
 	uint64_t paymentOptionsMask = GetPaymentOptionsMaskFromString(paymentOptions);
 
@@ -1001,7 +1001,7 @@ UniValue offerupdate(const JSONRPCRequest& request) {
 	boost::algorithm::to_upper(strOfferType);
 	if (!strOfferType.empty() && !ValidateOfferTypeString(strOfferType))
 	{
-		string err = "SYSCOIN_OFFER_RPC_ERROR ERRCODE: 1504 - " + _("Could not validate offer type");
+		string err = "MARTKIST_OFFER_RPC_ERROR ERRCODE: 1504 - " + _("Could not validate offer type");
 		throw runtime_error(err.c_str());
 	}
 	uint32_t offerTypeMask = GetOfferTypeMaskFromString(strOfferType);
@@ -1018,13 +1018,13 @@ UniValue offerupdate(const JSONRPCRequest& request) {
 
 	CAliasIndex alias, offerAlias;
 
-	// this is a syscoind txn
+	// this is a martkistd txn
 	CWalletTx wtx;
 	CScript scriptPubKeyOrig, scriptPubKeyCertOrig;
 
 	COffer theOffer, linkOffer;
 	if (!GetOffer( vchOffer, theOffer))
-		throw runtime_error("SYSCOIN_OFFER_RPC_ERROR ERRCODE: 1534 - " + _("Could not find offer with this guid"));
+		throw runtime_error("MARTKIST_OFFER_RPC_ERROR ERRCODE: 1534 - " + _("Could not find offer with this guid"));
 
 	if (!fUnitTest) {
 		ArrivalTimesMap arrivalTimes;
@@ -1033,58 +1033,58 @@ UniValue offerupdate(const JSONRPCRequest& request) {
 		for (auto& arrivalTime : arrivalTimes) {
 			// if this tx arrived within the minimum latency period flag it as potentially conflicting
 			if ((nNow - (arrivalTime.second / 1000)) < ZDAG_MINIMUM_LATENCY_SECONDS) {
-				throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 2510 - " + _("Please wait a few more seconds and try again..."));
+				throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 2510 - " + _("Please wait a few more seconds and try again..."));
 			}
 		}
 	}
 
 	if (!GetAlias(theOffer.vchAlias, offerAlias))
-		throw runtime_error("SYSCOIN_OFFER_RPC_ERROR ERRCODE: 1535 - " + _("Could not find an alias with this name"));
+		throw runtime_error("MARTKIST_OFFER_RPC_ERROR ERRCODE: 1535 - " + _("Could not find an alias with this name"));
 	ToLowerCase(vchAlias);
 	if (!GetAlias(vchAlias, alias))
-		throw runtime_error("SYSCOIN_OFFER_RPC_ERROR ERRCODE: 1536 - " + _("Could not find an alias with this name"));
+		throw runtime_error("MARTKIST_OFFER_RPC_ERROR ERRCODE: 1536 - " + _("Could not find an alias with this name"));
 
 	CCert theCert;
 	if(!strCert.empty())
 	{
 		if (!GetCert( vchFromString(strCert), theCert))
 		{
-			throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 1538 - " + _("Updating an offer with a cert that does not exist"));
+			throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 1538 - " + _("Updating an offer with a cert that does not exist"));
 		}
 		else if(theOffer.vchLinkOffer.empty() && theCert.vchAlias != theOffer.vchAlias)
 		{
-			throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 1539 - " + _("Cannot update this offer because the certificate alias does not match the offer alias"));
+			throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 1539 - " + _("Cannot update this offer because the certificate alias does not match the offer alias"));
 		}
 		if(!boost::algorithm::istarts_with(strCategory, "certificates"))
 		{
-			throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 1540 - " + _("Offer selling a certificate must use a certificate category"));
+			throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 1540 - " + _("Offer selling a certificate must use a certificate category"));
 		}
 	}
 	else if(boost::algorithm::istarts_with(strCategory, "certificates"))
 	{
-		throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 1541 - " + _("Offer not selling a certificate cannot use a certificate category"));
+		throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 1541 - " + _("Offer not selling a certificate cannot use a certificate category"));
 	}
 	if(!theOffer.vchLinkOffer.empty())
 	{
 		COffer linkOffer;
 		if (!GetOffer( theOffer.vchLinkOffer, linkOffer))
 		{
-			throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 1542 - " + _("Linked offer not found. It may be expired"));
+			throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 1542 - " + _("Linked offer not found. It may be expired"));
 		}
 		if (!linkOffer.vchLinkOffer.empty())
 		{
-			throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 1544 - " + _("Cannot link to an offer that is already linked to another offer"));
+			throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 1544 - " + _("Cannot link to an offer that is already linked to another offer"));
 		}
 		else if(linkOffer.sCategory.size() > 0 && boost::algorithm::istarts_with(stringFromVch(linkOffer.sCategory), "wanted"))
 		{
-			throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 1545 - " + _("Cannot link to a wanted offer"));
+			throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 1545 - " + _("Cannot link to a wanted offer"));
 		}
 	}
 	if(strCategory.size() > 0 && boost::algorithm::istarts_with(strCategory, "wanted") && !boost::algorithm::istarts_with(stringFromVch(theOffer.sCategory), "wanted"))
 	{
-		throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 1546 - " + _("Cannot change category to wanted"));
+		throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 1546 - " + _("Cannot change category to wanted"));
 	}
-	CSyscoinAddress aliasAddress;
+	CMartkistAddress aliasAddress;
 	GetAddress(alias, &aliasAddress, scriptPubKeyOrig);
 
 	// create OFFERUPDATE, ALIASUPDATE txn keys
@@ -1131,7 +1131,7 @@ UniValue offerupdate(const JSONRPCRequest& request) {
     uint256 hash = Hash(data.begin(), data.end());
 
     vector<unsigned char> vchHashOffer = vchFromString(hash.GetHex());
-	scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_OFFER) << CScript::EncodeOP_N(OP_OFFER_UPDATE) << vchHashOffer << OP_2DROP << OP_DROP;
+	scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_OFFER) << CScript::EncodeOP_N(OP_OFFER_UPDATE) << vchHashOffer << OP_2DROP << OP_DROP;
 	scriptPubKey += scriptPubKeyOrig;
 
 	vector<CRecipient> vecSend;
@@ -1139,7 +1139,7 @@ UniValue offerupdate(const JSONRPCRequest& request) {
 	CreateRecipient(scriptPubKey, recipient);
 	vecSend.push_back(recipient);
 	CScript scriptPubKeyAlias;
-	scriptPubKeyAlias << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << offerAlias.vchAlias << offerAlias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
+	scriptPubKeyAlias << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << offerAlias.vchAlias << offerAlias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
 	scriptPubKeyAlias += scriptPubKeyOrig;
 	CRecipient aliasRecipient;
 	CreateAliasRecipient(scriptPubKeyAlias, aliasRecipient);
@@ -1154,14 +1154,14 @@ UniValue offerupdate(const JSONRPCRequest& request) {
 	coinControl.fAllowWatchOnly = false;
 
 
-	return syscointxfund_helper(offerAlias.vchAlias, vchWitness, aliasRecipient, vecSend);
+	return martkisttxfund_helper(offerAlias.vchAlias, vchWitness, aliasRecipient, vecSend);
 }
 
 void COfferDB::WriteOfferIndex(const COffer& offer, const int &op) {
 	if (IsArgSet("-zmqpubofferrecord")) {
 		UniValue oName(UniValue::VOBJ);
 		if (BuildOfferIndexerJson(offer, oName)) {
-			GetMainSignals().NotifySyscoinUpdate(oName.write().c_str(), "offerrecord");
+			GetMainSignals().NotifyMartkistUpdate(oName.write().c_str(), "offerrecord");
 		}
 	}
 	WriteOfferIndexHistory(offer, op);
@@ -1171,7 +1171,7 @@ void COfferDB::WriteOfferIndexHistory(const COffer& offer, const int &op) {
 		UniValue oName(UniValue::VOBJ);
 		if (BuildOfferIndexerHistoryJson(offer, oName)) {
 			oName.push_back(Pair("op", offerFromOp(op)));
-			GetMainSignals().NotifySyscoinUpdate(oName.write().c_str(), "offerhistory");
+			GetMainSignals().NotifyMartkistUpdate(oName.write().c_str(), "offerhistory");
 		}
 	}
 }
@@ -1186,10 +1186,10 @@ UniValue offerinfo(const JSONRPCRequest& request) {
 	COffer txPos;
 
 	if (!pofferdb || !pofferdb->ReadOffer(vchOffer, txPos))
-		throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 5536 - " + _("Failed to read from offer DB"));
+		throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 5536 - " + _("Failed to read from offer DB"));
 
 	if(!BuildOfferJson(txPos, oOffer))
-		throw runtime_error("SYSCOIN_OFFER_RPC_ERROR ERRCODE: 5537 - " + _("Could not find this offer"));
+		throw runtime_error("MARTKIST_OFFER_RPC_ERROR ERRCODE: 5537 - " + _("Could not find this offer"));
 
 	return oOffer;
 
@@ -1378,8 +1378,8 @@ std::string GetOfferTypeString(const uint32_t &offerType)
 std::string GetPaymentOptionsString(const uint64_t &paymentOptions)
 {
 	vector<std::string> currencies;
-	if (IsPaymentOptionInMask(paymentOptions, PAYMENTOPTION_SYS)) {
-		currencies.push_back(std::string("SYS"));
+	if (IsPaymentOptionInMask(paymentOptions, PAYMENTOPTION_MARTK)) {
+		currencies.push_back(std::string("MARTK"));
 	}
 	if (IsPaymentOptionInMask(paymentOptions, PAYMENTOPTION_BTC)) {
 		currencies.push_back(std::string("BTC"));
@@ -1391,13 +1391,13 @@ std::string GetPaymentOptionsString(const uint64_t &paymentOptions)
 }
 CChainParams::AddressType PaymentOptionToAddressType(const uint64_t &paymentOption)
 {
-	if (paymentOption == PAYMENTOPTION_SYS)
-		return CChainParams::ADDRESS_SYS;
+	if (paymentOption == PAYMENTOPTION_MARTK)
+		return CChainParams::ADDRESS_MARTK;
 	else if (paymentOption == PAYMENTOPTION_BTC)
 		return CChainParams::ADDRESS_BTC;
 	else if(paymentOption == PAYMENTOPTION_ZEC)
 		return CChainParams::ADDRESS_ZEC;
-	return CChainParams::ADDRESS_SYS;
+	return CChainParams::ADDRESS_MARTK;
 }
 
 void OfferTxToJSON(const int op, const std::vector<unsigned char> &vchData, const std::vector<unsigned char> &vchHash, UniValue &entry)
@@ -1559,13 +1559,13 @@ UniValue listoffers(const JSONRPCRequest& request) {
 			count = INT_MAX;
 		} else
 		if (count < 0) {
-			throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 5538 - " + _("'count' must be 0 or greater"));
+			throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 5538 - " + _("'count' must be 0 or greater"));
 		}
 	}
 	if (params.size() > 1) {
 		from = params[1].get_int();
 		if (from < 0) {
-			throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 5538 - " + _("'from' must be 0 or greater"));
+			throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 5538 - " + _("'from' must be 0 or greater"));
 		}
 	}
 	if (params.size() > 2) {
@@ -1574,6 +1574,6 @@ UniValue listoffers(const JSONRPCRequest& request) {
 
 	UniValue oRes(UniValue::VARR);
 	if (!pofferdb->ScanOffers(count, from, options, oRes))
-		throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 5538 - " + _("Scan failed"));
+		throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 5538 - " + _("Scan failed"));
 	return oRes;
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
-# Copyright (c) 2014-2015 The Bitcoin Core developers
-# Copyright (c) 2014-2017 The Syscoin Core developers
+# Copyright (c) 2014-2020 The Bitcoin Core developers
+# Copyright (c) 2014-2020 The Martkist Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,7 +9,7 @@
 #
 
 
-from test_framework.test_framework import SyscoinTestFramework
+from test_framework.test_framework import MartkistTestFramework
 from test_framework.util import *
 from struct import *
 from io import BytesIO
@@ -52,7 +52,7 @@ def http_post_call(host, port, path, requestdata = '', response_object = 0):
 
     return conn.getresponse().read()
 
-class RESTTest (SyscoinTestFramework):
+class RESTTest (MartkistTestFramework):
     FORMAT_SEPARATOR = "."
 
     def setup_chain(self):

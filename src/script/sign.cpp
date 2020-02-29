@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,8 +14,8 @@
 #include "uint256.h"
 
 #include <boost/foreach.hpp>
-// SYSCOIN services
-extern bool RemoveSyscoinScript(const CScript& scriptPubKeyIn, CScript& scriptPubKeyOut);
+// MARTKIST services
+extern bool RemoveMartkistScript(const CScript& scriptPubKeyIn, CScript& scriptPubKeyOut);
 typedef std::vector<unsigned char> valtype;
 
 TransactionSignatureCreator::TransactionSignatureCreator(const CKeyStore* keystoreIn, const CTransaction* txToIn, unsigned int nInIn, int nHashTypeIn) : BaseSignatureCreator(keystoreIn), txTo(txToIn), nIn(nInIn), nHashType(nHashTypeIn), checker(txTo, nIn) {}
@@ -103,9 +103,9 @@ static bool SignStep(const BaseSignatureCreator& creator, const CScript& scriptP
 
 bool ProduceSignature(const BaseSignatureCreator& creator, const CScript& fromPubKeyIn, CScript& scriptSig)
 {
-	// SYSCOIN
+	// MARTKIST
 	CScript fromPubKeyOut;
-	if (!RemoveSyscoinScript(fromPubKeyIn, fromPubKeyOut))
+	if (!RemoveMartkistScript(fromPubKeyIn, fromPubKeyOut))
 		fromPubKeyOut = fromPubKeyIn;
 
     txnouttype whichType;

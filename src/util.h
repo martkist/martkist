@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,11 +9,11 @@
  * Server/client environment: argument handling, config file parsing,
  * logging, thread wrappers
  */
-#ifndef SYSCOIN_UTIL_H
-#define SYSCOIN_UTIL_H
+#ifndef MARTKIST_UTIL_H
+#define MARTKIST_UTIL_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/syscoin-config.h"
+#include "config/martkist-config.h"
 #endif
 
 #include "compat.h"
@@ -36,14 +36,14 @@
 
 // Uncomment the following line to enable debugging messages
 // or enable on a per file basis prior to inclusion of util.h
-//#define ENABLE_SYS_DEBUG
-#ifdef ENABLE_SYS_DEBUG
+//#define ENABLE_MARTK_DEBUG
+#ifdef ENABLE_MARTK_DEBUG
 #define DBG( x ) x
 #else
 #define DBG( x ) 
 #endif
 
-//Syscoin only features
+//Martkist only features
 
 extern bool fMasternodeMode;
 extern bool fUnitTest;
@@ -77,8 +77,8 @@ extern bool fLogIPs;
 extern std::atomic<bool> fReopenDebugLog;
 extern CTranslationInterface translationInterface;
 
-extern const char * const SYSCOIN_CONF_FILENAME;
-extern const char * const SYSCOIN_PID_FILENAME;
+extern const char * const MARTKIST_CONF_FILENAME;
+extern const char * const MARTKIST_PID_FILENAME;
 
 /**
  * Translation function: Call Translate signal on UI interface, which returns a boost::optional result.
@@ -240,7 +240,7 @@ std::string GetThreadName();
  */
 template <typename Callable> void TraceThread(const char* name,  Callable func)
 {
-    std::string s = strprintf("syscoin-%s", name);
+    std::string s = strprintf("martkist-%s", name);
     RenameThread(s.c_str());
     try
     {
@@ -301,4 +301,4 @@ std::string SafeIntVersionToString(uint32_t nVersion);
 + */
 int ScheduleBatchPriority(pthread_t thread);
 
-#endif // SYSCOIN_UTIL_H
+#endif // MARTKIST_UTIL_H

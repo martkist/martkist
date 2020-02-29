@@ -1,12 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_UINT256_H
-#define SYSCOIN_UINT256_H
+#ifndef MARTKIST_UINT256_H
+#define MARTKIST_UINT256_H
 
 #include <assert.h>
 #include <cstring>
@@ -176,4 +176,4 @@ public:
 };
 
 
-#endif // SYSCOIN_UINT256_H
+#endif // MARTKIST_UINT256_H

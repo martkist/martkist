@@ -1,10 +1,10 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_WALLETMODEL_H
-#define SYSCOIN_QT_WALLETMODEL_H
+#ifndef MARTKIST_QT_WALLETMODEL_H
+#define MARTKIST_QT_WALLETMODEL_H
 
 #include "paymentrequestplus.h"
 #include "walletmodeltransaction.h"
@@ -102,7 +102,7 @@ public:
     }
 };
 
-/** Interface to Syscoin wallet from Qt view code. */
+/** Interface to Martkist wallet from Qt view code. */
 class WalletModel : public QObject
 {
     Q_OBJECT
@@ -295,4 +295,4 @@ public Q_SLOTS:
     void pollBalanceChanged();
 };
 
-#endif // SYSCOIN_QT_WALLETMODEL_H
+#endif // MARTKIST_QT_WALLETMODEL_H

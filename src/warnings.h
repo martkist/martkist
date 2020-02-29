@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_WARNINGS_H
-#define SYSCOIN_WARNINGS_H
+#ifndef MARTKIST_WARNINGS_H
+#define MARTKIST_WARNINGS_H
 
 #include <stdlib.h>
 #include <string>
@@ -19,4 +19,4 @@ std::string GetWarnings(const std::string& strFor);
 
 static const bool DEFAULT_TESTSAFEMODE = false;
 
-#endif //  SYSCOIN_WARNINGS_H
+#endif //  MARTKIST_WARNINGS_H

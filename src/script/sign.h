@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_SCRIPT_SIGN_H
-#define SYSCOIN_SCRIPT_SIGN_H
+#ifndef MARTKIST_SCRIPT_SIGN_H
+#define MARTKIST_SCRIPT_SIGN_H
 
 #include "script/interpreter.h"
 
@@ -65,4 +65,4 @@ CScript CombineSignatures(const CScript& scriptPubKey, const BaseSignatureChecke
 /** Combine two script signatures on transactions. */
 CScript CombineSignatures(const CScript& scriptPubKey, const CTransaction& txTo, unsigned int nIn, const CScript& scriptSig1, const CScript& scriptSig2);
 
-#endif // SYSCOIN_SCRIPT_SIGN_H
+#endif // MARTKIST_SCRIPT_SIGN_H

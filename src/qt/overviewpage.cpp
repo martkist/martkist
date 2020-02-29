@@ -1,13 +1,13 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "overviewpage.h"
 #include "ui_overviewpage.h"
 
-#include "syscoinunits.h"
+#include "martkistunits.h"
 #include "clientmodel.h"
 #include "guiconstants.h"
 #include "guiutil.h"
@@ -39,7 +39,7 @@ class TxViewDelegate : public QAbstractItemDelegate
     Q_OBJECT
 public:
     TxViewDelegate(const PlatformStyle *_platformStyle, QObject *parent=nullptr):
-        QAbstractItemDelegate(), unit(SyscoinUnits::SYS),
+        QAbstractItemDelegate(), unit(MartkistUnits::MARTK),
         platformStyle(_platformStyle)
     {
 
@@ -98,7 +98,7 @@ public:
             foreground = option.palette.color(QPalette::Text);
         }
         painter->setPen(foreground);
-        QString amountText = SyscoinUnits::floorWithUnit(unit, amount, true, SyscoinUnits::separatorAlways);
+        QString amountText = MartkistUnits::floorWithUnit(unit, amount, true, MartkistUnits::separatorAlways);
         if(!confirmed)
         {
             amountText = QString("[") + amountText + QString("]");
@@ -210,15 +210,15 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     currentWatchOnlyBalance = watchOnlyBalance;
     currentWatchUnconfBalance = watchUnconfBalance;
     currentWatchImmatureBalance = watchImmatureBalance;
-    ui->labelBalance->setText(SyscoinUnits::floorHtmlWithUnit(nDisplayUnit, balance, false, SyscoinUnits::separatorAlways));
-    ui->labelUnconfirmed->setText(SyscoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, SyscoinUnits::separatorAlways));
-    ui->labelImmature->setText(SyscoinUnits::floorHtmlWithUnit(nDisplayUnit, immatureBalance, false, SyscoinUnits::separatorAlways));
-    ui->labelAnonymized->setText(SyscoinUnits::floorHtmlWithUnit(nDisplayUnit, anonymizedBalance, false, SyscoinUnits::separatorAlways));
-    ui->labelTotal->setText(SyscoinUnits::floorHtmlWithUnit(nDisplayUnit, balance + unconfirmedBalance + immatureBalance, false, SyscoinUnits::separatorAlways));
-    ui->labelWatchAvailable->setText(SyscoinUnits::floorHtmlWithUnit(nDisplayUnit, watchOnlyBalance, false, SyscoinUnits::separatorAlways));
-    ui->labelWatchPending->setText(SyscoinUnits::floorHtmlWithUnit(nDisplayUnit, watchUnconfBalance, false, SyscoinUnits::separatorAlways));
-    ui->labelWatchImmature->setText(SyscoinUnits::floorHtmlWithUnit(nDisplayUnit, watchImmatureBalance, false, SyscoinUnits::separatorAlways));
-    ui->labelWatchTotal->setText(SyscoinUnits::floorHtmlWithUnit(nDisplayUnit, watchOnlyBalance + watchUnconfBalance + watchImmatureBalance, false, SyscoinUnits::separatorAlways));
+    ui->labelBalance->setText(MartkistUnits::floorHtmlWithUnit(nDisplayUnit, balance, false, MartkistUnits::separatorAlways));
+    ui->labelUnconfirmed->setText(MartkistUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, MartkistUnits::separatorAlways));
+    ui->labelImmature->setText(MartkistUnits::floorHtmlWithUnit(nDisplayUnit, immatureBalance, false, MartkistUnits::separatorAlways));
+    ui->labelAnonymized->setText(MartkistUnits::floorHtmlWithUnit(nDisplayUnit, anonymizedBalance, false, MartkistUnits::separatorAlways));
+    ui->labelTotal->setText(MartkistUnits::floorHtmlWithUnit(nDisplayUnit, balance + unconfirmedBalance + immatureBalance, false, MartkistUnits::separatorAlways));
+    ui->labelWatchAvailable->setText(MartkistUnits::floorHtmlWithUnit(nDisplayUnit, watchOnlyBalance, false, MartkistUnits::separatorAlways));
+    ui->labelWatchPending->setText(MartkistUnits::floorHtmlWithUnit(nDisplayUnit, watchUnconfBalance, false, MartkistUnits::separatorAlways));
+    ui->labelWatchImmature->setText(MartkistUnits::floorHtmlWithUnit(nDisplayUnit, watchImmatureBalance, false, MartkistUnits::separatorAlways));
+    ui->labelWatchTotal->setText(MartkistUnits::floorHtmlWithUnit(nDisplayUnit, watchOnlyBalance + watchUnconfBalance + watchImmatureBalance, false, MartkistUnits::separatorAlways));
 
     // only show immature (newly mined) balance if it's non-zero, so as not to complicate things
     // for the non-mining users
@@ -277,7 +277,7 @@ void OverviewPage::setWalletModel(WalletModel *model)
     this->walletModel = model;
     if(model && model->getOptionsModel())
     {
-        // update the display unit, to not use the default ("SYS")
+        // update the display unit, to not use the default ("MARTK")
         updateDisplayUnit();
         // Keep up to date with wallet
         setBalance(model->getBalance(), model->getUnconfirmedBalance(), model->getImmatureBalance(), model->getAnonymizedBalance(),
@@ -346,7 +346,7 @@ void OverviewPage::updatePrivateSendProgress()
     if(!pwalletMain) return;
 
     QString strAmountAndRounds;
-    QString strPrivateSendAmount = SyscoinUnits::formatHtmlWithUnit(nDisplayUnit, privateSendClient.nPrivateSendAmount * COIN, false, SyscoinUnits::separatorAlways);
+    QString strPrivateSendAmount = MartkistUnits::formatHtmlWithUnit(nDisplayUnit, privateSendClient.nPrivateSendAmount * COIN, false, MartkistUnits::separatorAlways);
 
     if(currentBalance == 0)
     {
@@ -354,7 +354,7 @@ void OverviewPage::updatePrivateSendProgress()
         ui->privateSendProgress->setToolTip(tr("No inputs detected"));
 
         // when balance is zero just show info from settings
-        strPrivateSendAmount = strPrivateSendAmount.remove(strPrivateSendAmount.indexOf("."), SyscoinUnits::decimals(nDisplayUnit) + 1);
+        strPrivateSendAmount = strPrivateSendAmount.remove(strPrivateSendAmount.indexOf("."), MartkistUnits::decimals(nDisplayUnit) + 1);
         strAmountAndRounds = strPrivateSendAmount + " / " + tr("%n Rounds", "", privateSendClient.nPrivateSendRounds);
 
         ui->labelAmountRounds->setToolTip(tr("No inputs detected"));
@@ -374,17 +374,17 @@ void OverviewPage::updatePrivateSendProgress()
     if(nMaxToAnonymize >= privateSendClient.nPrivateSendAmount * COIN) {
         ui->labelAmountRounds->setToolTip(tr("Found enough compatible inputs to anonymize %1")
                                           .arg(strPrivateSendAmount));
-        strPrivateSendAmount = strPrivateSendAmount.remove(strPrivateSendAmount.indexOf("."), SyscoinUnits::decimals(nDisplayUnit) + 1);
+        strPrivateSendAmount = strPrivateSendAmount.remove(strPrivateSendAmount.indexOf("."), MartkistUnits::decimals(nDisplayUnit) + 1);
         strAmountAndRounds = strPrivateSendAmount + " / " + tr("%n Rounds", "", privateSendClient.nPrivateSendRounds);
     } else {
-        QString strMaxToAnonymize = SyscoinUnits::formatHtmlWithUnit(nDisplayUnit, nMaxToAnonymize, false, SyscoinUnits::separatorAlways);
+        QString strMaxToAnonymize = MartkistUnits::formatHtmlWithUnit(nDisplayUnit, nMaxToAnonymize, false, MartkistUnits::separatorAlways);
         ui->labelAmountRounds->setToolTip(tr("Not enough compatible inputs to anonymize <span style='color:red;'>%1</span>,<br>"
                                              "will anonymize <span style='color:red;'>%2</span> instead")
                                           .arg(strPrivateSendAmount)
                                           .arg(strMaxToAnonymize));
-        strMaxToAnonymize = strMaxToAnonymize.remove(strMaxToAnonymize.indexOf("."), SyscoinUnits::decimals(nDisplayUnit) + 1);
+        strMaxToAnonymize = strMaxToAnonymize.remove(strMaxToAnonymize.indexOf("."), MartkistUnits::decimals(nDisplayUnit) + 1);
         strAmountAndRounds = "<span style='color:red;'>" +
-                QString(SyscoinUnits::factor(nDisplayUnit) == 1 ? "" : "~") + strMaxToAnonymize +
+                QString(MartkistUnits::factor(nDisplayUnit) == 1 ? "" : "~") + strMaxToAnonymize +
                 " / " + tr("%n Rounds", "", privateSendClient.nPrivateSendRounds) + "</span>";
     }
     ui->labelAmountRounds->setText(strAmountAndRounds);
@@ -614,7 +614,7 @@ void OverviewPage::togglePrivateSend(){
     if(!privateSendClient.fEnablePrivateSend){
         const CAmount nMinAmount = CPrivateSend::GetSmallestDenomination() + CPrivateSend::GetMaxCollateralAmount();
         if(currentBalance < nMinAmount){
-            QString strMinAmount(SyscoinUnits::formatWithUnit(nDisplayUnit, nMinAmount));
+            QString strMinAmount(MartkistUnits::formatWithUnit(nDisplayUnit, nMinAmount));
             QMessageBox::warning(this, tr("PrivateSend"),
                 tr("PrivateSend requires at least %1 to use.").arg(strMinAmount),
                 QMessageBox::Ok, QMessageBox::Ok);

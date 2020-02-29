@@ -1,5 +1,5 @@
 # Copyright (c) 2013-2016 The Bitcoin Core developers
-# Copyright (c) 2014-2018 The Syscoin Core developers
+# Copyright (c) 2014-2020 The Martkist Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -19,29 +19,29 @@ else
 LIBUNIVALUE = $(UNIVALUE_LIBS)
 endif
 
-SYSCOIN_CONFIG_INCLUDES=-I$(builddir)/config
-SYSCOIN_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BDB_CPPFLAGS) $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
+MARTKIST_CONFIG_INCLUDES=-I$(builddir)/config
+MARTKIST_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BDB_CPPFLAGS) $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
 
-SYSCOIN_INCLUDES += -I$(srcdir)/secp256k1/include
-SYSCOIN_INCLUDES += $(UNIVALUE_CFLAGS)
+MARTKIST_INCLUDES += -I$(srcdir)/secp256k1/include
+MARTKIST_INCLUDES += $(UNIVALUE_CFLAGS)
 
-LIBSYSCOIN_SERVER=libsyscoin_server.a
-LIBSYSCOIN_COMMON=libsyscoin_common.a
-LIBSYSCOIN_CONSENSUS=libsyscoin_consensus.a
-LIBSYSCOIN_CLI=libsyscoin_cli.a
-LIBSYSCOIN_UTIL=libsyscoin_util.a
-LIBSYSCOIN_CRYPTO=crypto/libsyscoin_crypto.a
-LIBSYSCOINQT=qt/libsyscoinqt.a
+LIBMARTKIST_SERVER=libmartkist_server.a
+LIBMARTKIST_COMMON=libmartkist_common.a
+LIBMARTKIST_CONSENSUS=libmartkist_consensus.a
+LIBMARTKIST_CLI=libmartkist_cli.a
+LIBMARTKIST_UTIL=libmartkist_util.a
+LIBMARTKIST_CRYPTO=crypto/libmartkist_crypto.a
+LIBMARTKISTQT=qt/libmartkistqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
 if ENABLE_ZMQ
-LIBSYSCOIN_ZMQ=libsyscoin_zmq.a
+LIBMARTKIST_ZMQ=libmartkist_zmq.a
 endif
-if BUILD_SYSCOIN_LIBS
-LIBSYSCOINCONSENSUS=libsyscoinconsensus.la
+if BUILD_MARTKIST_LIBS
+LIBMARTKISTCONSENSUS=libmartkistconsensus.la
 endif
 if ENABLE_WALLET
-LIBSYSCOIN_WALLET=libsyscoin_wallet.a
+LIBMARTKIST_WALLET=libmartkist_wallet.a
 endif
 
 $(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
@@ -50,32 +50,32 @@ $(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
 # Make is not made aware of per-object dependencies to avoid limiting building parallelization
 # But to build the less dependent modules first, we manually select their order here:
 EXTRA_LIBRARIES += \
-  $(LIBSYSCOIN_CRYPTO) \
-  $(LIBSYSCOIN_UTIL) \
-  $(LIBSYSCOIN_COMMON) \
-  $(LIBSYSCOIN_CONSENSUS) \
-  $(LIBSYSCOIN_SERVER) \
-  $(LIBSYSCOIN_CLI) \
-  $(LIBSYSCOIN_WALLET) \
-  $(LIBSYSCOIN_ZMQ)
+  $(LIBMARTKIST_CRYPTO) \
+  $(LIBMARTKIST_UTIL) \
+  $(LIBMARTKIST_COMMON) \
+  $(LIBMARTKIST_CONSENSUS) \
+  $(LIBMARTKIST_SERVER) \
+  $(LIBMARTKIST_CLI) \
+  $(LIBMARTKIST_WALLET) \
+  $(LIBMARTKIST_ZMQ)
 
-lib_LTLIBRARIES = $(LIBSYSCOINCONSENSUS)
+lib_LTLIBRARIES = $(LIBMARTKISTCONSENSUS)
 
 bin_PROGRAMS =
 TESTS =
 BENCHMARKS =
 
-if BUILD_SYSCOIND
-  bin_PROGRAMS += syscoind
+if BUILD_MARTKISTD
+  bin_PROGRAMS += martkistd
 endif
 
-if BUILD_SYSCOIN_UTILS
-  bin_PROGRAMS += syscoin-cli
+if BUILD_MARTKIST_UTILS
+  bin_PROGRAMS += martkist-cli
 endif
 
 .PHONY: FORCE check-symbols check-security
-# syscoin core #
-SYSCOIN_CORE_H = \
+# martkist core #
+MARTKIST_CORE_H = \
   alias.h \
   offer.h \
   cert.h \
@@ -217,12 +217,12 @@ obj/build.h: FORCE
 	@$(MKDIR_P) $(builddir)/obj
 	@$(top_srcdir)/share/genbuild.sh $(abs_top_builddir)/src/obj/build.h \
 	  $(abs_top_srcdir)
-libsyscoin_util_a-clientversion.$(OBJEXT): obj/build.h
+libmartkist_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: shared between syscoind and syscoin-qt
-libsyscoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(SYSCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
-libsyscoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libsyscoin_server_a_SOURCES = \
+# server: shared between martkistd and martkist-qt
+libmartkist_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(MARTKIST_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
+libmartkist_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libmartkist_server_a_SOURCES = \
   alias.cpp \
   offer.cpp \
   cert.cpp \
@@ -290,23 +290,23 @@ libsyscoin_server_a_SOURCES = \
   validation.cpp \
   validationinterface.cpp \
   versionbits.cpp \
-  $(SYSCOIN_CORE_H)
+  $(MARTKIST_CORE_H)
 
 if ENABLE_ZMQ
-libsyscoin_zmq_a_CPPFLAGS = $(SYSCOIN_INCLUDES) $(ZMQ_CFLAGS)
-libsyscoin_zmq_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libsyscoin_zmq_a_SOURCES = \
+libmartkist_zmq_a_CPPFLAGS = $(MARTKIST_INCLUDES) $(ZMQ_CFLAGS)
+libmartkist_zmq_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libmartkist_zmq_a_SOURCES = \
   zmq/zmqabstractnotifier.cpp \
   zmq/zmqnotificationinterface.cpp \
   zmq/zmqpublishnotifier.cpp
 endif
 
 
-# wallet: shared between syscoind and syscoin-qt, but only linked
+# wallet: shared between martkistd and martkist-qt, but only linked
 # when wallet enabled
-libsyscoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(SYSCOIN_INCLUDES)
-libsyscoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libsyscoin_wallet_a_SOURCES = \
+libmartkist_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(MARTKIST_INCLUDES)
+libmartkist_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libmartkist_wallet_a_SOURCES = \
   keepass.cpp \
   privatesend-client.cpp \
   privatesend-util.cpp \
@@ -317,12 +317,12 @@ libsyscoin_wallet_a_SOURCES = \
   wallet/wallet.cpp \
   wallet/walletdb.cpp \
   policy/rbf.cpp \
-  $(SYSCOIN_CORE_H)
+  $(MARTKIST_CORE_H)
 
 # crypto primitives library
-crypto_libsyscoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(SYSCOIN_CONFIG_INCLUDES) $(PIC_FLAGS)
-crypto_libsyscoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(PIC_FLAGS)
-crypto_libsyscoin_crypto_a_SOURCES = \
+crypto_libmartkist_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(MARTKIST_CONFIG_INCLUDES) $(PIC_FLAGS)
+crypto_libmartkist_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(PIC_FLAGS)
+crypto_libmartkist_crypto_a_SOURCES = \
   crypto/aes.cpp \
   crypto/aes.h \
   crypto/common.h \
@@ -340,13 +340,13 @@ crypto_libsyscoin_crypto_a_SOURCES = \
   crypto/sha512.h
 
 if USE_ASM
-crypto_libsyscoin_crypto_a_SOURCES += crypto/sha256_sse4.cpp
+crypto_libmartkist_crypto_a_SOURCES += crypto/sha256_sse4.cpp
 endif
 
 # consensus: shared between all executables that validate any consensus rules.
-libsyscoin_consensus_a_CPPFLAGS = $(AM_CPPFLAGS) $(SYSCOIN_INCLUDES)
-libsyscoin_consensus_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libsyscoin_consensus_a_SOURCES = \
+libmartkist_consensus_a_CPPFLAGS = $(AM_CPPFLAGS) $(MARTKIST_INCLUDES)
+libmartkist_consensus_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libmartkist_consensus_a_SOURCES = \
   amount.h \
   arith_uint256.cpp \
   arith_uint256.h \
@@ -365,7 +365,7 @@ libsyscoin_consensus_a_SOURCES = \
   primitives/transaction.h \
   pubkey.cpp \
   pubkey.h \
-  script/syscoinconsensus.cpp \
+  script/martkistconsensus.cpp \
   script/interpreter.cpp \
   script/interpreter.h \
   script/script.cpp \
@@ -380,10 +380,10 @@ libsyscoin_consensus_a_SOURCES = \
   utilstrencodings.h \
   version.h
 
-# common: shared between syscoind, and syscoin-qt and non-server tools
-libsyscoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(SYSCOIN_INCLUDES)
-libsyscoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libsyscoin_common_a_SOURCES = \
+# common: shared between martkistd, and martkist-qt and non-server tools
+libmartkist_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(MARTKIST_INCLUDES)
+libmartkist_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libmartkist_common_a_SOURCES = \
   amount.cpp \
   base58.cpp \
   bip39.cpp \
@@ -402,14 +402,14 @@ libsyscoin_common_a_SOURCES = \
   script/sign.cpp \
   script/standard.cpp \
   warnings.cpp \
-  $(SYSCOIN_CORE_H)
+  $(MARTKIST_CORE_H)
 
 # util: shared between all executables.
 # This library *must* be included to make sure that the glibc
 # backward-compatibility objects and their sanity checks are linked.
-libsyscoin_util_a_CPPFLAGS = $(AM_CPPFLAGS) $(SYSCOIN_INCLUDES)
-libsyscoin_util_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libsyscoin_util_a_SOURCES = \
+libmartkist_util_a_CPPFLAGS = $(AM_CPPFLAGS) $(MARTKIST_INCLUDES)
+libmartkist_util_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libmartkist_util_a_SOURCES = \
   support/lockedpool.cpp \
   chainparamsbase.cpp \
   clientversion.cpp \
@@ -425,100 +425,100 @@ libsyscoin_util_a_SOURCES = \
   utilmoneystr.cpp \
   utilstrencodings.cpp \
   utiltime.cpp \
-  $(SYSCOIN_CORE_H)
+  $(MARTKIST_CORE_H)
 
 if GLIBC_BACK_COMPAT
-libsyscoin_util_a_SOURCES += compat/glibc_compat.cpp
+libmartkist_util_a_SOURCES += compat/glibc_compat.cpp
 endif
 
-# cli: shared between syscoin-cli and syscoin-qt
-libsyscoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(SYSCOIN_INCLUDES)
-libsyscoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libsyscoin_cli_a_SOURCES = \
+# cli: shared between martkist-cli and martkist-qt
+libmartkist_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(MARTKIST_INCLUDES)
+libmartkist_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libmartkist_cli_a_SOURCES = \
   rpc/client.cpp \
-  $(SYSCOIN_CORE_H)
+  $(MARTKIST_CORE_H)
 
-nodist_libsyscoin_util_a_SOURCES = $(srcdir)/obj/build.h
+nodist_libmartkist_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
-# syscoind binary #
-syscoind_SOURCES = syscoind.cpp
-syscoind_CPPFLAGS = $(AM_CPPFLAGS) $(SYSCOIN_INCLUDES)
-syscoind_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-syscoind_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# martkistd binary #
+martkistd_SOURCES = martkistd.cpp
+martkistd_CPPFLAGS = $(AM_CPPFLAGS) $(MARTKIST_INCLUDES)
+martkistd_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+martkistd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-syscoind_SOURCES += syscoind-res.rc
+martkistd_SOURCES += martkistd-res.rc
 endif
 
-syscoind_LDADD = \
-  $(LIBSYSCOIN_SERVER) \
-  $(LIBSYSCOIN_COMMON) \
+martkistd_LDADD = \
+  $(LIBMARTKIST_SERVER) \
+  $(LIBMARTKIST_COMMON) \
   $(LIBUNIVALUE) \
-  $(LIBSYSCOIN_UTIL) \
-  $(LIBSYSCOIN_WALLET) \
-  $(LIBSYSCOIN_ZMQ) \
-  $(LIBSYSCOIN_CONSENSUS) \
-  $(LIBSYSCOIN_CRYPTO) \
+  $(LIBMARTKIST_UTIL) \
+  $(LIBMARTKIST_WALLET) \
+  $(LIBMARTKIST_ZMQ) \
+  $(LIBMARTKIST_CONSENSUS) \
+  $(LIBMARTKIST_CRYPTO) \
   $(LIBLEVELDB) \
   $(LIBLEVELDB_SSE42) \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-syscoind_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+martkistd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 
-# syscoin-cli binary #
-syscoin_cli_SOURCES = syscoin-cli.cpp
-syscoin_cli_CPPFLAGS = $(AM_CPPFLAGS) $(SYSCOIN_INCLUDES) $(EVENT_CFLAGS)
-syscoin_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-syscoin_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# martkist-cli binary #
+martkist_cli_SOURCES = martkist-cli.cpp
+martkist_cli_CPPFLAGS = $(AM_CPPFLAGS) $(MARTKIST_INCLUDES) $(EVENT_CFLAGS)
+martkist_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+martkist_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-syscoin_cli_SOURCES += syscoin-cli-res.rc
+martkist_cli_SOURCES += martkist-cli-res.rc
 endif
 
-syscoin_cli_LDADD = \
-  $(LIBSYSCOIN_CLI) \
+martkist_cli_LDADD = \
+  $(LIBMARTKIST_CLI) \
   $(LIBUNIVALUE) \
-  $(LIBSYSCOIN_UTIL) \
-  $(LIBSYSCOIN_CRYPTO)
-syscoin_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+  $(LIBMARTKIST_UTIL) \
+  $(LIBMARTKIST_CRYPTO)
+martkist_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
-# syscoin-tx binary #
-syscoin_tx_SOURCES = syscoin-tx.cpp
-syscoin_tx_CPPFLAGS = $(AM_CPPFLAGS) $(SYSCOIN_INCLUDES)
-syscoin_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-syscoin_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# martkist-tx binary #
+martkist_tx_SOURCES = martkist-tx.cpp
+martkist_tx_CPPFLAGS = $(AM_CPPFLAGS) $(MARTKIST_INCLUDES)
+martkist_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+martkist_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-syscoin_tx_SOURCES += syscoin-tx-res.rc
+martkist_tx_SOURCES += martkist-tx-res.rc
 endif
 
-syscoin_tx_LDADD = \
+martkist_tx_LDADD = \
   $(LIBUNIVALUE) \
-  $(LIBSYSCOIN_COMMON) \
-  $(LIBSYSCOIN_UTIL) \
-  $(LIBSYSCOIN_CONSENSUS) \
-  $(LIBSYSCOIN_CRYPTO) \
+  $(LIBMARTKIST_COMMON) \
+  $(LIBMARTKIST_UTIL) \
+  $(LIBMARTKIST_CONSENSUS) \
+  $(LIBMARTKIST_CRYPTO) \
   $(LIBSECP256K1)
 
-syscoin_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+martkist_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
-# syscoinconsensus library #
-if BUILD_SYSCOIN_LIBS
-include_HEADERS = script/syscoinconsensus.h
-libsyscoinconsensus_la_SOURCES = $(crypto_libsyscoin_crypto_a_SOURCES) $(libsyscoin_consensus_a_SOURCES)
+# martkistconsensus library #
+if BUILD_MARTKIST_LIBS
+include_HEADERS = script/martkistconsensus.h
+libmartkistconsensus_la_SOURCES = $(crypto_libmartkist_crypto_a_SOURCES) $(libmartkist_consensus_a_SOURCES)
 
 if GLIBC_BACK_COMPAT
-  libsyscoinconsensus_la_SOURCES += compat/glibc_compat.cpp
+  libmartkistconsensus_la_SOURCES += compat/glibc_compat.cpp
 endif
 
-libsyscoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
-libsyscoinconsensus_la_LIBADD = $(LIBSECP256K1)
-libsyscoinconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_SYSCOIN_INTERNAL
-libsyscoinconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libmartkistconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
+libmartkistconsensus_la_LIBADD = $(LIBSECP256K1)
+libmartkistconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_MARTKIST_INTERNAL
+libmartkistconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 
 endif
 #
@@ -549,12 +549,12 @@ DISTCLEANFILES = obj/build.h
 EXTRA_DIST = $(CTAES_DIST)
 
 
-config/syscoin-config.h: config/stamp-h1
+config/martkist-config.h: config/stamp-h1
 	@$(MAKE) -C $(top_builddir) $(subdir)/$(@)
-config/stamp-h1: $(top_srcdir)/$(subdir)/config/syscoin-config.h.in $(top_builddir)/config.status
+config/stamp-h1: $(top_srcdir)/$(subdir)/config/martkist-config.h.in $(top_builddir)/config.status
 	$(AM_V_at)$(MAKE) -C $(top_builddir) $(subdir)/$(@)
-$(top_srcdir)/$(subdir)/config/syscoin-config.h.in:  $(am__configure_deps)
-	$(AM_V_at)$(MAKE) -C $(top_srcdir) $(subdir)/config/syscoin-config.h.in
+$(top_srcdir)/$(subdir)/config/martkist-config.h.in:  $(am__configure_deps)
+	$(AM_V_at)$(MAKE) -C $(top_srcdir) $(subdir)/config/martkist-config.h.in
 
 clean-local:
 	-$(MAKE) -C secp256k1 clean

@@ -1,0 +1,33 @@
+# /etc/conf.d/martkistd: config file for /etc/init.d/martkistd
+
+# Config file location
+#MARTKISTD_CONFIGFILE="/etc/martkistcore/martkist.conf"
+
+# What directory to write pidfile to?  (created and owned by $MARTKISTD_USER)
+#MARTKISTD_PIDDIR="/var/run/martkistd"
+
+# What filename to give the pidfile
+#MARTKISTD_PIDFILE="${MARTKISTD_PIDDIR}/martkistd.pid"
+
+# Where to write martkistd data (be mindful that the blockchain is large)
+#MARTKISTD_DATADIR="/var/lib/martkistd"
+
+# User and group to own martkistd process
+#MARTKISTD_USER="martkistcore"
+#MARTKISTD_GROUP="martkistcore"
+
+# Path to martkistd executable
+#MARTKISTD_BIN="/usr/bin/martkistd"
+
+# Nice value to run martkistd under
+#MARTKISTD_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+MARTKISTD_OPTS="-disablewallet"
+
+# The timeout in seconds OpenRC will wait for martkistd to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+MARTKISTD_SIGTERM_TIMEOUT=60

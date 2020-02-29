@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 The Syscoin Core developers
+// Copyright (c) 2015-2018 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -74,7 +74,7 @@ bool CCert::UnserializeFromTx(const CTransaction &tx) {
 	vector<unsigned char> vchData;
 	vector<unsigned char> vchHash;
 	int nOut;
-	if(!GetSyscoinData(tx, vchData, vchHash, nOut))
+	if(!GetMartkistData(tx, vchData, vchHash, nOut))
 	{
 		SetNull();
 		return false;
@@ -95,7 +95,7 @@ void CCertDB::WriteCertIndex(const CCert& cert, const int& op) {
 	if (IsArgSet("-zmqpubcertrecord")) {
 		UniValue oName(UniValue::VOBJ);
 		if (BuildCertIndexerJson(cert, oName)) {
-			GetMainSignals().NotifySyscoinUpdate(oName.write().c_str(), "certrecord");
+			GetMainSignals().NotifyMartkistUpdate(oName.write().c_str(), "certrecord");
 		}
 	}
 	WriteCertIndexHistory(cert, op);
@@ -105,7 +105,7 @@ void CCertDB::WriteCertIndexHistory(const CCert& cert, const int &op) {
 		UniValue oName(UniValue::VOBJ);
 		if (BuildCertIndexerHistoryJson(cert, oName)) {
 			oName.push_back(Pair("op", certFromOp(op)));
-			GetMainSignals().NotifySyscoinUpdate(oName.write().c_str(), "certhistory");
+			GetMainSignals().NotifyMartkistUpdate(oName.write().c_str(), "certhistory");
 		}
 	}
 }
@@ -195,7 +195,7 @@ bool DecodeCertScript(const CScript& script, int& op,
     if (!script.GetOp(pc, opcode)) return false;
     if (opcode < OP_1 || opcode > OP_16) return false;
     op = CScript::DecodeOP_N(opcode);
-	if (op != OP_SYSCOIN_CERT)
+	if (op != OP_MARTKIST_CERT)
 		return false;
 	if (!script.GetOp(pc, opcode))
 		return false;
@@ -255,14 +255,14 @@ bool RevertCert(const std::vector<unsigned char>& vchCert, const int op, const u
 	if (!pcertdb->ReadLastCert(vchCert, dbCert)) {
 		if (!pcertdb->EraseCert(vchCert))
 		{
-			errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3000 - " + _("Failed to erase cert");
+			errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3000 - " + _("Failed to erase cert");
 			return error(errorMessage.c_str());
 		}
 	}
 	// write the state back to previous state
 	else if (!pcertdb->WriteCert(dbCert, op, INT64_MAX, false, false))
 	{
-		errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3001 - " + _("Failed to write to cert DB");
+		errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3001 - " + _("Failed to write to cert DB");
 		return error(errorMessage.c_str());
 	}
 	pcertdb->EraseISArrivalTimes(vchCert);
@@ -289,9 +289,9 @@ bool CheckCertInputs(const CTransaction &tx, int op, const vector<vector<unsigne
 	vector<unsigned char> vchData;
 	vector<unsigned char> vchHash;
 	int nDataOut;
-	if(!GetSyscoinData(tx, vchData, vchHash, nDataOut) || !theCert.UnserializeFromData(vchData, vchHash))
+	if(!GetMartkistData(tx, vchData, vchHash, nDataOut) || !theCert.UnserializeFromData(vchData, vchHash))
 	{
-		errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR ERRCODE: 3002 - " + _("Cannot unserialize data inside of this transaction relating to a certificate");
+		errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR ERRCODE: 3002 - " + _("Cannot unserialize data inside of this transaction relating to a certificate");
 		return true;
 	}
 
@@ -299,12 +299,12 @@ bool CheckCertInputs(const CTransaction &tx, int op, const vector<vector<unsigne
 	{
 		if(vvchArgs.size() != 1)
 		{
-			errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3003 - " + _("Certificate arguments incorrect size");
+			errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3003 - " + _("Certificate arguments incorrect size");
 			return error(errorMessage.c_str());
 		}			
 		if(vchHash != vvchArgs[0])
 		{
-			errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 2003 - " + _("Hash provided doesn't match the calculated hash of the data");
+			errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 2003 - " + _("Hash provided doesn't match the calculated hash of the data");
 			return true;
 		}	
 	}
@@ -315,29 +315,29 @@ bool CheckCertInputs(const CTransaction &tx, int op, const vector<vector<unsigne
 	{
 		if(theCert.sCategory.size() > MAX_NAME_LENGTH)
 		{
-			errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3004 - " + _("Certificate category too big");
+			errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3004 - " + _("Certificate category too big");
 			return error(errorMessage.c_str());
 		}
 		if(theCert.vchPubData.size() > MAX_VALUE_LENGTH)
 		{
-			errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3005 - " + _("Certificate public data too big");
+			errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3005 - " + _("Certificate public data too big");
 			return error(errorMessage.c_str());
 		}
 		switch (op) {
 		case OP_CERT_ACTIVATE:
 			if (theCert.vchCert.size() > MAX_GUID_LENGTH)
 			{
-				errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3006 - " + _("Certificate hex guid too long");
+				errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3006 - " + _("Certificate hex guid too long");
 				return error(errorMessage.c_str());
 			}
 			if((theCert.vchTitle.size() > MAX_NAME_LENGTH || theCert.vchTitle.empty()))
 			{
-				errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3007 - " + _("Certificate title too big or is empty");
+				errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3007 - " + _("Certificate title too big or is empty");
 				return error(errorMessage.c_str());
 			}
 			if(!boost::algorithm::starts_with(stringFromVch(theCert.sCategory), "certificates"))
 			{
-				errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3008 - " + _("Must use a certificate category");
+				errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3008 - " + _("Must use a certificate category");
 				return true;
 			}
 			break;
@@ -345,12 +345,12 @@ bool CheckCertInputs(const CTransaction &tx, int op, const vector<vector<unsigne
 		case OP_CERT_UPDATE:
 			if(theCert.vchTitle.size() > MAX_NAME_LENGTH)
 			{
-				errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3009 - " + _("Certificate title too big");
+				errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3009 - " + _("Certificate title too big");
 				return error(errorMessage.c_str());
 			}
 			if(theCert.sCategory.size() > 0 && !boost::algorithm::istarts_with(stringFromVch(theCert.sCategory), "certificates"))
 			{
-				errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3010 - " + _("Must use a certificate category");
+				errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3010 - " + _("Must use a certificate category");
 				return true;
 			}
 			break;
@@ -358,20 +358,20 @@ bool CheckCertInputs(const CTransaction &tx, int op, const vector<vector<unsigne
 		case OP_CERT_TRANSFER:
 			if(theCert.sCategory.size() > 0 && !boost::algorithm::istarts_with(stringFromVch(theCert.sCategory), "certificates"))
 			{
-				errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3011 - " + _("Must use a certificate category");
+				errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3011 - " + _("Must use a certificate category");
 				return true;
 			}
 			break;
 
 		default:
-			errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3012 - " + _("Certificate transaction has unknown op");
+			errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3012 - " + _("Certificate transaction has unknown op");
 			return error(errorMessage.c_str());
 		}
 	}
 	if (!fJustCheck && !bSanityCheck) {
 		if (!RevertCert(theCert.vchCert, op, tx.GetHash(), revertedCerts))
 		{
-			errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3013 - " + _("Failed to revert cert");
+			errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3013 - " + _("Failed to revert cert");
 			return error(errorMessage.c_str());
 		}
 	}
@@ -384,13 +384,13 @@ bool CheckCertInputs(const CTransaction &tx, int op, const vector<vector<unsigne
 	string strResponseEnglish = "";
 	string strResponseGUID = "";
 	CTransaction txTmp;
-	GetSyscoinTransactionDescription(txTmp, op, strResponseEnglish, CERT, strResponseGUID);
+	GetMartkistTransactionDescription(txTmp, op, strResponseEnglish, CERT, strResponseGUID);
 	// if not an certnew, load the cert data from the DB
 	CCert dbCert;
 	if (!GetCert(theCert.vchCert, dbCert))
 	{
 		if (op != OP_CERT_ACTIVATE) {
-			errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3014 - " + _("Failed to read from certificate DB");
+			errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3014 - " + _("Failed to read from certificate DB");
 			return true;
 		}
 	}
@@ -398,7 +398,7 @@ bool CheckCertInputs(const CTransaction &tx, int op, const vector<vector<unsigne
 	{
 		if (dbCert.vchAlias != vvchAlias)
 		{
-			errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3015 - " + _("Cannot update this certificate. Certificate owner must sign off on this change.");
+			errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3015 - " + _("Cannot update this certificate. Certificate owner must sign off on this change.");
 			return true;
 		}
 		if (theCert.vchAlias.empty())
@@ -412,7 +412,7 @@ bool CheckCertInputs(const CTransaction &tx, int op, const vector<vector<unsigne
 
 		CCert firstCert;
 		if (!GetFirstCert(dbCert.vchCert, firstCert)) {
-			errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3016 - " + _("Cannot read first cert from cert DB");
+			errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3016 - " + _("Cannot read first cert from cert DB");
 			return true;
 		}
 		if(op == OP_CERT_TRANSFER)
@@ -420,19 +420,19 @@ bool CheckCertInputs(const CTransaction &tx, int op, const vector<vector<unsigne
 			// check toalias
 			if(!GetAlias(theCert.vchAlias, alias))
 			{
-				errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3017 - " + _("Cannot find alias you are transferring to. It may be expired");	
+				errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3017 - " + _("Cannot find alias you are transferring to. It may be expired");	
 				return true;
 			}
 			if(!(alias.nAcceptTransferFlags & ACCEPT_TRANSFER_CERTIFICATES))
 			{
-				errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3018 - " + _("The alias you are transferring to does not accept certificate transfers");
+				errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3018 - " + _("The alias you are transferring to does not accept certificate transfers");
 				return true;
 			}
 				
 			// the original owner can modify certificate regardless of access flags, new owners must adhere to access flags
 			if(dbCert.nAccessFlags < 2 && dbCert.vchAlias != firstCert.vchAlias)
 			{
-				errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3019 - " + _("Cannot transfer this certificate. Insufficient privileges.");
+				errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3019 - " + _("Cannot transfer this certificate. Insufficient privileges.");
 				return true;
 			}
 		}
@@ -440,13 +440,13 @@ bool CheckCertInputs(const CTransaction &tx, int op, const vector<vector<unsigne
 		{
 			if(dbCert.nAccessFlags < 1 && dbCert.vchAlias != firstCert.vchAlias)
 			{
-				errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3020 - " + _("Cannot edit this certificate. It is view-only.");
+				errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3020 - " + _("Cannot edit this certificate. It is view-only.");
 				return true;
 			}
 		}
 		if(theCert.nAccessFlags > dbCert.nAccessFlags && dbCert.vchAlias != firstCert.vchAlias)
 		{
-			errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3021 - " + _("Cannot modify for more lenient access. Only tighter access level can be granted.");
+			errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3021 - " + _("Cannot modify for more lenient access. Only tighter access level can be granted.");
 			return true;
 		}
 	}
@@ -454,12 +454,12 @@ bool CheckCertInputs(const CTransaction &tx, int op, const vector<vector<unsigne
 	{
 		if (theCert.vchAlias != vvchAlias)
 		{
-			errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3015 - " + _("Cannot create this certificate. Certificate owner must sign off on this change.");
+			errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3015 - " + _("Cannot create this certificate. Certificate owner must sign off on this change.");
 			return true;
 		}
 		if (fJustCheck && GetCert(theCert.vchCert, theCert))
 		{
-			errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3022 - " + _("Certificate already exists");
+			errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3022 - " + _("Certificate already exists");
 			return true;
 		}
 	}
@@ -474,7 +474,7 @@ bool CheckCertInputs(const CTransaction &tx, int op, const vector<vector<unsigne
 		}
 		if (!pcertdb->WriteCert(theCert, op, ms, fJustCheck))
 		{
-			errorMessage = "SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3023 - " + _("Failed to write to certifcate DB");
+			errorMessage = "MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3023 - " + _("Failed to write to certifcate DB");
 			return error(errorMessage.c_str());
 		}
 		// debug
@@ -517,16 +517,16 @@ UniValue certnew(const JSONRPCRequest& request) {
 	CAliasIndex theAlias;
 	ToLowerCase(vchAlias);
 	if (!GetAlias(vchAlias, theAlias))
-		throw runtime_error("SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3500 - " + _("failed to read alias from alias DB"));
+		throw runtime_error("MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3500 - " + _("failed to read alias from alias DB"));
 
 	
     // gather inputs
-	vector<unsigned char> vchCert = vchFromString(GenerateSyscoinGuid());
-    // this is a syscoin transaction
+	vector<unsigned char> vchCert = vchFromString(GenerateMartkistGuid());
+    // this is a martkist transaction
     CWalletTx wtx;
 
     CScript scriptPubKeyOrig;
-	CSyscoinAddress aliasAddress;
+	CMartkistAddress aliasAddress;
 	GetAddress(theAlias, &aliasAddress, scriptPubKeyOrig);
 
 
@@ -547,9 +547,9 @@ UniValue certnew(const JSONRPCRequest& request) {
  	
     vector<unsigned char> vchHashCert = vchFromString(hash.GetHex());
 
-    scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_CERT) << CScript::EncodeOP_N(OP_CERT_ACTIVATE) << vchHashCert << OP_2DROP << OP_DROP;
+    scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_CERT) << CScript::EncodeOP_N(OP_CERT_ACTIVATE) << vchHashCert << OP_2DROP << OP_DROP;
     scriptPubKey += scriptPubKeyOrig;
-	scriptPubKeyAlias << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << theAlias.vchAlias << theAlias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
+	scriptPubKeyAlias << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << theAlias.vchAlias << theAlias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
 	scriptPubKeyAlias += scriptPubKeyOrig;
 
 	// use the script pub key to create the vecsend which sendmoney takes and puts it into vout
@@ -566,7 +566,7 @@ UniValue certnew(const JSONRPCRequest& request) {
 	CreateFeeRecipient(scriptData, data, fee);
 	vecSend.push_back(fee);
 
-	UniValue res = syscointxfund_helper(vchAlias, vchWitness, aliasRecipient, vecSend);
+	UniValue res = martkisttxfund_helper(vchAlias, vchWitness, aliasRecipient, vecSend);
 	res.push_back(stringFromVch(vchCert));
 	return res;
 }
@@ -595,13 +595,13 @@ UniValue certupdate(const JSONRPCRequest& request) {
 
 	vector<unsigned char> vchWitness;
 	vchWitness = vchFromValue(params[4]);
-    // this is a syscoind txn
+    // this is a martkistd txn
     CWalletTx wtx;
     CScript scriptPubKeyOrig;
 	CCert theCert;
 	
     if (!GetCert( vchCert, theCert))
-        throw runtime_error("SYSCOIN_CERTIFICATE_RPC_ERROR: ERRCODE: 3501 - " + _("Could not find a certificate with this key"));
+        throw runtime_error("MARTKIST_CERTIFICATE_RPC_ERROR: ERRCODE: 3501 - " + _("Could not find a certificate with this key"));
 
 	if (!fUnitTest) {
 		ArrivalTimesMap arrivalTimes;
@@ -610,7 +610,7 @@ UniValue certupdate(const JSONRPCRequest& request) {
 		for (auto& arrivalTime : arrivalTimes) {
 			// if this tx arrived within the minimum latency period flag it as potentially conflicting
 			if ((nNow - (arrivalTime.second / 1000)) < ZDAG_MINIMUM_LATENCY_SECONDS) {
-				throw runtime_error("SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 2510 - " + _("Please wait a few more seconds and try again..."));
+				throw runtime_error("MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 2510 - " + _("Please wait a few more seconds and try again..."));
 			}
 		}
 	}
@@ -618,11 +618,11 @@ UniValue certupdate(const JSONRPCRequest& request) {
 	CAliasIndex theAlias;
 
 	if (!GetAlias(theCert.vchAlias, theAlias))
-		throw runtime_error("SYSCOIN_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3502 - " + _("Failed to read alias from alias DB"));
+		throw runtime_error("MARTKIST_CERTIFICATE_CONSENSUS_ERROR: ERRCODE: 3502 - " + _("Failed to read alias from alias DB"));
 
 	CCert copyCert = theCert;
 	theCert.ClearCert();
-	CSyscoinAddress aliasAddress;
+	CMartkistAddress aliasAddress;
 	GetAddress(theAlias, &aliasAddress, scriptPubKeyOrig);
 
     // create CERTUPDATE txn keys
@@ -639,7 +639,7 @@ UniValue certupdate(const JSONRPCRequest& request) {
     uint256 hash = Hash(data.begin(), data.end());
  	
     vector<unsigned char> vchHashCert = vchFromString(hash.GetHex());
-    scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_CERT) << CScript::EncodeOP_N(OP_CERT_UPDATE) << vchHashCert << OP_2DROP << OP_DROP;
+    scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_CERT) << CScript::EncodeOP_N(OP_CERT_UPDATE) << vchHashCert << OP_2DROP << OP_DROP;
     scriptPubKey += scriptPubKeyOrig;
 
 	vector<CRecipient> vecSend;
@@ -647,7 +647,7 @@ UniValue certupdate(const JSONRPCRequest& request) {
 	CreateRecipient(scriptPubKey, recipient);
 	vecSend.push_back(recipient);
 	CScript scriptPubKeyAlias;
-	scriptPubKeyAlias << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << theAlias.vchAlias << theAlias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
+	scriptPubKeyAlias << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << theAlias.vchAlias << theAlias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
 	scriptPubKeyAlias += scriptPubKeyOrig;
 	CRecipient aliasRecipient;
 	CreateAliasRecipient(scriptPubKeyAlias, aliasRecipient);
@@ -658,7 +658,7 @@ UniValue certupdate(const JSONRPCRequest& request) {
 	CreateFeeRecipient(scriptData, data, fee);
 	vecSend.push_back(fee);
 	
-	return syscointxfund_helper(theAlias.vchAlias, vchWitness, aliasRecipient, vecSend);
+	return martkisttxfund_helper(theAlias.vchAlias, vchWitness, aliasRecipient, vecSend);
 }
 
 
@@ -690,15 +690,15 @@ UniValue certtransfer(const JSONRPCRequest& request) {
 	CAliasIndex toAlias;
 	ToLowerCase(vchAlias);
 	if (!GetAlias(vchAlias, toAlias))
-		throw runtime_error("SYSCOIN_CERTIFICATE_RPC_ERROR: ERRCODE: 3503 - " + _("Failed to read transfer alias from DB"));
+		throw runtime_error("MARTKIST_CERTIFICATE_RPC_ERROR: ERRCODE: 3503 - " + _("Failed to read transfer alias from DB"));
 
-    // this is a syscoin txn
+    // this is a martkist txn
     CWalletTx wtx;
     CScript scriptPubKeyOrig, scriptPubKeyFromOrig;
 
 	CCert theCert;
     if (!GetCert( vchCert, theCert))
-        throw runtime_error("SYSCOIN_CERTIFICATE_RPC_ERROR: ERRCODE: 3504 - " + _("Could not find a certificate with this key"));
+        throw runtime_error("MARTKIST_CERTIFICATE_RPC_ERROR: ERRCODE: 3504 - " + _("Could not find a certificate with this key"));
 
 	if (!fUnitTest) {
 		ArrivalTimesMap arrivalTimes;
@@ -707,7 +707,7 @@ UniValue certtransfer(const JSONRPCRequest& request) {
 		for (auto& arrivalTime : arrivalTimes) {
 			// if this tx arrived within the minimum latency period flag it as potentially conflicting
 			if ((nNow - (arrivalTime.second / 1000)) < ZDAG_MINIMUM_LATENCY_SECONDS) {
-				throw runtime_error("SYSCOIN_OFFER_RPC_ERROR: ERRCODE: 3505 - " + _("Please wait a few more seconds and try again..."));
+				throw runtime_error("MARTKIST_OFFER_RPC_ERROR: ERRCODE: 3505 - " + _("Please wait a few more seconds and try again..."));
 			}
 		}
 	}
@@ -715,12 +715,12 @@ UniValue certtransfer(const JSONRPCRequest& request) {
 	CAliasIndex fromAlias;
 	if(!GetAlias(theCert.vchAlias, fromAlias))
 	{
-		 throw runtime_error("SYSCOIN_CERTIFICATE_RPC_ERROR: ERRCODE: 3506 - " + _("Could not find the certificate alias"));
+		 throw runtime_error("MARTKIST_CERTIFICATE_RPC_ERROR: ERRCODE: 3506 - " + _("Could not find the certificate alias"));
 	}
 
-	CSyscoinAddress sendAddr;
+	CMartkistAddress sendAddr;
 	GetAddress(toAlias, &sendAddr, scriptPubKeyOrig);
-	CSyscoinAddress fromAddr;
+	CMartkistAddress fromAddr;
 	GetAddress(fromAlias, &fromAddr, scriptPubKeyFromOrig);
 
 	CCert copyCert = theCert;
@@ -738,7 +738,7 @@ UniValue certtransfer(const JSONRPCRequest& request) {
     uint256 hash = Hash(data.begin(), data.end());
  	
     vector<unsigned char> vchHashCert = vchFromString(hash.GetHex());
-    scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_CERT) << CScript::EncodeOP_N(OP_CERT_TRANSFER) << vchHashCert << OP_2DROP << OP_DROP;
+    scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_CERT) << CScript::EncodeOP_N(OP_CERT_TRANSFER) << vchHashCert << OP_2DROP << OP_DROP;
 	scriptPubKey += scriptPubKeyOrig;
     // send the cert pay txn
 	vector<CRecipient> vecSend;
@@ -747,7 +747,7 @@ UniValue certtransfer(const JSONRPCRequest& request) {
 	vecSend.push_back(recipient);
 
 	CScript scriptPubKeyAlias;
-	scriptPubKeyAlias << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << fromAlias.vchAlias << fromAlias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
+	scriptPubKeyAlias << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << fromAlias.vchAlias << fromAlias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
 	scriptPubKeyAlias += scriptPubKeyFromOrig;
 	CRecipient aliasRecipient;
 	CreateAliasRecipient(scriptPubKeyAlias, aliasRecipient);
@@ -759,7 +759,7 @@ UniValue certtransfer(const JSONRPCRequest& request) {
 	vecSend.push_back(fee);
 	
 	
-	return syscointxfund_helper(fromAlias.vchAlias, vchWitness, aliasRecipient, vecSend);
+	return martkisttxfund_helper(fromAlias.vchAlias, vchWitness, aliasRecipient, vecSend);
 }
 
 
@@ -774,7 +774,7 @@ UniValue certinfo(const JSONRPCRequest& request) {
 
 	CCert txPos;
 	if (!pcertdb || !pcertdb->ReadCert(vchCert, txPos))
-		throw runtime_error("SYSCOIN_CERT_RPC_ERROR: ERRCODE: 3507 - " + _("Failed to read from cert DB"));
+		throw runtime_error("MARTKIST_CERT_RPC_ERROR: ERRCODE: 3507 - " + _("Failed to read from cert DB"));
 
 	if(!BuildCertJson(txPos, oCert))
 		oCert.clear();
@@ -976,13 +976,13 @@ UniValue listcerts(const JSONRPCRequest& request) {
 			count = INT_MAX;
 		} else
 		if (count < 0) {
-			throw runtime_error("SYSCOIN_CERT_RPC_ERROR: ERRCODE: 3508 - " + _("'count' must be 0 or greater"));
+			throw runtime_error("MARTKIST_CERT_RPC_ERROR: ERRCODE: 3508 - " + _("'count' must be 0 or greater"));
 		}
 	}
 	if (params.size() > 1) {
 		from = params[1].get_int();
 		if (from < 0) {
-			throw runtime_error("SYSCOIN_CERT_RPC_ERROR: ERRCODE: 3508 - " + _("'from' must be 0 or greater"));
+			throw runtime_error("MARTKIST_CERT_RPC_ERROR: ERRCODE: 3508 - " + _("'from' must be 0 or greater"));
 		}
 	}
 	if (params.size() > 2) {
@@ -991,6 +991,6 @@ UniValue listcerts(const JSONRPCRequest& request) {
 
 	UniValue oRes(UniValue::VARR);
 	if (!pcertdb->ScanCerts(count, from, options, oRes))
-		throw runtime_error("SYSCOIN_CERT_RPC_ERROR: ERRCODE: 3508 - " + _("Scan failed"));
+		throw runtime_error("MARTKIST_CERT_RPC_ERROR: ERRCODE: 3508 - " + _("Scan failed"));
 	return oRes;
 }

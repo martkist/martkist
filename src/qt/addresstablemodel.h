@@ -1,10 +1,10 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_ADDRESSTABLEMODEL_H
-#define SYSCOIN_QT_ADDRESSTABLEMODEL_H
+#ifndef MARTKIST_QT_ADDRESSTABLEMODEL_H
+#define MARTKIST_QT_ADDRESSTABLEMODEL_H
 
 #include <QAbstractTableModel>
 #include <QStringList>
@@ -27,7 +27,7 @@ public:
 
     enum ColumnIndex {
         Label = 0,   /**< User specified label */
-        Address = 1  /**< Syscoin address */
+        Address = 1  /**< Martkist address */
     };
 
     enum RoleIndex {
@@ -93,4 +93,4 @@ public Q_SLOTS:
     friend class AddressTablePriv;
 };
 
-#endif // SYSCOIN_QT_ADDRESSTABLEMODEL_H
+#endif // MARTKIST_QT_ADDRESSTABLEMODEL_H

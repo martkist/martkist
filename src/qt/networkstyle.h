@@ -1,11 +1,11 @@
 // Copyright (c) 2014 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_NETWORKSTYLE_H
-#define SYSCOIN_QT_NETWORKSTYLE_H
+#ifndef MARTKIST_QT_NETWORKSTYLE_H
+#define MARTKIST_QT_NETWORKSTYLE_H
 
 #include <QIcon>
 #include <QPixmap>
@@ -36,4 +36,4 @@ private:
     void rotateColors(QImage& img, const int iconColorHueShift, const int iconColorSaturationReduction);
 };
 
-#endif // SYSCOIN_QT_NETWORKSTYLE_H
+#endif // MARTKIST_QT_NETWORKSTYLE_H

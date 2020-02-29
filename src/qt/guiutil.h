@@ -1,10 +1,10 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_GUIUTIL_H
-#define SYSCOIN_QT_GUIUTIL_H
+#ifndef MARTKIST_QT_GUIUTIL_H
+#define MARTKIST_QT_GUIUTIL_H
 
 #include "amount.h"
 
@@ -31,7 +31,7 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
-/** Utility functions used by the Syscoin Qt UI.
+/** Utility functions used by the Martkist Qt UI.
  */
 namespace GUIUtil
 {
@@ -46,10 +46,10 @@ namespace GUIUtil
     void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent);
     void setupAmountWidget(QLineEdit *widget, QWidget *parent);
 
-    // Parse "syscoin:" URI into recipient object, return true on successful parsing
-    bool parseSyscoinURI(const QUrl &uri, SendCoinsRecipient *out);
-    bool parseSyscoinURI(QString uri, SendCoinsRecipient *out);
-    QString formatSyscoinURI(const SendCoinsRecipient &info);
+    // Parse "martkist:" URI into recipient object, return true on successful parsing
+    bool parseMartkistURI(const QUrl &uri, SendCoinsRecipient *out);
+    bool parseMartkistURI(QString uri, SendCoinsRecipient *out);
+    QString formatMartkistURI(const SendCoinsRecipient &info);
 
     // Returns true if given address+amount meets "dust" definition
     bool isDust(const QString& address, const CAmount& amount);
@@ -115,7 +115,7 @@ namespace GUIUtil
     // Open debug.log
     void openDebugLogfile();
 	
-    // Open syscoin.conf
+    // Open martkist.conf
     void openConfigfile();	
 
     // Open masternode.conf
@@ -263,4 +263,4 @@ namespace GUIUtil
 
 } // namespace GUIUtil
 
-#endif // SYSCOIN_QT_GUIUTIL_H
+#endif // MARTKIST_QT_GUIUTIL_H

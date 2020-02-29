@@ -1,0 +1,20 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource prefix="/translations">
+        <file alias="bg">locale/martkist_bg.qm</file>
+        <file alias="de">locale/martkist_de.qm</file>
+        <file alias="en">locale/martkist_en.qm</file>
+        <file alias="es">locale/martkist_es.qm</file>
+        <file alias="fi">locale/martkist_fi.qm</file>
+        <file alias="fr">locale/martkist_fr.qm</file>
+        <file alias="it">locale/martkist_it.qm</file>
+        <file alias="ja">locale/martkist_ja.qm</file>
+        <file alias="pl">locale/martkist_pl.qm</file>
+        <file alias="pt">locale/martkist_pt.qm</file>
+        <file alias="ru">locale/martkist_ru.qm</file>
+        <file alias="sk">locale/martkist_sk.qm</file>
+        <file alias="sv">locale/martkist_sv.qm</file>
+        <file alias="vi">locale/martkist_vi.qm</file>
+        <file alias="zh_CN">locale/martkist_zh_CN.qm</file>
+        <file alias="zh_TW">locale/martkist_zh_TW.qm</file>
+    </qresource>
+</RCC>

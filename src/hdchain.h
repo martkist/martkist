@@ -1,8 +1,8 @@
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2017-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2017-2018 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
-#ifndef SYS_HDCHAIN_H
-#define SYS_HDCHAIN_H
+#ifndef MARTK_HDCHAIN_H
+#define MARTK_HDCHAIN_H
 
 #include "key.h"
 #include "sync.h"
@@ -148,4 +148,4 @@ public:
     std::string GetKeyPath() const;
 };
 
-#endif // SYS_HDCHAIN_H
+#endif // MARTK_HDCHAIN_H

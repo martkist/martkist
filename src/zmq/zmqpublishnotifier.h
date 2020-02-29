@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_ZMQ_ZMQPUBLISHNOTIFIER_H
-#define SYSCOIN_ZMQ_ZMQPUBLISHNOTIFIER_H
+#ifndef MARTKIST_ZMQ_ZMQPUBLISHNOTIFIER_H
+#define MARTKIST_ZMQ_ZMQPUBLISHNOTIFIER_H
 
 #include "zmqabstractnotifier.h"
 
@@ -63,9 +63,9 @@ class CZMQPublishRawTransactionLockNotifier : public CZMQAbstractPublishNotifier
 public:
     bool NotifyTransactionLock(const CTransaction &transaction) override;
 };
-class CZMQPublishRawSyscoinNotifier : public CZMQAbstractPublishNotifier
+class CZMQPublishRawMartkistNotifier : public CZMQAbstractPublishNotifier
 {
 public:
-	bool NotifySyscoinUpdate(const char *value, const char *topic) override;
+	bool NotifyMartkistUpdate(const char *value, const char *topic) override;
 };
-#endif // SYSCOIN_ZMQ_ZMQPUBLISHNOTIFIER_H
+#endif // MARTKIST_ZMQ_ZMQPUBLISHNOTIFIER_H

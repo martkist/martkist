@@ -1,13 +1,13 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "script.h"
 #include "tinyformat.h"
 #include "utilstrencodings.h"
-extern bool RemoveSyscoinScript(const CScript& scriptPubKeyIn, CScript& scriptPubKeyOut);
+extern bool RemoveMartkistScript(const CScript& scriptPubKeyIn, CScript& scriptPubKeyOut);
 const char* GetOpName(opcodetype opcode)
 {
     switch (opcode)
@@ -201,10 +201,10 @@ unsigned int CScript::GetSigOpCount(const CScript& scriptSig) const
 
 bool CScript::IsPayToPublicKeyHash() const
 {
-	// SYSCOIN
+	// MARTKIST
 	CScript scriptOut;
 	CScript scriptPubKeyOut;
-	if (RemoveSyscoinScript(*this, scriptPubKeyOut))
+	if (RemoveMartkistScript(*this, scriptPubKeyOut))
 		scriptOut = scriptPubKeyOut;
 	else
 		scriptOut = *this;
@@ -219,10 +219,10 @@ bool CScript::IsPayToPublicKeyHash() const
 
 bool CScript::IsPayToScriptHash() const
 {
-	// SYSCOIN
+	// MARTKIST
 	CScript scriptOut;
 	CScript scriptPubKeyOut;
-	if (RemoveSyscoinScript(*this, scriptPubKeyOut))
+	if (RemoveMartkistScript(*this, scriptPubKeyOut))
 		scriptOut = scriptPubKeyOut;
 	else
 		scriptOut = *this;
@@ -235,10 +235,10 @@ bool CScript::IsPayToScriptHash() const
 
 bool CScript::IsPayToPublicKey() const
 {
-	// SYSCOIN
+	// MARTKIST
 	CScript scriptOut;
 	CScript scriptPubKeyOut;
-	if (RemoveSyscoinScript(*this, scriptPubKeyOut))
+	if (RemoveMartkistScript(*this, scriptPubKeyOut))
 		scriptOut = scriptPubKeyOut;
 	else
 		scriptOut = *this;

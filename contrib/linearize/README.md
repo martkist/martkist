@@ -1,9 +1,9 @@
 # Linearize
 Construct a linear, no-fork, best version of the blockchain.
 
-## Step 0: Install syscoin_hash
+## Step 0: Install martkist_hash
 
-https://github.com/syscoin/syscoin_hash
+https://github.com/martkist/martkist_hash
 
 ## Step 1: Download hash list
 
@@ -21,7 +21,7 @@ Optional config file setting for linearize-hashes:
     $ ./linearize-data.py linearize.cfg
 
 Required configuration file settings:
-* "input": syscoind blocks/ directory containing blkNNNNN.dat
+* "input": martkistd blocks/ directory containing blkNNNNN.dat
 * "hashlist": text file containing list of block hashes, linearized-hashes.py
 output.
 * "output_file" for bootstrap.dat or "output" for output directory for linearized blocks/blkNNNNN.dat output

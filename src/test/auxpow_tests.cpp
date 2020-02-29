@@ -1,5 +1,5 @@
 // Copyright (c) 2014-2015 Daniel Kraft
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,7 +13,7 @@
 #include "utilstrencodings.h"
 #include "uint256.h"
 
-#include "test/test_syscoin.h"
+#include "test/test_martkist.h"
 
 #include <boost/test/unit_test.hpp>
 

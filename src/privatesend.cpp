@@ -1,5 +1,5 @@
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2017-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2017-2018 The Martkist Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #include "privatesend.h"
@@ -194,10 +194,10 @@ void CPrivateSend::InitStandardDenominations()
         is convertible to another.
 
         For example:
-        1SYS+1000 == (.1SYS+100)*10
-        10SYS+10000 == (1SYS+1000)*10
+        1MARTK+1000 == (.1MARTK+100)*10
+        10MARTK+10000 == (1MARTK+1000)*10
     */
-   // SYSCOIN
+   // MARTKIST
     vecStandardDenominations.push_back( (100      * COIN)+1000000);
     vecStandardDenominations.push_back( (10       * COIN)+100000 );
     vecStandardDenominations.push_back( (1        * COIN)+10000 );
@@ -338,10 +338,10 @@ int CPrivateSend::GetDenominations(const std::vector<CTxOut>& vecTxOut, bool fSi
 bool CPrivateSend::GetDenominationsBits(int nDenom, std::vector<int> &vecBitsRet)
 {
     // ( bit on if present, 4 denominations example )
-    // bit 0 - 100SYS+1
-    // bit 1 - 10SYS+1
-    // bit 2 - 1SYS+1
-    // bit 3 - .1SYS+1
+    // bit 0 - 100MARTK+1
+    // bit 1 - 10MARTK+1
+    // bit 2 - 1MARTK+1
+    // bit 3 - .1MARTK+1
 
     int nMaxDenoms = vecStandardDenominations.size();
 

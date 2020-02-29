@@ -137,7 +137,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../syscoin.qrc"/>
+  <include location="../martkist.qrc"/>
  </resources>
  <connections/>
 </ui>

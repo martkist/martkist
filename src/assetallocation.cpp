@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2018 The Syscoin Core developers
+// Copyright (c) 2017-2018 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -98,7 +98,7 @@ bool CAssetAllocation::UnserializeFromTx(const CTransaction &tx) {
 	vector<unsigned char> vchData;
 	vector<unsigned char> vchHash;
 	int nOut;
-	if(!GetSyscoinData(tx, vchData, vchHash, nOut))
+	if(!GetMartkistData(tx, vchData, vchHash, nOut))
 	{
 		SetNull();
 		return false;
@@ -121,7 +121,7 @@ void CAssetAllocationDB::WriteAssetAllocationIndex(const CAssetAllocation& asset
 		bool isMine = true;
 		if (BuildAssetAllocationIndexerJson(assetallocation, asset, nSenderBalance, nAmount, strSender, strReceiver, isMine, oName)) {
 			const string& strObj = oName.write();
-			GetMainSignals().NotifySyscoinUpdate(strObj.c_str(), "assetallocation");
+			GetMainSignals().NotifyMartkistUpdate(strObj.c_str(), "assetallocation");
 			if (isMine && fAssetAllocationIndex) {
 				int nHeight = assetallocation.nHeight;
 				const string& strKey = assetallocation.txHash.GetHex()+"-"+stringFromVch(asset.vchAsset)+"-"+ strSender +"-"+ strReceiver;
@@ -158,7 +158,7 @@ bool DecodeAndParseAssetAllocationTx(const CTransaction& tx, int& op,
 }
 bool DecodeAssetAllocationTx(const CTransaction& tx, int& op,
         vector<vector<unsigned char> >& vvch) {
-	if (tx.nVersion != SYSCOIN_TX_VERSION)
+	if (tx.nVersion != MARTKIST_TX_VERSION)
 		return false;
     bool found = false;
 
@@ -184,7 +184,7 @@ bool DecodeAssetAllocationScript(const CScript& script, int& op,
     if (!script.GetOp(pc, opcode)) return false;
     if (opcode < OP_1 || opcode > OP_16) return false;
     op = CScript::DecodeOP_N(opcode);
-	if (op != OP_SYSCOIN_ASSET_ALLOCATION)
+	if (op != OP_MARTKIST_ASSET_ALLOCATION)
 		return false;
 	if (!script.GetOp(pc, opcode))
 		return false;
@@ -253,7 +253,7 @@ bool RevertAssetAllocation(const CAssetAllocationTuple &assetAllocationToRemove,
 	// write the state back to previous state
 	if (!passetallocationdb->WriteAssetAllocation(dbAssetAllocation, 0, 0, asset, INT64_MAX, "", "", false))
 	{
-		errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1000 - " + _("Failed to write to asset allocation DB");
+		errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1000 - " + _("Failed to write to asset allocation DB");
 		return error(errorMessage.c_str());
 	}
 
@@ -344,9 +344,9 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 	vector<unsigned char> vchData;
 	vector<unsigned char> vchHash;
 	int nDataOut;
-	if(!GetSyscoinData(tx, vchData, vchHash, nDataOut) || !theAssetAllocation.UnserializeFromData(vchData, vchHash))
+	if(!GetMartkistData(tx, vchData, vchHash, nDataOut) || !theAssetAllocation.UnserializeFromData(vchData, vchHash))
 	{
-		errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR ERRCODE: 1001 - " + _("Cannot unserialize data inside of this transaction relating to an assetallocation");
+		errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR ERRCODE: 1001 - " + _("Cannot unserialize data inside of this transaction relating to an assetallocation");
 		return true;
 	}
 
@@ -354,12 +354,12 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 	{
 		if(vvchArgs.size() != 1)
 		{
-			errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1002 - " + _("Asset arguments incorrect size");
+			errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1002 - " + _("Asset arguments incorrect size");
 			return error(errorMessage.c_str());
 		}		
 		if(vchHash != vvchArgs[0])
 		{
-			errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1003 - " + _("Hash provided doesn't match the calculated hash of the data");
+			errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1003 - " + _("Hash provided doesn't match the calculated hash of the data");
 			return true;
 		}		
 	}
@@ -370,34 +370,34 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 		case OP_ASSET_ALLOCATION_SEND:
 			if (theAssetAllocation.listSendingAllocationInputs.empty() && theAssetAllocation.listSendingAllocationAmounts.empty())
 			{
-				errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1004 - " + _("Asset send must send an input or transfer balance");
+				errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1004 - " + _("Asset send must send an input or transfer balance");
 				return error(errorMessage.c_str());
 			}
 			if (theAssetAllocation.listSendingAllocationInputs.size() > 250 || theAssetAllocation.listSendingAllocationAmounts.size() > 250)
 			{
-				errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1005 - " + _("Too many receivers in one allocation send, maximum of 250 is allowed at once");
+				errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1005 - " + _("Too many receivers in one allocation send, maximum of 250 is allowed at once");
 				return error(errorMessage.c_str());
 			}
 			if (theAssetAllocation.vchMemo.size() > MAX_MEMO_LENGTH)
 			{
-				errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1006 - " + _("memo too long, must be 128 character or less");
+				errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1006 - " + _("memo too long, must be 128 character or less");
 				return error(errorMessage.c_str());
 			}
 			break;
 		case OP_ASSET_COLLECT_INTEREST:
 			if (!theAssetAllocation.listSendingAllocationInputs.empty() || !theAssetAllocation.listSendingAllocationAmounts.empty())
 			{
-				errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1007 - " + _("Cannot send tokens in an interest collection transaction");
+				errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1007 - " + _("Cannot send tokens in an interest collection transaction");
 				return error(errorMessage.c_str());
 			}
 			if (theAssetAllocation.vchMemo.size() > 0)
 			{
-				errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1008 - " + _("Cannot send memo when collecting interest");
+				errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1008 - " + _("Cannot send memo when collecting interest");
 				return error(errorMessage.c_str());
 			}
 			break;
 		default:
-			errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1009 - " + _("Asset transaction has unknown op");
+			errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1009 - " + _("Asset transaction has unknown op");
 			return error(errorMessage.c_str());
 		}
 	}
@@ -411,7 +411,7 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 	string strResponseEnglish = "";
 	string strResponseGUID = "";
 	CTransaction txTmp;
-	GetSyscoinTransactionDescription(txTmp, op, strResponseEnglish, ASSETALLOCATION, strResponseGUID);
+	GetMartkistTransactionDescription(txTmp, op, strResponseEnglish, ASSETALLOCATION, strResponseGUID);
 	CAssetAllocation dbAssetAllocation;
 	CAsset dbAsset;
 	bool bRevert = false;
@@ -421,17 +421,17 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 	{
 		if (!GetAssetAllocation(assetAllocationTuple, dbAssetAllocation))
 		{
-			errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1010 - " + _("Cannot find asset allocation to collect interest on");
+			errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1010 - " + _("Cannot find asset allocation to collect interest on");
 			return true;
 		}
 		if (!GetAsset(dbAssetAllocation.vchAsset, dbAsset))
 		{
-			errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1011 - " + _("Failed to read from asset DB");
+			errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1011 - " + _("Failed to read from asset DB");
 			return true;
 		}
 		if (dbAsset.fInterestRate <= 0 || dbAssetAllocation.fInterestRate <= 0)
 		{
-			errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1012 - " + _("Cannot collect interest on this asset, no interest rate has been defined");
+			errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1012 - " + _("Cannot collect interest on this asset, no interest rate has been defined");
 			return true;
 		}
 		if (!bSanityCheck) {
@@ -439,14 +439,14 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 			if (bRevert) {
 				if (!RevertAssetAllocation(assetAllocationTuple, dbAsset, tx.GetHash(), nHeight, revertedAssetAllocations))
 				{
-					errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1014 - " + _("Failed to revert asset allocation");
+					errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1014 - " + _("Failed to revert asset allocation");
 					return error(errorMessage.c_str());
 				}
 			}
 		}
 		if (bRevert && !GetAssetAllocation(assetAllocationTuple, dbAssetAllocation))
 		{
-			errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1015 - " + _("Cannot find sender asset allocation.");
+			errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1015 - " + _("Cannot find sender asset allocation.");
 			return true;
 		}
 		theAssetAllocation = dbAssetAllocation;
@@ -455,12 +455,12 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 			string errorMessageCollection = "";
 			if(!ApplyAssetAllocationInterest(dbAsset, theAssetAllocation, nHeight, errorMessageCollection))
 			{
-				errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1013 - " + _("You cannot collect interest on this asset: ") + errorMessageCollection;
+				errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1013 - " + _("You cannot collect interest on this asset: ") + errorMessageCollection;
 				return true;
 			}
 			if (!bSanityCheck && !passetdb->WriteAsset(dbAsset, OP_ASSET_UPDATE))
 			{
-				errorMessage = "SYSCOIN_ASSET_CONSENSUS_ERROR: ERRCODE: 1014 - " + _("Failed to write to asset DB");
+				errorMessage = "MARTKIST_ASSET_CONSENSUS_ERROR: ERRCODE: 1014 - " + _("Failed to write to asset DB");
 				return error(errorMessage.c_str());
 			}
 		}
@@ -471,31 +471,31 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 	else if (op == OP_ASSET_ALLOCATION_SEND)
 	{
 		LOCK(cs_assetallocation);
-		if (!vchAlias.empty() && CSyscoinAddress(user1).IsValid()) {
-			errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1016 - " + _("This asset allocation cannot be spent because owner is an alias but the alias is also a valid syscoin address");
+		if (!vchAlias.empty() && CMartkistAddress(user1).IsValid()) {
+			errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1016 - " + _("This asset allocation cannot be spent because owner is an alias but the alias is also a valid martkist address");
 			return true;
 		}
 		if (!GetAssetAllocation(assetAllocationTuple, dbAssetAllocation))
 		{
-			errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1015 - " + _("Cannot find sender asset allocation.");
+			errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1015 - " + _("Cannot find sender asset allocation.");
 			return true;
 		}
 		
 		if (vchAlias.empty()) {
 			if (dbAssetAllocation.vchAliasOrAddress != theAssetAllocation.vchAliasOrAddress || !FindAssetOwnerInTx(inputs, tx, user1))
 			{
-				errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1015 - " + _("Cannot send this asset. Asset allocation owner must sign off on this change");
+				errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1015 - " + _("Cannot send this asset. Asset allocation owner must sign off on this change");
 				return true;
 			}
 		}
 		else if (dbAssetAllocation.vchAliasOrAddress != vchAlias)
 		{
-			errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1017 - " + _("Cannot send this asset. Asset allocation owner must sign off on this change");
+			errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1017 - " + _("Cannot send this asset. Asset allocation owner must sign off on this change");
 			return true;
 		}
 		if (!GetAsset(assetAllocationTuple.vchAsset, dbAsset))
 		{
-			errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1016 - " + _("Failed to read from asset DB");
+			errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1016 - " + _("Failed to read from asset DB");
 			return true;
 		}
 		if (!bSanityCheck) {
@@ -503,14 +503,14 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 			if (bRevert) {
 				if (!RevertAssetAllocation(assetAllocationTuple, dbAsset, tx.GetHash(), nHeight, revertedAssetAllocations))
 				{
-					errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1014 - " + _("Failed to revert asset allocation");
+					errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1014 - " + _("Failed to revert asset allocation");
 					return error(errorMessage.c_str());
 				}
 			}
 		}
 		if (bRevert && !GetAssetAllocation(assetAllocationTuple, dbAssetAllocation))
 		{
-			errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1015 - " + _("Cannot find sender asset allocation.");
+			errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1015 - " + _("Cannot find sender asset allocation.");
 			return true;
 		}
 		theAssetAllocation.vchAliasOrAddress = vchThisAlias;
@@ -539,7 +539,7 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 		// commit sender details to database
 		if (!theAssetAllocation.listSendingAllocationAmounts.empty()) {
 			if (dbAsset.bUseInputRanges) {
-				errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1018 - " + _("Invalid asset send, request to send amounts but asset uses input ranges");
+				errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1018 - " + _("Invalid asset send, request to send amounts but asset uses input ranges");
 				return true;
 			}
 			// check balance is sufficient on sender
@@ -550,14 +550,14 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 				if (bRevert) {
 					if (!RevertAssetAllocation(receiverAllocationTuple, dbAsset, tx.GetHash(), nHeight, revertedAssetAllocations))
 					{
-						errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1019 - " + _("Failed to revert asset allocation");
+						errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1019 - " + _("Failed to revert asset allocation");
 						return error(errorMessage.c_str());
 					}
 				}
 				nTotal += amountTuple.second;
 				if (amountTuple.second <= 0)
 				{
-					errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1020 - " + _("Receiving amount must be positive");
+					errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1020 - " + _("Receiving amount must be positive");
 					return true;
 				}
 			}
@@ -565,7 +565,7 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 			if (nBalanceAfterSend < 0) {
 				bBalanceOverrun = true;
 				if(bSanityCheck)
-					errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1021 - " + _("Sender balance is insufficient");
+					errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1021 - " + _("Sender balance is insufficient");
 				if (fJustCheck && !bSanityCheck) {
 					// add conflicting sender
 					assetAllocationConflicts.insert(assetAllocationTuple);
@@ -581,7 +581,7 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 			for (auto& amountTuple : theAssetAllocation.listSendingAllocationAmounts) {
 				CAssetAllocation receiverAllocation;
 				if (amountTuple.first == theAssetAllocation.vchAliasOrAddress) {
-					errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1022 - " + _("Cannot send an asset allocation to yourself");
+					errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1022 - " + _("Cannot send an asset allocation to yourself");
 					return true;
 				}
 				if (!bSanityCheck) {
@@ -617,7 +617,7 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 					const string& receiverAddress = stringFromVch(receiverAllocation.vchAliasOrAddress);
 					if (!passetallocationdb->WriteAssetAllocation(receiverAllocation, nBalanceAfterSend, amountTuple.second, dbAsset, INT64_MAX, user1, receiverAddress, fJustCheck))
 					{
-						errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1023 - " + _("Failed to write to asset allocation DB");
+						errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1023 - " + _("Failed to write to asset allocation DB");
 						return error(errorMessage.c_str());
 					}
 				}
@@ -625,7 +625,7 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 		}
 		else if (!theAssetAllocation.listSendingAllocationInputs.empty()) {
 			if (!dbAsset.bUseInputRanges) {
-				errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Invalid asset send, request to send input ranges but asset uses amounts");
+				errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1024 - " + _("Invalid asset send, request to send input ranges but asset uses amounts");
 				return true;
 			}
 			// check balance is sufficient on sender
@@ -637,14 +637,14 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 				if (bRevert) {
 					if (!RevertAssetAllocation(receiverAllocationTuple, dbAsset, tx.GetHash(), nHeight, revertedAssetAllocations))
 					{
-						errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1025 - " + _("Failed to revert asset allocation");
+						errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1025 - " + _("Failed to revert asset allocation");
 						return error(errorMessage.c_str());
 					}
 				}
 				const unsigned int &rangeTotal = validateRangesAndGetCount(inputTuple.second);
 				if(rangeTotal == 0)
 				{
-					errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1026 - " + _("Invalid input ranges");
+					errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1026 - " + _("Invalid input ranges");
 					return true;
 				}
 				const CAmount rangeTotalAmount = rangeTotal;
@@ -655,7 +655,7 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 			if (nBalanceAfterSend < 0) {
 				bBalanceOverrun = true;
 				if(bSanityCheck)
-					errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1027 - " + _("Sender balance is insufficient");
+					errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1027 - " + _("Sender balance is insufficient");
 				if (fJustCheck && !bSanityCheck) {
 					// add conflicting sender
 					assetAllocationConflicts.insert(assetAllocationTuple);
@@ -672,7 +672,7 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 				InputRanges &input = theAssetAllocation.listSendingAllocationInputs[i];
 				CAssetAllocation receiverAllocation;
 				if (input.first == theAssetAllocation.vchAliasOrAddress) {
-					errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1028 - " + _("Cannot send an asset allocation to yourself");
+					errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1028 - " + _("Cannot send an asset allocation to yourself");
 					return true;
 				}
 				if (!bSanityCheck) {
@@ -686,7 +686,7 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 					// ensure entire allocation range being subtracted exists on sender (full inclusion check)
 					if (!doesRangeContain(dbAssetAllocation.listAllocationInputs, input.second))
 					{
-						errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1029 - " + _("Input not found");
+						errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1029 - " + _("Input not found");
 						return true;
 					}
 
@@ -719,7 +719,7 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 					const string& receiverAddress = stringFromVch(receiverAllocation.vchAliasOrAddress);
 					if (!passetallocationdb->WriteAssetAllocation(receiverAllocation, nBalanceAfterSend, rangeTotals[i], dbAsset, INT64_MAX, user1, receiverAddress, fJustCheck))
 					{
-						errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1030 - " + _("Failed to write to asset allocation DB");
+						errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1030 - " + _("Failed to write to asset allocation DB");
 						return error(errorMessage.c_str());
 					}
 				}
@@ -744,7 +744,7 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, const CCoinsViewCache &i
 		const string &user = op == OP_ASSET_COLLECT_INTEREST ? user1 : "";
 		if (!passetallocationdb->WriteAssetAllocation(theAssetAllocation, theAssetAllocation.nBalance, 0, dbAsset, ms, user, user, fJustCheck))
 		{
-			errorMessage = "SYSCOIN_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1031 - " + _("Failed to write to asset allocation DB");
+			errorMessage = "MARTKIST_ASSET_ALLOCATION_CONSENSUS_ERROR: ERRCODE: 1031 - " + _("Failed to write to asset allocation DB");
 			return error(errorMessage.c_str());
 		}
 		// debug
@@ -765,7 +765,7 @@ UniValue tpstestinfo(const JSONRPCRequest& request) {
 		throw runtime_error("tpstestinfo\n"
 			"Gets TPS Test information for receivers of assetallocation transfers\n");
 	if(!fTPSTest)
-		throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1501 - " + _("This function requires tpstest configuration to be set upon startup. Please shutdown and enable it by adding it to your syscoin.conf file and then call 'tpstestsetenabled true'."));
+		throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1501 - " + _("This function requires tpstest configuration to be set upon startup. Please shutdown and enable it by adding it to your martkist.conf file and then call 'tpstestsetenabled true'."));
 	UniValue oTPSTestResults(UniValue::VOBJ);
 	UniValue oTPSTestReceivers(UniValue::VARR);
 	UniValue oTPSTestReceiversMempool(UniValue::VARR);
@@ -798,7 +798,7 @@ UniValue tpstestsetenabled(const JSONRPCRequest& request) {
 			"\nExample:\n"
 			+ HelpExampleCli("tpstestsetenabled", "true"));
 	if(!fTPSTest)
-		throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1501 - " + _("This function requires tpstest configuration to be set upon startup. Please shutdown and enable it by adding it to your syscoin.conf file and then try again."));
+		throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1501 - " + _("This function requires tpstest configuration to be set upon startup. Please shutdown and enable it by adding it to your martkist.conf file and then try again."));
 	fTPSTestEnabled = params[0].get_bool();
 	if (!fTPSTestEnabled) {
 		vecTPSTestReceivedTimes.clear();
@@ -827,7 +827,7 @@ UniValue tpstestadd(const JSONRPCRequest& request) {
 			"\nExample:\n"
 			+ HelpExampleCli("tpstestadd", "\"223233433839384\" \"[{\\\"tx\\\":\\\"first raw hex tx\\\"},{\\\"tx\\\":\\\"second raw hex tx\\\"}]\""));
 	if (!fTPSTest)
-		throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1501 - " + _("This function requires tpstest configuration to be set upon startup. Please shutdown and enable it by adding it to your syscoin.conf file and then call 'tpstestsetenabled true'."));
+		throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1501 - " + _("This function requires tpstest configuration to be set upon startup. Please shutdown and enable it by adding it to your martkist.conf file and then call 'tpstestsetenabled true'."));
 
 	bool bFirstTime = vecTPSRawTransactions.empty();
 	nTPSTestingStartTime = params[0].get_int64();
@@ -869,7 +869,7 @@ UniValue tpstestadd(const JSONRPCRequest& request) {
 				MilliSleep(10);
 			}
 			if (!isThreadPosted)
-				throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1501 - " + _("thread pool queue is full"));
+				throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1501 - " + _("thread pool queue is full"));
 		}
 	}
 	UniValue result(UniValue::VOBJ);
@@ -903,7 +903,7 @@ UniValue assetallocationsend(const JSONRPCRequest& request) {
 		throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Array of receivers not found");
 	string strAddressFrom;
 	string strAliasOrAddress = stringFromVch(vchAliasOrAddressFrom);
-	const CSyscoinAddress addressFrom(strAliasOrAddress);
+	const CMartkistAddress addressFrom(strAliasOrAddress);
 	if (addressFrom.IsValid()) {
 		strAddressFrom = strAliasOrAddress;
 	}
@@ -915,11 +915,11 @@ UniValue assetallocationsend(const JSONRPCRequest& request) {
 	CAssetAllocation theAssetAllocation;
 	const CAssetAllocationTuple assetAllocationTuple(vchAsset, vchAliasOrAddressFrom);
 	if (!GetAssetAllocation(assetAllocationTuple, theAssetAllocation))
-		throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1500 - " + _("Could not find a asset allocation with this key"));
+		throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1500 - " + _("Could not find a asset allocation with this key"));
 
 	CAsset theAsset;
 	if (!GetAsset(vchAsset, theAsset))
-		throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1501 - " + _("Could not find a asset with this key"));
+		throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1501 - " + _("Could not find a asset with this key"));
 
 	theAssetAllocation.ClearAssetAllocation();
 	theAssetAllocation.vchMemo = vchMemo;
@@ -938,10 +938,10 @@ UniValue assetallocationsend(const JSONRPCRequest& request) {
 			toObj = find_value(receiverObj, "aliasto");
 		vector<unsigned char> vchAliasOrAddressTo;
 		vchAliasOrAddressTo = vchFromValue(toObj);
-		if (!CSyscoinAddress(stringFromVch(vchAliasOrAddressTo)).IsValid()) {
+		if (!CMartkistAddress(stringFromVch(vchAliasOrAddressTo)).IsValid()) {
 			ToLowerCase(vchAliasOrAddressTo);
 			if (!GetAlias(vchAliasOrAddressTo, toAlias))
-				throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1501 - " + _("Failed to read recipient alias from DB"));
+				throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1501 - " + _("Failed to read recipient alias from DB"));
 		}
 	
 		UniValue inputRangeObj = find_value(receiverObj, "ranges");
@@ -982,8 +982,8 @@ UniValue assetallocationsend(const JSONRPCRequest& request) {
 	else {
 		// check for alias existence in DB
 		if (!GetAlias(vchAliasOrAddressFrom, fromAlias))
-			throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1502 - " + _("Failed to read sender alias from DB"));
-		CSyscoinAddress fromAddr;
+			throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1502 - " + _("Failed to read sender alias from DB"));
+		CMartkistAddress fromAddr;
 		GetAddress(fromAlias, &fromAddr, scriptPubKeyFromOrig);
 	}
 
@@ -1000,12 +1000,12 @@ UniValue assetallocationsend(const JSONRPCRequest& request) {
 			minLatency = 1000;
 		// if this tx arrived within the minimum latency period flag it as potentially conflicting
 		if ((nNow - arrivalTime.second) < minLatency) {
-			throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1503 - " + _("Please wait a few more seconds and try again..."));
+			throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1503 - " + _("Please wait a few more seconds and try again..."));
 		}
 	}
 	
 	if (assetAllocationConflicts.find(assetAllocationTuple) != assetAllocationConflicts.end())
-		throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1504 - " + _("This asset allocation is involved in a conflict which must be resolved with Proof-Of-Work. Please wait for a block confirmation and try again..."));
+		throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1504 - " + _("This asset allocation is involved in a conflict which must be resolved with Proof-Of-Work. Please wait for a block confirmation and try again..."));
 	
 	vector<unsigned char> data;
 	theAssetAllocation.Serialize(data);
@@ -1013,8 +1013,8 @@ UniValue assetallocationsend(const JSONRPCRequest& request) {
 
 	vector<unsigned char> vchHashAsset = vchFromString(hash.GetHex());
 	if (!theAssetAllocation.UnserializeFromData(data, vchHashAsset))
-		throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1505 - " + _("Could not unserialize asset allocation data"));
-	scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_ASSET_ALLOCATION) << CScript::EncodeOP_N(OP_ASSET_ALLOCATION_SEND) << vchHashAsset << OP_2DROP << OP_DROP;
+		throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1505 - " + _("Could not unserialize asset allocation data"));
+	scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_ASSET_ALLOCATION) << CScript::EncodeOP_N(OP_ASSET_ALLOCATION_SEND) << vchHashAsset << OP_2DROP << OP_DROP;
 	scriptPubKey += scriptPubKeyFromOrig;
 	// send the asset pay txn
 	vector<CRecipient> vecSend;
@@ -1025,7 +1025,7 @@ UniValue assetallocationsend(const JSONRPCRequest& request) {
 	CRecipient aliasRecipient;
 	if (strAddressFrom.empty()) {
 		CScript scriptPubKeyAlias;
-		scriptPubKeyAlias << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << fromAlias.vchAlias << fromAlias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
+		scriptPubKeyAlias << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << fromAlias.vchAlias << fromAlias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
 		scriptPubKeyAlias += scriptPubKeyFromOrig;
 		CreateAliasRecipient(scriptPubKeyAlias, aliasRecipient);
 	}
@@ -1038,7 +1038,7 @@ UniValue assetallocationsend(const JSONRPCRequest& request) {
 	vecSend.push_back(fee);
 
 
-	return syscointxfund_helper(vchAliasOrAddressFrom, vchWitness, aliasRecipient, vecSend);
+	return martkisttxfund_helper(vchAliasOrAddressFrom, vchWitness, aliasRecipient, vecSend);
 }
 UniValue assetallocationcollectinterest(const JSONRPCRequest& request) {
 	const UniValue &params = request.params;
@@ -1059,7 +1059,7 @@ UniValue assetallocationcollectinterest(const JSONRPCRequest& request) {
 	
 	string strAddressFrom;
 	string strAliasOrAddress = stringFromVch(vchAliasOrAddressFrom);
-	const CSyscoinAddress address(strAliasOrAddress);
+	const CMartkistAddress address(strAliasOrAddress);
 	if (address.IsValid()) {
 		strAddressFrom = strAliasOrAddress;
 	}
@@ -1071,7 +1071,7 @@ UniValue assetallocationcollectinterest(const JSONRPCRequest& request) {
 	CAssetAllocation theAssetAllocation;
 	const CAssetAllocationTuple assetAllocationTuple(vchAsset, vchAliasOrAddressFrom);
 	if (!GetAssetAllocation(assetAllocationTuple, theAssetAllocation))
-		throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1506 - " + _("Could not find a asset allocation with this key"));
+		throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1506 - " + _("Could not find a asset allocation with this key"));
 	CScript scriptPubKeyFromOrig;
 	CAliasIndex fromAlias;
 	if (!strAddressFrom.empty()) {
@@ -1080,8 +1080,8 @@ UniValue assetallocationcollectinterest(const JSONRPCRequest& request) {
 	else {
 		// check for alias existence in DB
 		if (!GetAlias(vchAliasOrAddressFrom, fromAlias))
-			throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1502 - " + _("Failed to read sender alias from DB"));
-		CSyscoinAddress fromAddr;
+			throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1502 - " + _("Failed to read sender alias from DB"));
+		CMartkistAddress fromAddr;
 		GetAddress(fromAlias, &fromAddr, scriptPubKeyFromOrig);
 	}
 	CScript scriptPubKey;
@@ -1093,7 +1093,7 @@ UniValue assetallocationcollectinterest(const JSONRPCRequest& request) {
 	uint256 hash = Hash(data.begin(), data.end());
 
 	vector<unsigned char> vchHashAsset = vchFromString(hash.GetHex());
-	scriptPubKey << CScript::EncodeOP_N(OP_SYSCOIN_ASSET_ALLOCATION) << CScript::EncodeOP_N(OP_ASSET_COLLECT_INTEREST) << vchHashAsset << OP_2DROP << OP_DROP;
+	scriptPubKey << CScript::EncodeOP_N(OP_MARTKIST_ASSET_ALLOCATION) << CScript::EncodeOP_N(OP_ASSET_COLLECT_INTEREST) << vchHashAsset << OP_2DROP << OP_DROP;
 	scriptPubKey += scriptPubKeyFromOrig;
 	// send the asset pay txn
 	vector<CRecipient> vecSend;
@@ -1104,7 +1104,7 @@ UniValue assetallocationcollectinterest(const JSONRPCRequest& request) {
 	CRecipient aliasRecipient;
 	if (strAddressFrom.empty()) {
 		CScript scriptPubKeyAlias;
-		scriptPubKeyAlias << CScript::EncodeOP_N(OP_SYSCOIN_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << fromAlias.vchAlias << fromAlias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
+		scriptPubKeyAlias << CScript::EncodeOP_N(OP_MARTKIST_ALIAS) << CScript::EncodeOP_N(OP_ALIAS_UPDATE) << fromAlias.vchAlias << fromAlias.vchGUID << vchFromString("") << vchWitness << OP_2DROP << OP_2DROP << OP_2DROP;
 		scriptPubKeyAlias += scriptPubKeyFromOrig;
 		CreateAliasRecipient(scriptPubKeyAlias, aliasRecipient);
 	}
@@ -1116,7 +1116,7 @@ UniValue assetallocationcollectinterest(const JSONRPCRequest& request) {
 	vecSend.push_back(fee);
 
 
-	return syscointxfund_helper(vchAliasOrAddressFrom, vchWitness, aliasRecipient, vecSend);
+	return martkisttxfund_helper(vchAliasOrAddressFrom, vchWitness, aliasRecipient, vecSend);
 }
 
 UniValue assetallocationinfo(const JSONRPCRequest& request) {
@@ -1133,11 +1133,11 @@ UniValue assetallocationinfo(const JSONRPCRequest& request) {
 	CAssetAllocation txPos;
 	LOCK(cs_assetallocation);
 	if (!passetallocationdb || !passetallocationdb->ReadAssetAllocation(assetAllocationTuple, txPos))
-		throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1507 - " + _("Failed to read from assetallocation DB"));
+		throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1507 - " + _("Failed to read from assetallocation DB"));
 
 	CAsset theAsset;
 	if (!GetAsset(vchAsset, theAsset))
-		throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1508 - " + _("Could not find a asset with this key"));
+		throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1508 - " + _("Could not find a asset with this key"));
 
 
 	if(!BuildAssetAllocationJson(txPos, theAsset, bGetInputs, oAssetAllocation))
@@ -1336,13 +1336,13 @@ bool BuildAssetAllocationIndexerJson(const CAssetAllocation& assetallocation, co
 			strReceiverTmp = EncodeBase58(toAlias.vchAddress);
 		if (!strSenderTmp.empty() || !strReceiverTmp.empty()) {
 			isminefilter filter = ISMINE_SPENDABLE;
-			isminefilter mine = IsMine(*pwalletMain, CSyscoinAddress(strSenderTmp).Get());
+			isminefilter mine = IsMine(*pwalletMain, CMartkistAddress(strSenderTmp).Get());
 			if ((mine & filter)) {
 				strCat = "send";
 				nAmountDisplay *= -1;
 			}
 			else if(!strReceiverTmp.empty()){
-				mine = IsMine(*pwalletMain, CSyscoinAddress(strReceiverTmp).Get());
+				mine = IsMine(*pwalletMain, CMartkistAddress(strReceiverTmp).Get());
 				if ((mine & filter))
 					strCat = "receive";
 			}
@@ -1625,12 +1625,12 @@ UniValue listassetallocationtransactions(const JSONRPCRequest& request) {
 	if (params.size() > 2)
 		options = params[2];
 	if (!fAssetAllocationIndex) {
-		throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1509 - " + _("Asset allocation index not enabled, you must enable -assetallocationindex as a startup parameter or through syscoin.conf file to use this function.")); 
+		throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1509 - " + _("Asset allocation index not enabled, you must enable -assetallocationindex as a startup parameter or through martkist.conf file to use this function.")); 
 	}
 	LOCK(cs_assetallocationindex);
 	UniValue oRes(UniValue::VARR);
 	if (!passetallocationtransactionsdb->ScanAssetAllocationIndex(count, from, options, oRes))
-		throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1509 - " + _("Scan failed"));
+		throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1509 - " + _("Scan failed"));
 	return oRes;
 }
 UniValue listassetallocations(const JSONRPCRequest& request) {
@@ -1663,13 +1663,13 @@ UniValue listassetallocations(const JSONRPCRequest& request) {
 			count = INT_MAX;
 		} else
 		if (count < 0) {
-			throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1510 - " + _("'count' must be 0 or greater"));
+			throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1510 - " + _("'count' must be 0 or greater"));
 		}
 	}
 	if (params.size() > 1) {
 		from = params[1].get_int();
 		if (from < 0) {
-			throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1510 - " + _("'from' must be 0 or greater"));
+			throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1510 - " + _("'from' must be 0 or greater"));
 		}
 	}
 	if (params.size() > 2) {
@@ -1678,6 +1678,6 @@ UniValue listassetallocations(const JSONRPCRequest& request) {
 	LOCK(cs_assetallocation);
 	UniValue oRes(UniValue::VARR);
 	if (!passetallocationdb->ScanAssetAllocations(count, from, options, oRes))
-		throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1510 - " + _("Scan failed"));
+		throw runtime_error("MARTKIST_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1510 - " + _("Scan failed"));
 	return oRes;
 }

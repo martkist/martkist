@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 The Syscoin Core developers
+// Copyright (c) 2015-2018 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -15,7 +15,7 @@
 class CTransaction;
 class CTxOut;
 class COutPoint;
-class CSyscoinAddress;
+class CMartkistAddress;
 class CCoinsViewCache;
 struct CRecipient;
 
@@ -293,7 +293,7 @@ std::string stringFromVch(const std::vector<unsigned char> &vch);
 std::vector<unsigned char> vchFromValue(const UniValue& value);
 std::vector<unsigned char> vchFromString(const std::string &str);
 std::string stringFromValue(const UniValue& value);
-const int SYSCOIN_TX_VERSION = 0x7400;
+const int MARTKIST_TX_VERSION = 0x7400;
 bool IsValidAliasName(const std::vector<unsigned char> &vchAlias);
 bool CheckAliasInputs(const CCoinsViewCache &inputs, const CTransaction &tx, int op, const std::vector<std::vector<unsigned char> > &vvchArgs, bool fJustCheck, int nHeight, std::string &errorMessage,bool bSanityCheck=false);
 void CreateRecipient(const CScript& scriptPubKey, CRecipient& recipient);
@@ -307,7 +307,7 @@ bool CheckParam(const UniValue& params, const unsigned int index);
 bool GetAliasOfTx(const CTransaction& tx, std::vector<unsigned char>& name);
 bool DecodeAliasTx(const CTransaction& tx, int& op, std::vector<std::vector<unsigned char> >& vvch);
 bool DecodeAndParseAliasTx(const CTransaction& tx, int& op, std::vector<std::vector<unsigned char> >& vvch, char &type);
-bool DecodeAndParseSyscoinTx(const CTransaction& tx, int& op, std::vector<std::vector<unsigned char> >& vvch, char &type);
+bool DecodeAndParseMartkistTx(const CTransaction& tx, int& op, std::vector<std::vector<unsigned char> >& vvch, char &type);
 bool DecodeAliasScript(const CScript& script, int& op,
 		std::vector<std::vector<unsigned char> > &vvch);
 bool FindAliasInTx(const CCoinsViewCache &inputs, const CTransaction& tx, std::vector<std::vector<unsigned char> >& vvch);
@@ -317,27 +317,27 @@ bool GetAliasFromAddress(const std::string& strAddress, std::string& strAlias, s
 int getFeePerByte(const uint64_t &paymentOptionMask);
 float getEscrowFee();
 std::string aliasFromOp(int op);
-std::string GenerateSyscoinGuid();
+std::string GenerateMartkistGuid();
 bool RemoveAliasScriptPrefix(const CScript& scriptIn, CScript& scriptOut);
-int GetSyscoinDataOutput(const CTransaction& tx);
-bool IsSyscoinDataOutput(const CTxOut& out);
-bool GetSyscoinData(const CTransaction &tx, std::vector<unsigned char> &vchData, std::vector<unsigned char> &vchHash, int& nOut);
-bool GetSyscoinData(const CScript &scriptPubKey, std::vector<unsigned char> &vchData, std::vector<unsigned char> &vchHash);
+int GetMartkistDataOutput(const CTransaction& tx);
+bool IsMartkistDataOutput(const CTxOut& out);
+bool GetMartkistData(const CTransaction &tx, std::vector<unsigned char> &vchData, std::vector<unsigned char> &vchHash, int& nOut);
+bool GetMartkistData(const CScript &scriptPubKey, std::vector<unsigned char> &vchData, std::vector<unsigned char> &vchHash);
 bool IsSysServiceExpired(const uint64_t &nTime);
 bool GetTimeToPrune(const CScript& scriptPubKey, uint64_t &nTime);
-bool IsSyscoinScript(const CScript& scriptPubKey, int &op, std::vector<std::vector<unsigned char> > &vvchArgs);
-bool RemoveSyscoinScript(const CScript& scriptPubKeyIn, CScript& scriptPubKeyOut);
+bool IsMartkistScript(const CScript& scriptPubKey, int &op, std::vector<std::vector<unsigned char> > &vvchArgs);
+bool RemoveMartkistScript(const CScript& scriptPubKeyIn, CScript& scriptPubKeyOut);
 void SysTxToJSON(const int op, const std::vector<unsigned char> &vchData, const std::vector<unsigned char> &vchHash, UniValue &entry, const char& type);
 void AliasTxToJSON(const int op, const std::vector<unsigned char> &vchData, const std::vector<unsigned char> &vchHash, UniValue &entry);
 bool BuildAliasJson(const CAliasIndex& alias, UniValue& oName);
-void CleanupSyscoinServiceDatabases(int &servicesCleaned);
-void GetAddress(const CAliasIndex &alias, CSyscoinAddress* address, CScript& script, const uint32_t nPaymentOption=1);
-std::string GetSyscoinTransactionDescription(const CTransaction& tx, const int op, std::string& responseEnglish, const char &type, std::string& responseGUID);
+void CleanupMartkistServiceDatabases(int &servicesCleaned);
+void GetAddress(const CAliasIndex &alias, CMartkistAddress* address, CScript& script, const uint32_t nPaymentOption=1);
+std::string GetMartkistTransactionDescription(const CTransaction& tx, const int op, std::string& responseEnglish, const char &type, std::string& responseGUID);
 bool BuildAliasIndexerHistoryJson(const CAliasIndex& alias, UniValue& oName);
 bool DoesAliasExist(const std::string &strAddress);
 bool IsOutpointMature(const COutPoint& outpoint, bool fUseInstantSend = false);
-UniValue syscointxfund_helper(const std::vector<unsigned char> &vchAlias, const std::vector<unsigned char> &vchWitness, const CRecipient &aliasRecipient, std::vector<CRecipient> &vecSend);
-bool FlushSyscoinDBs();
+UniValue martkisttxfund_helper(const std::vector<unsigned char> &vchAlias, const std::vector<unsigned char> &vchWitness, const CRecipient &aliasRecipient, std::vector<CRecipient> &vecSend);
+bool FlushMartkistDBs();
 void ToLowerCase(std::vector<unsigned char>& vchValue);
 bool FindAssetOwnerInTx(const CCoinsViewCache &inputs, const CTransaction& tx, const std::string& ownerAddressToMatch);
 #endif // ALIAS_H

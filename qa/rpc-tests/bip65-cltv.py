@@ -7,10 +7,10 @@
 # Test the CHECKLOCKTIMEVERIFY (BIP65) soft-fork logic
 #
 
-from test_framework.test_framework import SyscoinTestFramework
+from test_framework.test_framework import MartkistTestFramework
 from test_framework.util import *
 
-class BIP65Test(SyscoinTestFramework):
+class BIP65Test(MartkistTestFramework):
 
     def setup_network(self):
         self.nodes = []

@@ -3,8 +3,8 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR/..
 
-DOCKER_IMAGE=${DOCKER_IMAGE:-syscoinpay/syscoind-develop}
-DOCKER_TAG=${DOCKER_TAG:-latest}
+DOCKER_IMAGE=${DOCKER_IMAGE:-martkist/martkistd}
+DOCKER_TAG=${DOCKER_TAG:-`git rev-parse --short HEAD`}
 
 if [ -n "$DOCKER_REPO" ]; then
   DOCKER_IMAGE_WITH_REPO=$DOCKER_REPO/$DOCKER_IMAGE
@@ -13,5 +13,6 @@ else
 fi
 
 docker tag $DOCKER_IMAGE:$DOCKER_TAG $DOCKER_IMAGE_WITH_REPO:$DOCKER_TAG
+docker tag $DOCKER_IMAGE:$DOCKER_TAG $DOCKER_IMAGE_WITH_REPO:latest
 docker push $DOCKER_IMAGE_WITH_REPO:$DOCKER_TAG
-docker rmi $DOCKER_IMAGE_WITH_REPO:$DOCKER_TAG
+#docker rmi $DOCKER_IMAGE_WITH_REPO:$DOCKER_TAG

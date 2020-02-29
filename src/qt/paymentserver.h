@@ -1,13 +1,13 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_PAYMENTSERVER_H
-#define SYSCOIN_QT_PAYMENTSERVER_H
+#ifndef MARTKIST_QT_PAYMENTSERVER_H
+#define MARTKIST_QT_PAYMENTSERVER_H
 
 // This class handles payment requests from clicking on
-// syscoin: URIs
+// martkist: URIs
 //
 // This is somewhat tricky, because we have to deal with
 // the situation where the user clicks on a link during
@@ -146,4 +146,4 @@ private:
     OptionsModel *optionsModel;
 };
 
-#endif // SYSCOIN_QT_PAYMENTSERVER_H
+#endif // MARTKIST_QT_PAYMENTSERVER_H

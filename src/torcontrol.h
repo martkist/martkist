@@ -5,8 +5,8 @@
 /**
  * Functionality for communicating with Tor.
  */
-#ifndef SYSCOIN_TORCONTROL_H
-#define SYSCOIN_TORCONTROL_H
+#ifndef MARTKIST_TORCONTROL_H
+#define MARTKIST_TORCONTROL_H
 
 #include "scheduler.h"
 
@@ -17,4 +17,4 @@ void StartTorControl(boost::thread_group& threadGroup, CScheduler& scheduler);
 void InterruptTorControl();
 void StopTorControl();
 
-#endif /* SYSCOIN_TORCONTROL_H */
+#endif /* MARTKIST_TORCONTROL_H */

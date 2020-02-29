@@ -1,7 +1,7 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -160,7 +160,7 @@ UniValue generatetoaddress(const JSONRPCRequest& request)
             "\nMine blocks immediately to a specified address (before the RPC call returns)\n"
             "\nArguments:\n"
             "1. nblocks      (numeric, required) How many blocks are generated immediately.\n"
-            "2. address      (string, required) The address to send the newly generated Syscoin to.\n"
+            "2. address      (string, required) The address to send the newly generated Martkist to.\n"
             "3. maxtries     (numeric, optional) How many iterations to try (default = 1000000).\n"
             "\nResult:\n"
             "[ blockhashes ]     (array) hashes of blocks generated\n"
@@ -174,7 +174,7 @@ UniValue generatetoaddress(const JSONRPCRequest& request)
     if (request.params.size() > 2) {
         nMaxTries = request.params[2].get_int();
     }
-	CSyscoinAddress address(request.params[1].get_str());
+	CMartkistAddress address(request.params[1].get_str());
 	if (!address.IsValid()) {
 		throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Error: Invalid address");
 	}
@@ -292,9 +292,9 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "\nIf the request parameters include a 'mode' key, that is used to explicitly select between the default 'template' request or a 'proposal'.\n"
             "It returns data needed to construct a block to work on.\n"
             "For full specification, see BIPs 22, 23, and 9:\n"
-            "    https://github.com/syscoin/bips/blob/master/bip-0022.mediawiki\n"
-            "    https://github.com/syscoin/bips/blob/master/bip-0023.mediawiki\n"
-            "    https://github.com/syscoin/bips/blob/master/bip-0009.mediawiki#getblocktemplate_changes\n"
+            "    https://github.com/martkist/bips/blob/master/bip-0022.mediawiki\n"
+            "    https://github.com/martkist/bips/blob/master/bip-0023.mediawiki\n"
+            "    https://github.com/martkist/bips/blob/master/bip-0009.mediawiki#getblocktemplate_changes\n"
 
             "\nArguments:\n"
             "1. template_request         (json object, optional) A json object in the following spec\n"
@@ -450,10 +450,10 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
 
     if (Params().MiningRequiresPeers()) {
         if (g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0)
-            throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Syscoin Core is not connected!");
+            throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Martkist Core is not connected!");
 
         if (IsInitialBlockDownload())
-            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Syscoin Core is downloading blocks...");
+            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Martkist Core is downloading blocks...");
     }
 
     // when enforcement is on we need information about a masternode payee or otherwise our block is going to be orphaned by the network
@@ -461,13 +461,13 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     if (sporkManager.IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)
         && !masternodeSync.IsWinnersListSynced()
         && !mnpayments.GetBlockPayee(chainActive.Height() + 1, payee))
-            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Syscoin Core is downloading masternode winners...");
+            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Martkist Core is downloading masternode winners...");
 
     // next bock is a superblock and we need governance info to correctly construct it
     if (sporkManager.IsSporkActive(SPORK_9_SUPERBLOCKS_ENABLED)
         && !masternodeSync.IsSynced()
         && CSuperblock::IsValidBlockHeight(chainActive.Height() + 1))
-            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Syscoin Core is syncing with network...");
+            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Martkist Core is syncing with network...");
 
     static unsigned int nTransactionsUpdatedLast;
 
@@ -669,7 +669,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     if(pblocktemplate->txoutMasternode != CTxOut()) {
         CTxDestination address1;
         ExtractDestination(pblocktemplate->txoutMasternode.scriptPubKey, address1);
-        CSyscoinAddress address2(address1);
+        CMartkistAddress address2(address1);
         masternodeObj.push_back(Pair("payee", address2.ToString().c_str()));
         masternodeObj.push_back(Pair("script", HexStr(pblocktemplate->txoutMasternode.scriptPubKey)));
         masternodeObj.push_back(Pair("amount", pblocktemplate->txoutMasternode.nValue));
@@ -684,7 +684,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             UniValue entry(UniValue::VOBJ);
             CTxDestination address1;
             ExtractDestination(txout.scriptPubKey, address1);
-            CSyscoinAddress address2(address1);
+            CMartkistAddress address2(address1);
             entry.push_back(Pair("payee", address2.ToString().c_str()));
             entry.push_back(Pair("script", HexStr(txout.scriptPubKey)));
             entry.push_back(Pair("amount", txout.nValue));
@@ -723,7 +723,7 @@ UniValue submitblock(const JSONRPCRequest& request)
             "submitblock \"hexdata\" ( \"jsonparametersobject\" )\n"
             "\nAttempts to submit new block to network.\n"
             "The 'jsonparametersobject' parameter is currently ignored.\n"
-            "See https://en.syscoin.it/wiki/BIP_0022 for full specification.\n"
+            "See https://en.martkist.it/wiki/BIP_0022 for full specification.\n"
 
             "\nArguments:\n"
             "1. \"hexdata\"        (string, required) the hex-encoded block data to submit\n"
@@ -936,11 +936,11 @@ namespace {
 		if (g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0
 			&& !Params().MineBlocksOnDemand())
 			throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED,
-				"Syscoin is not connected!");
+				"Martkist is not connected!");
 
 		if (IsInitialBlockDownload() && !Params().MineBlocksOnDemand())
 			throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD,
-				"Syscoin is downloading blocks...");
+				"Martkist is downloading blocks...");
 
 	}
 
@@ -1074,7 +1074,7 @@ UniValue createauxblock(const JSONRPCRequest& request)
 			+ HelpExampleCli("createauxblock", "\"address\"")
 			+ HelpExampleRpc("createauxblock", "\"address\"")
 		);
-	CSyscoinAddress address(request.params[0].get_str());
+	CMartkistAddress address(request.params[0].get_str());
 	bool isValid = address.IsValid();
 	if (!isValid) {
 		throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY,

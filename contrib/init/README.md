@@ -1,11 +1,11 @@
 Sample configuration files for:
 
-SystemD: syscoind.service
-Upstart: syscoind.conf
-OpenRC:  syscoind.openrc
-         syscoind.openrcconf
-CentOS:  syscoind.init
-OS X:    org.syscoin.syscoind.plist
+SystemD: martkistd.service
+Upstart: martkistd.conf
+OpenRC:  martkistd.openrc
+         martkistd.openrcconf
+CentOS:  martkistd.init
+OS X:    org.martkist.martkistd.plist
 
 have been made available to assist packagers in creating node packages here.
 

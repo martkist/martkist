@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_CHAIN_H
-#define SYSCOIN_CHAIN_H
+#ifndef MARTKIST_CHAIN_H
+#define MARTKIST_CHAIN_H
 
 #include "arith_uint256.h"
 #include "primitives/block.h"
@@ -261,7 +261,7 @@ public:
         return ret;
     }
 
-	// SYSCOIN defined in chain.cpp
+	// MARTKIST defined in chain.cpp
 	CBlockHeader GetBlockHeader(const Consensus::Params& consensusParams) const;
 
     uint256 GetBlockHash() const
@@ -332,7 +332,7 @@ public:
     //! Efficiently find an ancestor of this block.
     CBlockIndex* GetAncestor(int height);
     const CBlockIndex* GetAncestor(int height) const;
-	// SYSCOIN
+	// MARTKIST
 	inline int GetBaseVersion() const
 	{
 		return CPureBlockHeader::GetBaseVersion(nVersion);
@@ -475,4 +475,4 @@ public:
     CBlockIndex* FindEarliestAtLeast(int64_t nTime) const;
 };
 
-#endif // SYSCOIN_CHAIN_H
+#endif // MARTKIST_CHAIN_H

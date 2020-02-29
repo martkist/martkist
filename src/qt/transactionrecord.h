@@ -1,10 +1,10 @@
 // Copyright (c) 2011-2014 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_TRANSACTIONRECORD_H
-#define SYSCOIN_QT_TRANSACTIONRECORD_H
+#ifndef MARTKIST_QT_TRANSACTIONRECORD_H
+#define MARTKIST_QT_TRANSACTIONRECORD_H
 
 #include "amount.h"
 #include "uint256.h"
@@ -153,4 +153,4 @@ public:
     bool statusUpdateNeeded();
 };
 
-#endif // SYSCOIN_QT_TRANSACTIONRECORD_H
+#endif // MARTKIST_QT_TRANSACTIONRECORD_H

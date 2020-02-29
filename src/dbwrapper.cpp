@@ -1,5 +1,5 @@
 // Copyright (c) 2012-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,7 +17,7 @@
 #include <stdint.h>
 #include <algorithm>
 
-class CSyscoinLevelDBLogger : public leveldb::Logger {
+class CMartkistLevelDBLogger : public leveldb::Logger {
 public:
     // This code is adapted from posix_logger.h, which is why it is using vsprintf.
     // Please do not do this in normal code
@@ -43,7 +43,7 @@ public:
                 if (p < limit) {
                     va_list backup_ap;
                     va_copy(backup_ap, ap);
-                    // Do not use vsnprintf elsewhere in syscoin source code, see above.
+                    // Do not use vsnprintf elsewhere in martkist source code, see above.
                     p += vsnprintf(p, limit - p, format, backup_ap);
                     va_end(backup_ap);
                 }
@@ -98,15 +98,15 @@ static void SetMaxOpenFiles(leveldb::Options *options) {
 		options->max_open_files, default_open_files);
 }
 
-static leveldb::Options GetOptions(size_t nCacheSize, bool bSyscoin)
+static leveldb::Options GetOptions(size_t nCacheSize, bool bMartkist)
 {
     leveldb::Options options;
     options.block_cache = leveldb::NewLRUCache(nCacheSize / 2);
     options.write_buffer_size = nCacheSize / 4; // up to two write buffers may be held in memory simultaneously
     options.filter_policy = leveldb::NewBloomFilterPolicy(10);
-	if(!bSyscoin)
+	if(!bMartkist)
 		options.compression = leveldb::kNoCompression;
-    options.info_log = new CSyscoinLevelDBLogger();
+    options.info_log = new CMartkistLevelDBLogger();
     if (leveldb::kMajorVersion > 1 || (leveldb::kMajorVersion == 1 && leveldb::kMinorVersion >= 16)) {
         // LevelDB versions before 1.16 consider short writes to be corruption. Only trigger error
         // on corruption in later versions.
@@ -116,14 +116,14 @@ static leveldb::Options GetOptions(size_t nCacheSize, bool bSyscoin)
     return options;
 }
 
-CDBWrapper::CDBWrapper(const boost::filesystem::path& path, size_t nCacheSize, bool fMemory, bool fWipe, bool obfuscate, bool bSyscoin)
+CDBWrapper::CDBWrapper(const boost::filesystem::path& path, size_t nCacheSize, bool fMemory, bool fWipe, bool obfuscate, bool bMartkist)
 {
     penv = NULL;
     readoptions.verify_checksums = true;
     iteroptions.verify_checksums = true;
     iteroptions.fill_cache = false;
     syncoptions.sync = true;
-    options = GetOptions(nCacheSize, bSyscoin);
+    options = GetOptions(nCacheSize, bMartkist);
     options.create_if_missing = true;
     if (fMemory) {
         penv = leveldb::NewMemEnv(leveldb::Env::Default());

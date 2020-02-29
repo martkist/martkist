@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_INIT_H
-#define SYSCOIN_INIT_H
+#ifndef MARTKIST_INIT_H
+#define MARTKIST_INIT_H
 
 #include <string>
 
@@ -28,7 +28,7 @@ void InitLogging();
 //!Parameter interaction: change current parameters depending on various rules
 void InitParameterInteraction();
 
-/** Initialize syscoin core: Basic context setup.
+/** Initialize martkist core: Basic context setup.
  *  @note This can be done before daemonization.
  *  @pre Parameters should be parsed and config file should be read.
  */
@@ -46,7 +46,7 @@ bool AppInitParameterInteraction();
  */
 bool AppInitSanityChecks();
 /**
- * Syscoin core main initialization.
+ * Martkist core main initialization.
  * @note This should only be done after daemonization.
  * @pre Parameters should be parsed and config file should be read, AppInitSanityChecks should have been called.
  */
@@ -55,8 +55,8 @@ void PrepareShutdown();
 
 /** The help message mode determines what help message to show */
 enum HelpMessageMode {
-    HMM_SYSCOIND,
-    HMM_SYSCOIN_QT
+    HMM_MARTKISTD,
+    HMM_MARTKIST_QT
 };
 
 /** Help for options shared between UI and daemon (for -help) */
@@ -64,4 +64,4 @@ std::string HelpMessage(HelpMessageMode mode);
 /** Returns licensing information (for -version) */
 std::string LicenseInfo();
 
-#endif // SYSCOIN_INIT_H
+#endif // MARTKIST_INIT_H

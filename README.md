@@ -1,30 +1,28 @@
-Syscoin Core staging tree 
+Martkist Core staging tree 
 =========================
 
-`master:` [![Build Status](https://travis-ci.org/syscoin/syscoin.svg?branch=master)](https://travis-ci.org/syscoin/syscoin) 
+`master:` [![Build Status](https://travis-ci.org/martkist/martkist.svg?branch=master)](https://travis-ci.org/martkist/martkist) 
 
-http://www.syscoin.org
+http://www.martkist.org
 
-What is Syscoin?
+What is Martkist?
 ----------------
 
-Syscoin is a merge-minable SHA256 coin which provides an array of useful services
+Martkist is a merge-minable SHA256 coin which provides an array of useful services
 which leverage the bitcoin protocol and blockchain technology.
 
 - 1 minute block targets, diff retarget each block using Dark Gravity Wave(24) 
-- 888 million total coins (deflation 5 percent per year, deflation on all payouts)
-- Block time: 60 seconds target
-- Rewards: 38.5 Syscoins per block deflated 5 percent per year. 
-  - 10 percent to governance proposals (3.85 Syscoins / block). 
-  - 22.5 percent to miner (8.6625 Syscoins / block)
-  - 67.5 percent to masternode (25.9875 Syscoins / block)
+- Rewards are variable:
+  - 10 percent to governance proposals
+  - 18/27 percent cycle to masternodes
+  - remainder to miner
+  - miner and masternode share fees 50:50
 - SHA256 Proof of Work
 - Mineable either exclusively or via merge-mining any SHA256 PoW coin
-- Syscoin data service fees burned
-- Masternode collateral requirement: 100000 Syscoins
-- Masternode seniority: 3 percent every 4 months until 27 percent over 3 years
+- Martkist data service fees burned
+- Masternode collateral requirement: 18000 Martkists
 - Governance proposals payout schedule: every month
-- Governance funding per round (168630 Syscoins per month)
+- Governance funding per round (168630 Martkists per month)
 
 Services include:
 
@@ -38,21 +36,21 @@ Services include:
 - Decentralized escrow service
 
 For more information, as well as an immediately useable, binary version of
-the Syscoin client sofware, see https://www.syscoin.org.
+the Martkist client sofware, see https://www.martkist.org.
 
 
 License
 -------
 
-Syscoin Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
+Martkist Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
 information or see https://opensource.org/licenses/MIT.
 
 Development Process
 -------------------
 
 The `master` branch is meant to be stable. Development is normally done in separate branches.
-[Tags](https://github.com/syscoin/syscoin/tags) are created to indicate new official,
-stable release versions of Syscoin Core.
+[Tags](https://github.com/martkist/martkist/tags) are created to indicate new official,
+stable release versions of Martkist Core.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -73,7 +71,7 @@ There are also [regression and integration tests](/qa) of the RPC interface, wri
 in Python, that are run automatically on the build server.
 These tests can be run (if the [test dependencies](/qa) are installed) with: `qa/pull-tester/rpc-tests.py`
 
-Syscoin test suites can run by `cd src/test && ./test_syscoin`
+Martkist test suites can run by `cd src/test && ./test_martkist`
 
 The Travis CI system makes sure that every pull request is built for Windows
 and Linux, OS X, and that unit and sanity tests are automatically run.
@@ -89,7 +87,7 @@ Translations
 ------------
 
 Changes to translations as well as new translations can be submitted to
-[Syscoin Core's Transifex page](https://www.transifex.com/projects/p/syscoin/).
+[Martkist Core's Transifex page](https://www.transifex.com/projects/p/martkist/).
 
 Translations are periodically pulled from Transifex and merged into the git repository. See the
 [translation process](doc/translation_process.md) for details on how this works.

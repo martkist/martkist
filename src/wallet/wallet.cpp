@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -39,7 +39,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/thread.hpp>
-// SYSCOIN services
+// MARTKIST services
 #include "alias.h"
 
 CWallet* pwalletMain = NULL;
@@ -373,7 +373,7 @@ bool CWallet::LoadCScript(const CScript& redeemScript)
      * these. Do not add them to the wallet and warn. */
     if (redeemScript.size() > MAX_SCRIPT_ELEMENT_SIZE)
     {
-        std::string strAddr = CSyscoinAddress(CScriptID(redeemScript)).ToString();
+        std::string strAddr = CMartkistAddress(CScriptID(redeemScript)).ToString();
         LogPrintf("%s: Warning: This wallet contains a redeemScript of size %i which exceeds maximum size %i thus can never be redeemed. Do not use address %s.\n",
             __func__, redeemScript.size(), MAX_SCRIPT_ELEMENT_SIZE, strAddr);
         return true;
@@ -2571,7 +2571,7 @@ CAmount CWallet::GetImmatureWatchOnlyBalance() const
     return nTotal;
 }
 
-void CWallet::AvailableCoins(std::vector<COutput>& vCoins, bool fOnlyConfirmed, const CCoinControl *coinControl, bool fIncludeZeroValue, AvailableCoinsType nCoinType, bool fUseInstantSend, bool fIncludeSyscoinAliasBalances, bool fIncludeSyscoinAliasOutputs) const
+void CWallet::AvailableCoins(std::vector<COutput>& vCoins, bool fOnlyConfirmed, const CCoinControl *coinControl, bool fIncludeZeroValue, AvailableCoinsType nCoinType, bool fUseInstantSend, bool fIncludeMartkistAliasBalances, bool fIncludeMartkistAliasOutputs) const
 {
     vCoins.clear();
 
@@ -2609,11 +2609,11 @@ void CWallet::AvailableCoins(std::vector<COutput>& vCoins, bool fOnlyConfirmed, 
                 continue;
 
             for (unsigned int i = 0; i < pcoin->tx->vout.size(); i++) {
-				// SYSCOIN
-				if (!fIncludeSyscoinAliasBalances || !fIncludeSyscoinAliasOutputs) {
+				// MARTKIST
+				if (!fIncludeMartkistAliasBalances || !fIncludeMartkistAliasOutputs) {
 					if (coinControl && coinControl->HasSelected() && !coinControl->fAllowOtherInputs && !coinControl->IsSelected(COutPoint((*it).first, i)))
 						continue;
-					// SYSCOIN txs are unspendable by wallet unless using coincontrol(and the tx is selected)
+					// MARTKIST txs are unspendable by wallet unless using coincontrol(and the tx is selected)
 					if (!coinControl || !coinControl->IsSelected(COutPoint((*it).first, i)))
 					{
 						CTxDestination sysdestination;
@@ -2621,10 +2621,10 @@ void CWallet::AvailableCoins(std::vector<COutput>& vCoins, bool fOnlyConfirmed, 
 						{
 							int op;
 							std::vector<std::vector<unsigned char> > vvchArgs;
-							if (IsSyscoinScript(pcoin->tx->vout[i].scriptPubKey, op, vvchArgs) && !fIncludeSyscoinAliasOutputs)
+							if (IsMartkistScript(pcoin->tx->vout[i].scriptPubKey, op, vvchArgs) && !fIncludeMartkistAliasOutputs)
 								continue;
-							CSyscoinAddress address = CSyscoinAddress(sysdestination);
-							if (DoesAliasExist(address.ToString()) && !fIncludeSyscoinAliasBalances)
+							CMartkistAddress address = CMartkistAddress(sysdestination);
+							if (DoesAliasExist(address.ToString()) && !fIncludeMartkistAliasBalances)
 								continue;
 						}
 					}
@@ -3024,16 +3024,16 @@ bool CWallet::SelectCoinsByDenominations(int nDenom, CAmount nValueMin, CAmount 
     nValueRet = 0;
 
     std::vector<COutput> vCoins;
-	// SYSCOIN include syscoin alias balances
+	// MARTKIST include martkist alias balances
     AvailableCoins(vCoins, true, NULL, false, ONLY_DENOMINATED, false, true);
 
     std::random_shuffle(vCoins.rbegin(), vCoins.rend(), GetRandInt);
 
     // ( bit on if present )
-    // bit 0 - 100SYS+1
-    // bit 1 - 10SYS+1
-    // bit 2 - 1SYS+1
-    // bit 3 - .1SYS+1
+    // bit 0 - 100MARTK+1
+    // bit 1 - 10MARTK+1
+    // bit 2 - 1MARTK+1
+    // bit 3 - .1MARTK+1
 
     std::vector<int> vecBits;
     if (!CPrivateSend::GetDenominationsBits(nDenom, vecBits)) {
@@ -3171,7 +3171,7 @@ bool CWallet::SelectCoinsGrouppedByAddresses(std::vector<CompactTallyItem>& vecT
     if (LogAcceptCategory("selectcoins")) {
         std::string strMessage = "SelectCoinsGrouppedByAddresses - vecTallyRet:\n";
         for (const auto& item : vecTallyRet)
-            strMessage += strprintf("  %s %f\n", CSyscoinAddress(item.txdest).ToString().c_str(), float(item.nAmount)/COIN);
+            strMessage += strprintf("  %s %f\n", CMartkistAddress(item.txdest).ToString().c_str(), float(item.nAmount)/COIN);
         LogPrint("selectcoins", "%s", strMessage);
     }
 
@@ -3186,7 +3186,7 @@ bool CWallet::SelectCoinsDark(CAmount nValueMin, CAmount nValueMax, std::vector<
     nValueRet = 0;
 
     std::vector<COutput> vCoins;
-	// SYSCOIN include syscoin alias balances
+	// MARTKIST include martkist alias balances
     AvailableCoins(vCoins, true, coinControl, false, nPrivateSendRoundsMin < 0 ? ONLY_NONDENOMINATED : ONLY_DENOMINATED, false, true);
 
     //order the array so largest nondenom are first, then denominations, then very small inputs.
@@ -3220,7 +3220,7 @@ bool CWallet::GetCollateralTxDSIn(CTxDSIn& txdsinRet, CAmount& nValueRet) const
     LOCK2(cs_main, cs_wallet);
 
     std::vector<COutput> vCoins;
-	// SYSCOIN include syscoin alias balances
+	// MARTKIST include martkist alias balances
 	AvailableCoins(vCoins, true, NULL, false, ALL_COINS, false, true);
 
     for (const auto& out : vCoins)
@@ -3243,7 +3243,7 @@ bool CWallet::GetMasternodeOutpointAndKeys(COutPoint& outpointRet, CPubKey& pubK
 
     // Find possible candidates
     std::vector<COutput> vPossibleCoins;
-	// SYSCOIN include sys alias balances
+	// MARTKIST include sys alias balances
     AvailableCoins(vPossibleCoins, true, NULL, false, ONLY_1000, false, true);
     if(vPossibleCoins.empty()) {
         LogPrintf("CWallet::GetMasternodeOutpointAndKeys -- Could not locate any valid masternode vin\n");
@@ -3277,7 +3277,7 @@ bool CWallet::GetOutpointAndKeysFromOutput(const COutput& out, COutPoint& outpoi
 
     CTxDestination address1;
     ExtractDestination(pubScript, address1);
-    CSyscoinAddress address2(address1);
+    CMartkistAddress address2(address1);
 
     CKeyID keyID;
     if (!address2.GetKeyID(keyID)) {
@@ -3325,7 +3325,7 @@ int CWallet::CountInputsWithAmount(CAmount nInputAmount)
 bool CWallet::HasCollateralInputs(bool fOnlyConfirmed) const
 {
     std::vector<COutput> vCoins;
-	// SYSCOIN include alias balances
+	// MARTKIST include alias balances
     AvailableCoins(vCoins, fOnlyConfirmed, NULL, false, ONLY_PRIVATESEND_COLLATERAL, false, true);
 
     return !vCoins.empty();
@@ -3565,7 +3565,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
                     return false;
                 }
                 if (fUseInstantSend && nValueIn > sporkManager.GetSporkValue(SPORK_5_INSTANTSEND_MAX_VALUE)*COIN) {
-                    strFailReason += " " + strprintf(_("InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 SYS."), sporkManager.GetSporkValue(SPORK_5_INSTANTSEND_MAX_VALUE));
+                    strFailReason += " " + strprintf(_("InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 MARTK."), sporkManager.GetSporkValue(SPORK_5_INSTANTSEND_MAX_VALUE));
                     return false;
                 }
 
@@ -3599,7 +3599,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
 
                         // Fill a vout to ourself
                         // TODO: pass in scriptChange instead of reservekey so
-                        // change transaction isn't always pay-to-syscoin-address
+                        // change transaction isn't always pay-to-martkist-address
                         CScript scriptChange;
 
                         // coin control: send change to custom address
@@ -4066,9 +4066,9 @@ bool CWallet::SetAddressBook(const CTxDestination& address, const std::string& s
                              strPurpose, (fUpdated ? CT_UPDATED : CT_NEW) );
     if (!fFileBacked)
         return false;
-    if (!strPurpose.empty() && !CWalletDB(strWalletFile).WritePurpose(CSyscoinAddress(address).ToString(), strPurpose))
+    if (!strPurpose.empty() && !CWalletDB(strWalletFile).WritePurpose(CMartkistAddress(address).ToString(), strPurpose))
         return false;
-    return CWalletDB(strWalletFile).WriteName(CSyscoinAddress(address).ToString(), strName);
+    return CWalletDB(strWalletFile).WriteName(CMartkistAddress(address).ToString(), strName);
 }
 
 bool CWallet::DelAddressBook(const CTxDestination& address)
@@ -4079,7 +4079,7 @@ bool CWallet::DelAddressBook(const CTxDestination& address)
         if(fFileBacked)
         {
             // Delete destdata tuples associated with address
-            std::string strAddress = CSyscoinAddress(address).ToString();
+            std::string strAddress = CMartkistAddress(address).ToString();
             BOOST_FOREACH(const PAIRTYPE(std::string, std::string) &item, mapAddressBook[address].destdata)
             {
                 CWalletDB(strWalletFile).EraseDestData(strAddress, item.first);
@@ -4092,8 +4092,8 @@ bool CWallet::DelAddressBook(const CTxDestination& address)
 
     if (!fFileBacked)
         return false;
-    CWalletDB(strWalletFile).ErasePurpose(CSyscoinAddress(address).ToString());
-    return CWalletDB(strWalletFile).EraseName(CSyscoinAddress(address).ToString());
+    CWalletDB(strWalletFile).ErasePurpose(CMartkistAddress(address).ToString());
+    return CWalletDB(strWalletFile).EraseName(CMartkistAddress(address).ToString());
 }
 
 /**
@@ -4723,7 +4723,7 @@ bool CWallet::AddDestData(const CTxDestination &dest, const std::string &key, co
     mapAddressBook[dest].destdata.insert(std::make_pair(key, value));
     if (!fFileBacked)
         return true;
-    return CWalletDB(strWalletFile).WriteDestData(CSyscoinAddress(dest).ToString(), key, value);
+    return CWalletDB(strWalletFile).WriteDestData(CMartkistAddress(dest).ToString(), key, value);
 }
 
 bool CWallet::EraseDestData(const CTxDestination &dest, const std::string &key)
@@ -4732,7 +4732,7 @@ bool CWallet::EraseDestData(const CTxDestination &dest, const std::string &key)
         return false;
     if (!fFileBacked)
         return true;
-    return CWalletDB(strWalletFile).EraseDestData(CSyscoinAddress(dest).ToString(), key);
+    return CWalletDB(strWalletFile).EraseDestData(CMartkistAddress(dest).ToString(), key);
 }
 
 bool CWallet::LoadDestData(const CTxDestination &dest, const std::string &key, const std::string &value)

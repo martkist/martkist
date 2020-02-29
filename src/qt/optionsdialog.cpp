@@ -1,16 +1,16 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/syscoin-config.h"
+#include "config/martkist-config.h"
 #endif
 
 #include "optionsdialog.h"
 #include "ui_optionsdialog.h"
 
-#include "syscoinunits.h"
+#include "martkistunits.h"
 #include "guiutil.h"
 #include "optionsmodel.h"
 
@@ -93,17 +93,17 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
     }
     
     /* Theme selector */
-    ui->theme->addItem(QString("SYS-light"), QVariant("light"));
-    ui->theme->addItem(QString("SYS-light-hires"), QVariant("light-hires"));
-    ui->theme->addItem(QString("SYS-blue"), QVariant("drkblue"));
-    ui->theme->addItem(QString("SYS-Crownium"), QVariant("crownium"));
-    ui->theme->addItem(QString("SYS-traditional"), QVariant("trad"));
+    ui->theme->addItem(QString("MARTK-light"), QVariant("light"));
+    ui->theme->addItem(QString("MARTK-light-hires"), QVariant("light-hires"));
+    ui->theme->addItem(QString("MARTK-blue"), QVariant("drkblue"));
+    ui->theme->addItem(QString("MARTK-Crownium"), QVariant("crownium"));
+    ui->theme->addItem(QString("MARTK-traditional"), QVariant("trad"));
     
     /* Language selector */
     QDir translations(":translations");
 
-    ui->syscoinAtStartup->setToolTip(ui->syscoinAtStartup->toolTip().arg(tr(PACKAGE_NAME)));
-    ui->syscoinAtStartup->setText(ui->syscoinAtStartup->text().arg(tr(PACKAGE_NAME)));
+    ui->martkistAtStartup->setToolTip(ui->martkistAtStartup->toolTip().arg(tr(PACKAGE_NAME)));
+    ui->martkistAtStartup->setText(ui->martkistAtStartup->text().arg(tr(PACKAGE_NAME)));
 
     ui->lang->setToolTip(ui->lang->toolTip().arg(tr(PACKAGE_NAME)));
     ui->lang->addItem(QString("(") + tr("default") + QString(")"), QVariant(""));
@@ -137,7 +137,7 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
     ui->thirdPartyTxUrls->setPlaceholderText("https://example.com/tx/%s");
 #endif
 
-    ui->unit->setModel(new SyscoinUnits(this));
+    ui->unit->setModel(new MartkistUnits(this));
 
     /* Widget-to-option mapper */
     mapper = new QDataWidgetMapper(this);
@@ -202,7 +202,7 @@ void OptionsDialog::setModel(OptionsModel *_model)
 void OptionsDialog::setMapper()
 {
     /* Main */
-    mapper->addMapping(ui->syscoinAtStartup, OptionsModel::StartAtStartup);
+    mapper->addMapping(ui->martkistAtStartup, OptionsModel::StartAtStartup);
     mapper->addMapping(ui->threadsScriptVerif, OptionsModel::ThreadsScriptVerif);
     mapper->addMapping(ui->databaseCache, OptionsModel::DatabaseCache);
 

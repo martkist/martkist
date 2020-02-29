@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -82,10 +82,10 @@ UniValue importprivkey(const JSONRPCRequest& request)
     
     if (request.fHelp || request.params.size() < 1 || request.params.size() > 3)
         throw std::runtime_error(
-            "importprivkey \"syscoinprivkey\" ( \"label\" ) ( rescan )\n"
+            "importprivkey \"martkistprivkey\" ( \"label\" ) ( rescan )\n"
             "\nAdds a private key (as returned by dumpprivkey) to your wallet.\n"
             "\nArguments:\n"
-            "1. \"syscoinprivkey\"   (string, required) The private key (see dumpprivkey)\n"
+            "1. \"martkistprivkey\"   (string, required) The private key (see dumpprivkey)\n"
             "2. \"label\"            (string, optional, default=\"\") An optional label\n"
             "3. rescan               (boolean, optional, default=true) Rescan the wallet for transactions\n"
             "\nNote: This call can take minutes to complete if rescan is true.\n"
@@ -120,7 +120,7 @@ UniValue importprivkey(const JSONRPCRequest& request)
     if (fRescan && fPruneMode)
         throw JSONRPCError(RPC_WALLET_ERROR, "Rescan is disabled in pruned mode");
 
-    CSyscoinSecret vchSecret;
+    CMartkistSecret vchSecret;
     bool fGood = vchSecret.SetString(strSecret);
 
     if (!fGood) throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid private key encoding");
@@ -155,7 +155,7 @@ UniValue importprivkey(const JSONRPCRequest& request)
     return NullUniValue;
 }
 
-void ImportAddress(const CSyscoinAddress& address, const std::string& strLabel);
+void ImportAddress(const CMartkistAddress& address, const std::string& strLabel);
 void ImportScript(const CScript& script, const std::string& strLabel, bool isRedeemScript)
 {
     if (!isRedeemScript && ::IsMine(*pwalletMain, script) == ISMINE_SPENDABLE)
@@ -169,7 +169,7 @@ void ImportScript(const CScript& script, const std::string& strLabel, bool isRed
     if (isRedeemScript) {
         if (!pwalletMain->HaveCScript(script) && !pwalletMain->AddCScript(script))
             throw JSONRPCError(RPC_WALLET_ERROR, "Error adding p2sh redeemScript to wallet");
-        ImportAddress(CSyscoinAddress(CScriptID(script)), strLabel);
+        ImportAddress(CMartkistAddress(CScriptID(script)), strLabel);
     } else {
         CTxDestination destination;
         if (ExtractDestination(script, destination)) {
@@ -178,7 +178,7 @@ void ImportScript(const CScript& script, const std::string& strLabel, bool isRed
     }
 }
 
-void ImportAddress(const CSyscoinAddress& address, const std::string& strLabel)
+void ImportAddress(const CMartkistAddress& address, const std::string& strLabel)
 {
     CScript script = GetScriptForDestination(address.Get());
     ImportScript(script, strLabel, false);
@@ -234,7 +234,7 @@ UniValue importaddress(const JSONRPCRequest& request)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    CSyscoinAddress address(request.params[0].get_str());
+    CMartkistAddress address(request.params[0].get_str());
     if (address.IsValid()) {
         if (fP2SH)
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Cannot use the p2sh flag with an address - use a script instead");
@@ -243,7 +243,7 @@ UniValue importaddress(const JSONRPCRequest& request)
         std::vector<unsigned char> data(ParseHex(request.params[0].get_str()));
         ImportScript(CScript(data.begin(), data.end()), strLabel, fP2SH);
     } else {
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Syscoin address or script");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Martkist address or script");
     }
 
     if (fRescan)
@@ -395,7 +395,7 @@ UniValue importpubkey(const JSONRPCRequest& request)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    ImportAddress(CSyscoinAddress(pubKey.GetID()), strLabel);
+    ImportAddress(CMartkistAddress(pubKey.GetID()), strLabel);
     ImportScript(GetScriptForRawPubKey(pubKey), strLabel, false);
 
     if (fRescan)
@@ -459,7 +459,7 @@ UniValue importwallet(const JSONRPCRequest& request)
         boost::split(vstr, line, boost::is_any_of(" "));
         if (vstr.size() < 2)
             continue;
-        CSyscoinSecret vchSecret;
+        CMartkistSecret vchSecret;
         if (!vchSecret.SetString(vstr[0]))
             continue;
         CKey key = vchSecret.GetKey();
@@ -467,7 +467,7 @@ UniValue importwallet(const JSONRPCRequest& request)
         assert(key.VerifyPubKey(pubkey));
         CKeyID keyid = pubkey.GetID();
         if (pwalletMain->HaveKey(keyid)) {
-            LogPrintf("Skipping import of %s (key already present)\n", CSyscoinAddress(keyid).ToString());
+            LogPrintf("Skipping import of %s (key already present)\n", CMartkistAddress(keyid).ToString());
             continue;
         }
         int64_t nTime = DecodeDumpTime(vstr[1]);
@@ -485,7 +485,7 @@ UniValue importwallet(const JSONRPCRequest& request)
                 fLabel = true;
             }
         }
-        LogPrintf("Importing %s...\n", CSyscoinAddress(keyid).ToString());
+        LogPrintf("Importing %s...\n", CMartkistAddress(keyid).ToString());
         if (!pwalletMain->AddKeyPubKey(key, pubkey)) {
             fGood = false;
             continue;
@@ -572,7 +572,7 @@ UniValue importelectrumwallet(const JSONRPCRequest& request)
             boost::split(vstr, line, boost::is_any_of(","));
             if (vstr.size() < 2)
                 continue;
-            CSyscoinSecret vchSecret;
+            CMartkistSecret vchSecret;
             if (!vchSecret.SetString(vstr[1]))
                 continue;
             CKey key = vchSecret.GetKey();
@@ -580,10 +580,10 @@ UniValue importelectrumwallet(const JSONRPCRequest& request)
             assert(key.VerifyPubKey(pubkey));
             CKeyID keyid = pubkey.GetID();
             if (pwalletMain->HaveKey(keyid)) {
-                LogPrintf("Skipping import of %s (key already present)\n", CSyscoinAddress(keyid).ToString());
+                LogPrintf("Skipping import of %s (key already present)\n", CMartkistAddress(keyid).ToString());
                 continue;
             }
-            LogPrintf("Importing %s...\n", CSyscoinAddress(keyid).ToString());
+            LogPrintf("Importing %s...\n", CMartkistAddress(keyid).ToString());
             if (!pwalletMain->AddKeyPubKey(key, pubkey)) {
                 fGood = false;
                 continue;
@@ -604,7 +604,7 @@ UniValue importelectrumwallet(const JSONRPCRequest& request)
             pwalletMain->ShowProgress("", std::max(1, std::min(99, int(i*100/data.size()))));
             if(!data[vKeys[i]].isStr())
                 continue;
-            CSyscoinSecret vchSecret;
+            CMartkistSecret vchSecret;
             if (!vchSecret.SetString(data[vKeys[i]].get_str()))
                 continue;
             CKey key = vchSecret.GetKey();
@@ -612,10 +612,10 @@ UniValue importelectrumwallet(const JSONRPCRequest& request)
             assert(key.VerifyPubKey(pubkey));
             CKeyID keyid = pubkey.GetID();
             if (pwalletMain->HaveKey(keyid)) {
-                LogPrintf("Skipping import of %s (key already present)\n", CSyscoinAddress(keyid).ToString());
+                LogPrintf("Skipping import of %s (key already present)\n", CMartkistAddress(keyid).ToString());
                 continue;
             }
-            LogPrintf("Importing %s...\n", CSyscoinAddress(keyid).ToString());
+            LogPrintf("Importing %s...\n", CMartkistAddress(keyid).ToString());
             if (!pwalletMain->AddKeyPubKey(key, pubkey)) {
                 fGood = false;
                 continue;
@@ -656,7 +656,7 @@ UniValue dumpprivkey(const JSONRPCRequest& request)
             "\nReveals the private key corresponding to 'address'.\n"
             "Then the importprivkey can be used with this output\n"
             "\nArguments:\n"
-            "1. \"address\"   (string, required) The syscoin address for the private key\n"
+            "1. \"address\"   (string, required) The martkist address for the private key\n"
             "\nResult:\n"
             "\"key\"                (string) The private key\n"
             "\nExamples:\n"
@@ -670,16 +670,16 @@ UniValue dumpprivkey(const JSONRPCRequest& request)
     EnsureWalletIsUnlocked();
 
     std::string strAddress = request.params[0].get_str();
-    CSyscoinAddress address;
+    CMartkistAddress address;
     if (!address.SetString(strAddress))
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Syscoin address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Martkist address");
     CKeyID keyID;
     if (!address.GetKeyID(keyID))
         throw JSONRPCError(RPC_TYPE_ERROR, "Address does not refer to a key");
     CKey vchSecret;
     if (!pwalletMain->GetKey(keyID, vchSecret))
         throw JSONRPCError(RPC_WALLET_ERROR, "Private key for address " + strAddress + " is not known");
-    return CSyscoinSecret(vchSecret).ToString();
+    return CMartkistSecret(vchSecret).ToString();
 }
 
 UniValue dumphdinfo(const JSONRPCRequest& request)
@@ -766,14 +766,14 @@ UniValue dumpwallet(const JSONRPCRequest& request)
     std::sort(vKeyBirth.begin(), vKeyBirth.end());
 
     // produce output
-    file << strprintf("# Wallet dump created by Syscoin Core %s\n", CLIENT_BUILD);
+    file << strprintf("# Wallet dump created by Martkist Core %s\n", CLIENT_BUILD);
     file << strprintf("# * Created on %s\n", EncodeDumpTime(GetTime()));
     file << strprintf("# * Best block at time of backup was %i (%s),\n", chainActive.Height(), chainActive.Tip()->GetBlockHash().ToString());
     file << strprintf("#   mined on %s\n", EncodeDumpTime(chainActive.Tip()->GetBlockTime()));
     file << "\n";
 
     UniValue obj(UniValue::VOBJ);
-    obj.push_back(Pair("syscoincoreversion", CLIENT_BUILD));
+    obj.push_back(Pair("martkistcoreversion", CLIENT_BUILD));
     obj.push_back(Pair("lastblockheight", chainActive.Height()));
     obj.push_back(Pair("lastblockhash", chainActive.Tip()->GetBlockHash().ToString()));
     obj.push_back(Pair("lastblocktime", EncodeDumpTime(chainActive.Tip()->GetBlockTime())));
@@ -798,7 +798,7 @@ UniValue dumpwallet(const JSONRPCRequest& request)
         CExtKey masterKey;
         masterKey.SetMaster(&vchSeed[0], vchSeed.size());
 
-        CSyscoinExtKey b58extkey;
+        CMartkistExtKey b58extkey;
         b58extkey.SetKey(masterKey);
 
         file << "# extended private masterkey: " << b58extkey.ToString() << "\n";
@@ -806,7 +806,7 @@ UniValue dumpwallet(const JSONRPCRequest& request)
         CExtPubKey masterPubkey;
         masterPubkey = masterKey.Neuter();
 
-        CSyscoinExtPubKey b58extpubkey;
+        CMartkistExtPubKey b58extpubkey;
         b58extpubkey.SetKey(masterPubkey);
         file << "# extended public masterkey: " << b58extpubkey.ToString() << "\n\n";
 
@@ -826,10 +826,10 @@ UniValue dumpwallet(const JSONRPCRequest& request)
     for (std::vector<std::pair<int64_t, CKeyID> >::const_iterator it = vKeyBirth.begin(); it != vKeyBirth.end(); it++) {
         const CKeyID &keyid = it->second;
         std::string strTime = EncodeDumpTime(it->first);
-        std::string strAddr = CSyscoinAddress(keyid).ToString();
+        std::string strAddr = CMartkistAddress(keyid).ToString();
         CKey key;
         if (pwalletMain->GetKey(keyid, key)) {
-            file << strprintf("%s %s ", CSyscoinSecret(key).ToString(), strTime);
+            file << strprintf("%s %s ", CMartkistSecret(key).ToString(), strTime);
             if (pwalletMain->mapAddressBook.count(keyid)) {
                 file << strprintf("label=%s", EncodeDumpString(pwalletMain->mapAddressBook[keyid].name));
             } else if (setKeyPool.count(keyid)) {
@@ -880,10 +880,10 @@ UniValue ProcessImport(const UniValue& data, const int64_t timestamp)
 
         // Parse the output.
         CScript script;
-        CSyscoinAddress address;
+        CMartkistAddress address;
 
         if (!isScript) {
-            address = CSyscoinAddress(output);
+            address = CMartkistAddress(output);
             if (!address.IsValid()) {
                 throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid address");
             }
@@ -945,7 +945,7 @@ UniValue ProcessImport(const UniValue& data, const int64_t timestamp)
                 throw JSONRPCError(RPC_WALLET_ERROR, "Error adding p2sh redeemScript to wallet");
             }
 
-            CSyscoinAddress redeemAddress = CSyscoinAddress(CScriptID(redeemScript));
+            CMartkistAddress redeemAddress = CMartkistAddress(CScriptID(redeemScript));
             CScript redeemDestination = GetScriptForDestination(redeemAddress.Get());
 
             if (::IsMine(*pwalletMain, redeemDestination) == ISMINE_SPENDABLE) {
@@ -968,7 +968,7 @@ UniValue ProcessImport(const UniValue& data, const int64_t timestamp)
                 for (size_t i = 0; i < keys.size(); i++) {
                     const std::string& privkey = keys[i].get_str();
 
-                    CSyscoinSecret vchSecret;
+                    CMartkistSecret vchSecret;
                     bool fGood = vchSecret.SetString(privkey);
 
                     if (!fGood) {
@@ -1019,7 +1019,7 @@ UniValue ProcessImport(const UniValue& data, const int64_t timestamp)
                     throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Pubkey is not a valid public key");
                 }
 
-                CSyscoinAddress pubKeyAddress = CSyscoinAddress(pubKey.GetID());
+                CMartkistAddress pubKeyAddress = CMartkistAddress(pubKey.GetID());
 
                 // Consistency check.
                 if (!isScript && !(pubKeyAddress.Get() == address.Get())) {
@@ -1028,11 +1028,11 @@ UniValue ProcessImport(const UniValue& data, const int64_t timestamp)
 
                 // Consistency check.
                 if (isScript) {
-                    CSyscoinAddress scriptAddress;
+                    CMartkistAddress scriptAddress;
                     CTxDestination destination;
 
                     if (ExtractDestination(script, destination)) {
-                        scriptAddress = CSyscoinAddress(destination);
+                        scriptAddress = CMartkistAddress(destination);
                         if (!(scriptAddress.Get() == pubKeyAddress.Get())) {
                             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Consistency check failed");
                         }
@@ -1077,7 +1077,7 @@ UniValue ProcessImport(const UniValue& data, const int64_t timestamp)
                 const std::string& strPrivkey = keys[0].get_str();
 
                 // Checks.
-                CSyscoinSecret vchSecret;
+                CMartkistSecret vchSecret;
                 bool fGood = vchSecret.SetString(strPrivkey);
 
                 if (!fGood) {
@@ -1092,7 +1092,7 @@ UniValue ProcessImport(const UniValue& data, const int64_t timestamp)
                 CPubKey pubKey = key.GetPubKey();
                 assert(key.VerifyPubKey(pubKey));
 
-                CSyscoinAddress pubKeyAddress = CSyscoinAddress(pubKey.GetID());
+                CMartkistAddress pubKeyAddress = CMartkistAddress(pubKey.GetID());
 
                 // Consistency check.
                 if (!isScript && !(pubKeyAddress.Get() == address.Get())) {
@@ -1101,11 +1101,11 @@ UniValue ProcessImport(const UniValue& data, const int64_t timestamp)
 
                 // Consistency check.
                 if (isScript) {
-                    CSyscoinAddress scriptAddress;
+                    CMartkistAddress scriptAddress;
                     CTxDestination destination;
 
                     if (ExtractDestination(script, destination)) {
-                        scriptAddress = CSyscoinAddress(destination);
+                        scriptAddress = CMartkistAddress(destination);
                         if (!(scriptAddress.Get() == pubKeyAddress.Get())) {
                             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Consistency check failed");
                         }

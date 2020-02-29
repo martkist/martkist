@@ -1,10 +1,10 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_QVALUECOMBOBOX_H
-#define SYSCOIN_QT_QVALUECOMBOBOX_H
+#ifndef MARTKIST_QT_QVALUECOMBOBOX_H
+#define MARTKIST_QT_QVALUECOMBOBOX_H
 
 #include <QComboBox>
 #include <QVariant>
@@ -35,4 +35,4 @@ private Q_SLOTS:
     void handleSelectionChanged(int idx);
 };
 
-#endif // SYSCOIN_QT_QVALUECOMBOBOX_H
+#endif // MARTKIST_QT_QVALUECOMBOBOX_H

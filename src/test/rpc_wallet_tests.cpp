@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,7 +11,7 @@
 #include "validation.h"
 #include "wallet/wallet.h"
 
-#include "test/test_syscoin.h"
+#include "test/test_martkist.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/test/unit_test.hpp>
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(rpc_addmultisig)
 	const char address2Hex[] = "0388c2037017c62240b6b72ac1a2a5f94da790596ebd06177c8572752922165cb4";
 
 	UniValue v;
-	CSyscoinAddress address;
+	CMartkistAddress address;
 	BOOST_CHECK_NO_THROW(v = addmultisig(createArgs(1, address1Hex), false));
 	address.SetString(v.get_str());
 	BOOST_CHECK(address.IsValid() && address.IsScript());
@@ -69,15 +69,15 @@ BOOST_AUTO_TEST_CASE(rpc_wallet)
 	// Test RPC calls for various wallet statistics
 	UniValue r;
 	CPubKey demoPubkey;
-	CSyscoinAddress demoAddress;
+	CMartkistAddress demoAddress;
 	UniValue retValue;
 	string strAccount = "walletDemoAccount";
-	CSyscoinAddress setaccountDemoAddress;
+	CMartkistAddress setaccountDemoAddress;
 	{
 		LOCK(pwalletMain->cs_wallet);
 
 		demoPubkey = pwalletMain->GenerateNewKey(0, false);
-		demoAddress = CSyscoinAddress(CTxDestination(demoPubkey.GetID()));
+		demoAddress = CMartkistAddress(CTxDestination(demoPubkey.GetID()));
 		string strPurpose = "receive";
 		BOOST_CHECK_NO_THROW({ /*Initialize Wallet with an account */
 			CWalletDB walletdb(pwalletMain->strWalletFile);
@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE(rpc_wallet)
 		});
 
 		CPubKey setaccountDemoPubkey = pwalletMain->GenerateNewKey(0, false);
-		setaccountDemoAddress = CSyscoinAddress(CTxDestination(setaccountDemoPubkey.GetID()));
+		setaccountDemoAddress = CMartkistAddress(CTxDestination(setaccountDemoPubkey.GetID()));
 	}
 	/*********************************
 	* 			setaccount
@@ -184,7 +184,7 @@ BOOST_AUTO_TEST_CASE(rpc_wallet)
 	BOOST_CHECK_NO_THROW(CallRPC("getaccountaddress \"\""));
 	BOOST_CHECK_NO_THROW(CallRPC("getaccountaddress accountThatDoesntExists")); // Should generate a new account
 	BOOST_CHECK_NO_THROW(retValue = CallRPC("getaccountaddress " + strAccount));
-	BOOST_CHECK(CSyscoinAddress(retValue.get_str()).Get() == demoAddress.Get());
+	BOOST_CHECK(CMartkistAddress(retValue.get_str()).Get() == demoAddress.Get());
 
 	/*********************************
 	* 			getaccount
@@ -219,7 +219,7 @@ BOOST_AUTO_TEST_CASE(rpc_wallet)
 	BOOST_CHECK_NO_THROW(retValue = CallRPC("getaddressesbyaccount " + strAccount));
 	UniValue arr = retValue.get_array();
 	BOOST_CHECK(arr.size() > 0);
-	BOOST_CHECK(CSyscoinAddress(arr[0].get_str()).Get() == demoAddress.Get());
+	BOOST_CHECK(CMartkistAddress(arr[0].get_str()).Get() == demoAddress.Get());
 
 	/*********************************
 	* 	     fundrawtransaction

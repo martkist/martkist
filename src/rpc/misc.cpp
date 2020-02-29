@@ -1,7 +1,7 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -58,8 +58,8 @@ UniValue getinfo(const JSONRPCRequest& request)
 			"  \"dashversion\": xxxxx,       (numeric) the server dashpay version\n"
             "  \"protocolversion\": xxxxx,   (numeric) the protocol version\n"
             "  \"walletversion\": xxxxx,     (numeric) the wallet version\n"
-            "  \"balance\": xxxxxxx,         (numeric) the total syscoin balance of the wallet\n"
-            "  \"privatesend_balance\": xxxxxx, (numeric) the anonymized syscoin balance of the wallet\n"
+            "  \"balance\": xxxxxxx,         (numeric) the total martkist balance of the wallet\n"
+            "  \"privatesend_balance\": xxxxxx, (numeric) the anonymized martkist balance of the wallet\n"
             "  \"blocks\": xxxxxx,           (numeric) the current number of blocks processed in the server\n"
             "  \"timeoffset\": xxxxx,        (numeric) the time offset\n"
             "  \"connections\": xxxxx,       (numeric) the number of connections\n"
@@ -88,8 +88,8 @@ UniValue getinfo(const JSONRPCRequest& request)
     GetProxy(NET_IPV4, proxy);
 
     UniValue obj(UniValue::VOBJ);
-	obj.push_back(Pair("version", SYSCOIN_CLIENT_VERSION));
-	// SYSCOIN
+	obj.push_back(Pair("version", MARTKIST_CLIENT_VERSION));
+	// MARTKIST
 	obj.push_back(Pair("dashversion", DASH_VERSION));
     obj.push_back(Pair("protocolversion", PROTOCOL_VERSION));
 #ifdef ENABLE_WALLET
@@ -127,11 +127,11 @@ UniValue debug(const JSONRPCRequest& request)
         throw std::runtime_error(
             "debug ( 0|1|addrman|alert|bench|coindb|db|lock|rand|rpc|selectcoins|mempool"
             "|mempoolrej|net|proxy|prune|http|libevent|tor|zmq|"
-            "syscoin|privatesend|instantsend|masternode|spork|keepass|mnpayments|gobject )\n"
+            "martkist|privatesend|instantsend|masternode|spork|keepass|mnpayments|gobject )\n"
             "Change debug category on the fly. Specify single category or use '+' to specify many.\n"
             "\nExamples:\n"
-            + HelpExampleCli("debug", "syscoin")
-            + HelpExampleRpc("debug", "syscoin+net")
+            + HelpExampleCli("debug", "martkist")
+            + HelpExampleRpc("debug", "martkist+net")
         );
 
     std::string strMode = request.params[0].get_str();
@@ -215,7 +215,7 @@ public:
             obj.push_back(Pair("hex", HexStr(subscript.begin(), subscript.end())));
             UniValue a(UniValue::VARR);
             BOOST_FOREACH(const CTxDestination& addr, addresses)
-                a.push_back(CSyscoinAddress(addr).ToString());
+                a.push_back(CMartkistAddress(addr).ToString());
             obj.push_back(Pair("addresses", a));
             if (whichType == TX_MULTISIG)
                 obj.push_back(Pair("sigsrequired", nRequired));
@@ -309,18 +309,18 @@ UniValue validateaddress(const JSONRPCRequest& request)
     if (request.fHelp || request.params.size() != 1)
         throw std::runtime_error(
             "validateaddress \"address\"\n"
-            "\nReturn information about the given syscoin address.\n"
+            "\nReturn information about the given martkist address.\n"
             "\nArguments:\n"
-            "1. \"address\"     (string, required) The syscoin address to validate\n"
+            "1. \"address\"     (string, required) The martkist address to validate\n"
             "\nResult:\n"
             "{\n"
             "  \"isvalid\" : true|false,       (boolean) If the address is valid or not. If not, this is the only property returned.\n"
-			"  \"address\" : \"syscoinaddress\", (string) The syscoin address validated\n"
-			// SYSCOIN
-			"  \"zaddress\" : \"syscoinaddress\", (string) The zcash t-addr associated with this syscoin address validated\n"
-			"  \"saddress\" : \"syscoinaddress\", (string) The Syscoin 3 S address scheme associated with this syscoin address validated\n"
-			"  \"btcaddress\" : \"syscoinaddress\", (string) The bitcoin address associated with this syscoin address validated\n"
-			"  \"alias\" : \"syscoinalias\", (string) The syscoin alias associated with this syscoin address validated\n"
+			"  \"address\" : \"martkistaddress\", (string) The martkist address validated\n"
+			// MARTKIST
+			"  \"zaddress\" : \"martkistaddress\", (string) The zcash t-addr associated with this martkist address validated\n"
+			"  \"saddress\" : \"martkistaddress\", (string) The Martkist 3 S address scheme associated with this martkist address validated\n"
+			"  \"btcaddress\" : \"martkistaddress\", (string) The bitcoin address associated with this martkist address validated\n"
+			"  \"alias\" : \"martkistalias\", (string) The martkist alias associated with this martkist address validated\n"
             "  \"scriptPubKey\" : \"hex\",       (string) The hex encoded scriptPubKey generated by the address\n"
             "  \"ismine\" : true|false,        (boolean) If the address is yours or not\n"
             "  \"iswatchonly\" : true|false,   (boolean) If the address is watchonly\n"
@@ -343,7 +343,7 @@ UniValue validateaddress(const JSONRPCRequest& request)
     LOCK(cs_main);
 #endif
 
-    CSyscoinAddress address(request.params[0].get_str());
+    CMartkistAddress address(request.params[0].get_str());
     bool isValid = address.IsValid();
 
     UniValue ret(UniValue::VOBJ);
@@ -351,22 +351,22 @@ UniValue validateaddress(const JSONRPCRequest& request)
     if (isValid)
     {
 		CTxDestination dest = address.Get();
-		address = CSyscoinAddress(address.ToString());
+		address = CMartkistAddress(address.ToString());
 		ret.push_back(Pair("address", address.ToString()));
 
-		CSyscoinAddress zaddr;
+		CMartkistAddress zaddr;
 		zaddr.Set(dest, CChainParams::ADDRESS_ZEC);
 		ret.push_back(Pair("zaddress", zaddr.ToString()));
 
-		CSyscoinAddress btcaddr;
+		CMartkistAddress btcaddr;
 		btcaddr.Set(dest, CChainParams::ADDRESS_BTC);
 		ret.push_back(Pair("btcaddress", btcaddr.ToString()));
 
-		CSyscoinAddress saddr;
-		saddr.Set(dest, CChainParams::ADDRESS_SYS);
+		CMartkistAddress saddr;
+		saddr.Set(dest, CChainParams::ADDRESS_MARTK);
 		ret.push_back(Pair("saddress", saddr.ToString()));
 
-		// SYSCOIN alias from address
+		// MARTKIST alias from address
 		string strAlias;
 		std::vector<unsigned char> vchPubKey;
 		GetAliasFromAddress(address.ToString(), strAlias, vchPubKey);
@@ -428,15 +428,15 @@ CScript _createmultisig_redeemScript(const UniValue& params)
     {
         const std::string& ks = keys[i].get_str();
 #ifdef ENABLE_WALLET
-		// Case 1: Syscoin address and we have full public key:
-		CSyscoinAddress address(ks);
-		// SYSCOIN
+		// Case 1: Martkist address and we have full public key:
+		CMartkistAddress address(ks);
+		// MARTKIST
 		vector<unsigned char> vchPubKey;
 		string strAddress;
 		string strAlias;
 		if (GetAddressFromAlias(ks, strAddress, vchPubKey))
 		{
-			address = CSyscoinAddress(strAddress);
+			address = CMartkistAddress(strAddress);
 			pubkeys[i] = vchPubKey;
 			if (!pubkeys[i].IsFullyValid())
 				throw runtime_error(" Invalid public key: " + ks);
@@ -495,9 +495,9 @@ UniValue createmultisig(const JSONRPCRequest& request)
 
             "\nArguments:\n"
             "1. nrequired      (numeric, required) The number of required signatures out of the n keys or addresses.\n"
-            "2. \"keys\"       (string, required) A json array of keys which are syscoin addresses or hex-encoded public keys\n"
+            "2. \"keys\"       (string, required) A json array of keys which are martkist addresses or hex-encoded public keys\n"
             "     [\n"
-            "       \"key\"    (string) syscoin address or hex-encoded public key\n"
+            "       \"key\"    (string) martkist address or hex-encoded public key\n"
             "       ,...\n"
             "     ]\n"
 
@@ -519,17 +519,17 @@ UniValue createmultisig(const JSONRPCRequest& request)
     // Construct using pay-to-script-hash:
     CScript inner = _createmultisig_redeemScript(request.params);
     CScriptID innerID(inner);
-    CSyscoinAddress address(innerID);
+    CMartkistAddress address(innerID);
 
 	UniValue result(UniValue::VOBJ);
-	// SYSCOIN v1 addy by default
+	// MARTKIST v1 addy by default
 	CTxDestination dest = address.Get();
-	CSyscoinAddress btcaddr;
+	CMartkistAddress btcaddr;
 	btcaddr.Set(dest, CChainParams::ADDRESS_BTC);
-	CSyscoinAddress zaddr;
+	CMartkistAddress zaddr;
 	zaddr.Set(dest, CChainParams::ADDRESS_ZEC);
-	CSyscoinAddress addr;
-	addr.Set(dest, CChainParams::ADDRESS_SYS);
+	CMartkistAddress addr;
+	addr.Set(dest, CChainParams::ADDRESS_MARTK);
 	result.push_back(Pair("address", addr.ToString()));
 	result.push_back(Pair("btcaddress", btcaddr.ToString()));
 	result.push_back(Pair("zaddress", zaddr.ToString()));
@@ -545,7 +545,7 @@ UniValue verifymessage(const JSONRPCRequest& request)
             "verifymessage \"address\" \"signature\" \"message\"\n"
             "\nVerify a signed message\n"
             "\nArguments:\n"
-            "1. \"address\"         (string, required) The syscoin address to use for the signature.\n"
+            "1. \"address\"         (string, required) The martkist address to use for the signature.\n"
             "2. \"signature\"       (string, required) The signature provided by the signer in base 64 encoding (see signmessage).\n"
             "3. \"message\"         (string, required) The message that was signed.\n"
             "\nResult:\n"
@@ -567,7 +567,7 @@ UniValue verifymessage(const JSONRPCRequest& request)
     std::string strSign     = request.params[1].get_str();
     std::string strMessage  = request.params[2].get_str();
 
-    CSyscoinAddress addr(strAddress);
+    CMartkistAddress addr(strAddress);
     if (!addr.IsValid())
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid address");
 
@@ -615,7 +615,7 @@ UniValue signmessagewithprivkey(const JSONRPCRequest& request)
     std::string strPrivkey = request.params[0].get_str();
     std::string strMessage = request.params[1].get_str();
 
-    CSyscoinSecret vchSecret;
+    CMartkistSecret vchSecret;
     bool fGood = vchSecret.SetString(strPrivkey);
     if (!fGood)
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid private key");
@@ -664,9 +664,9 @@ UniValue setmocktime(const JSONRPCRequest& request)
 bool getAddressFromIndex(const int &type, const uint160 &hash, std::string &address)
 {
     if (type == 2) {
-        address = CSyscoinAddress(CScriptID(hash)).ToString();
+        address = CMartkistAddress(CScriptID(hash)).ToString();
     } else if (type == 1) {
-        address = CSyscoinAddress(CKeyID(hash)).ToString();
+        address = CMartkistAddress(CKeyID(hash)).ToString();
     } else {
         return false;
     }
@@ -676,7 +676,7 @@ bool getAddressFromIndex(const int &type, const uint160 &hash, std::string &addr
 bool getAddressesFromParams(const UniValue& params, std::vector<std::pair<uint160, int> > &addresses)
 {
     if (params[0].isStr()) {
-        CSyscoinAddress address(params[0].get_str());
+        CMartkistAddress address(params[0].get_str());
         uint160 hashBytes;
         int type = 0;
         if (!address.GetIndexKey(hashBytes, type)) {
@@ -694,7 +694,7 @@ bool getAddressesFromParams(const UniValue& params, std::vector<std::pair<uint16
 
         for (std::vector<UniValue>::iterator it = values.begin(); it != values.end(); ++it) {
 
-            CSyscoinAddress address(it->get_str());
+            CMartkistAddress address(it->get_str());
             uint160 hashBytes;
             int type = 0;
             if (!address.GetIndexKey(hashBytes, type)) {
@@ -1202,7 +1202,7 @@ UniValue echo(const JSONRPCRequest& request)
             "echo|echojson \"message\" ...\n"
             "\nSimply echo back the input arguments. This command is for testing.\n"
             "\nThe difference between echo and echojson is that echojson has argument conversion enabled in the client-side table in"
-            "syscoin-cli and the GUI. There is no server-side difference."
+            "martkist-cli and the GUI. There is no server-side difference."
         );
 
     return request.params;
@@ -1227,9 +1227,9 @@ static const CRPCCommand commands[] =
     { "addressindex",       "getaddresstxids",        &getaddresstxids,        false, {"addresses"} },
     { "addressindex",       "getaddressbalance",      &getaddressbalance,      false, {"addresses"} },
 
-    /* Syscoin features */
-    { "syscoin",               "mnsync",                 &mnsync,                 true,  {} },
-    { "syscoin",               "spork",                  &spork,                  true,  {"value"} },
+    /* Martkist features */
+    { "martkist",               "mnsync",                 &mnsync,                 true,  {} },
+    { "martkist",               "spork",                  &spork,                  true,  {"value"} },
 
     /* Not shown in help */
     { "hidden",             "setmocktime",            &setmocktime,            true,  {"timestamp"}},

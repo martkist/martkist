@@ -1,5 +1,5 @@
 ---
-name: "syscoin-osx-3.2"
+name: "martkist-osx-3.2"
 enable_cache: true
 suites:
 - "trusty"
@@ -29,8 +29,8 @@ packages:
 - "python-setuptools"
 reference_datetime: "2018-01-01 00:00:00"
 remotes:
-- "url": "https://github.com/syscoin/syscoin.git"
-  "dir": "syscoin"
+- "url": "https://github.com/martkist/martkist.git"
+  "dir": "martkist"
 files:
 - "MacOSX10.11.sdk.tar.gz"
 script: |
@@ -77,7 +77,7 @@ script: |
   done
   export PATH=${WRAP_DIR}:${PATH}
 
-  cd syscoin
+  cd martkist
   BASEPREFIX=`pwd`/depends
 
   mkdir -p ${BASEPREFIX}/SDKs
@@ -92,14 +92,14 @@ script: |
   ./autogen.sh
   CONFIG_SITE=${BASEPREFIX}/`echo "${HOSTS}" | awk '{print $1;}'`/share/config.site ./configure --prefix=/
   make dist
-  SOURCEDIST=`echo syscoincore-*.tar.gz`
+  SOURCEDIST=`echo martkistcore-*.tar.gz`
   DISTNAME=`echo ${SOURCEDIST} | sed 's/.tar.*//'`
 
   # Correct tar file order
   mkdir -p temp
   pushd temp
   tar xf ../$SOURCEDIST
-  find syscoincore-* | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ../$SOURCEDIST
+  find martkistcore-* | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ../$SOURCEDIST
   popd
 
   ORIGPATH="$PATH"
@@ -129,7 +129,7 @@ script: |
     popd
 
     make deploy
-    ${WRAP_DIR}/dmg dmg Syscoin-Core.dmg ${OUTDIR}/${DISTNAME}-osx-unsigned.dmg
+    ${WRAP_DIR}/dmg dmg Martkist-Core.dmg ${OUTDIR}/${DISTNAME}-osx-unsigned.dmg
 
     cd installed
     find . -name "lib*.la" -delete

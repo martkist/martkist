@@ -1,5 +1,5 @@
 // Copyright (c) 2012-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "rpc/server.h"
-#include "test/test_syscoin.h"
+#include "test/test_martkist.h"
 #include "validation.h"
 #include "wallet/test/wallet_test_fixture.h"
 
@@ -379,7 +379,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
         LOCK(wallet.cs_wallet);
         wallet.AddKeyPubKey(coinbaseKey, coinbaseKey.GetPubKey());
         BOOST_CHECK_EQUAL(oldTip, wallet.ScanForWalletTransactions(oldTip));
-		// SYSCOIN
+		// MARTKIST
         BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 69.3 * COIN);
     }
 
@@ -394,7 +394,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
         LOCK(wallet.cs_wallet);
         wallet.AddKeyPubKey(coinbaseKey, coinbaseKey.GetPubKey());
         BOOST_CHECK_EQUAL(newTip, wallet.ScanForWalletTransactions(oldTip));
-		// SYSCOIN
+		// MARTKIST
         BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 34.65 * COIN);
     }
 

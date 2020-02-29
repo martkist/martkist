@@ -1,5 +1,5 @@
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2017-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2017-2018 The Martkist Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #include "privatesend-client.h"
@@ -24,7 +24,7 @@ CPrivateSendClient privateSendClient;
 void CPrivateSendClient::ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv, CConnman& connman)
 {
     if(fMasternodeMode) return;
-    if(fLiteMode) return; // ignore all Syscoin related functionality
+    if(fLiteMode) return; // ignore all Martkist related functionality
     if(!masternodeSync.IsBlockchainSynced()) return;
 
     if(strCommand == NetMsgType::DSQUEUE) {
@@ -1320,7 +1320,7 @@ bool CPrivateSendClient::CreateDenominated(const CompactTallyItem& tallyItem, bo
     CAmount nValueLeft = tallyItem.nAmount;
     nValueLeft -= CPrivateSend::GetCollateralAmount(); // leave some room for fees
 
-    LogPrintf("CreateDenominated0: %s nValueLeft: %f\n", CSyscoinAddress(tallyItem.txdest).ToString(), (float)nValueLeft/COIN);
+    LogPrintf("CreateDenominated0: %s nValueLeft: %f\n", CMartkistAddress(tallyItem.txdest).ToString(), (float)nValueLeft/COIN);
 
     // ****** Add an output for mixing collaterals ************ /
 
@@ -1447,7 +1447,7 @@ void CPrivateSendClient::UpdatedBlockTip(const CBlockIndex *pindex)
 
 void CPrivateSendClient::DoMaintenance(CConnman& connman)
 {
-    if(fLiteMode) return; // disable all Syscoin specific functionality
+    if(fLiteMode) return; // disable all Martkist specific functionality
     if(fMasternodeMode) return; // no client-side mixing on masternodes
 
     if(!masternodeSync.IsBlockchainSynced() || ShutdownRequested())

@@ -1,6 +1,6 @@
-// Copyright (c) 2014-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Bitcoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,7 +21,7 @@ static const char* pszBase58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnop
 
 bool DecodeBase58(const char* psz, std::vector<unsigned char>& vch)
 {
-	// SYSCOIN
+	// MARTKIST
 	vch.clear();
     // Skip leading spaces.
     while (*psz && isspace(*psz))
@@ -180,7 +180,7 @@ bool CBase58Data::SetString(const char* psz, unsigned int nVersionBytes)
         vchVersion.clear();
         return false;
     }
-	// SYSCOIN
+	// MARTKIST
 	if (vchTemp.size() >= 2)
 	{
 		std::vector<unsigned char> vchVersionTemp;
@@ -224,15 +224,15 @@ int CBase58Data::CompareTo(const CBase58Data& b58) const
 
 namespace
 {
-class CSyscoinAddressVisitor : public boost::static_visitor<bool>
+class CMartkistAddressVisitor : public boost::static_visitor<bool>
 {
 private:
-	CSyscoinAddress* addr;
-	// SYSCOIN support old sys
+	CMartkistAddress* addr;
+	// MARTKIST support old sys
 	CChainParams::AddressType nSysVer;
 public:
-	CSyscoinAddressVisitor(CSyscoinAddress* addrIn) : addr(addrIn) {}
-	CSyscoinAddressVisitor(CSyscoinAddress* addrIn, CChainParams::AddressType nSysVer) : nSysVer(nSysVer), addr(addrIn) {}
+	CMartkistAddressVisitor(CMartkistAddress* addrIn) : addr(addrIn) {}
+	CMartkistAddressVisitor(CMartkistAddress* addrIn, CChainParams::AddressType nSysVer) : nSysVer(nSysVer), addr(addrIn) {}
 
 	bool operator()(const CKeyID& id) const { return addr->Set(id, nSysVer); }
 	bool operator()(const CScriptID& id) const { return addr->Set(id, nSysVer); }
@@ -240,23 +240,23 @@ public:
 };
 
 } // anon namespace
-CSyscoinAddress::CSyscoinAddress() {
+CMartkistAddress::CMartkistAddress() {
 }
-// SYSCOIN support old sys
-CSyscoinAddress::CSyscoinAddress(const CTxDestination &dest, CChainParams::AddressType sysVer) {
+// MARTKIST support old sys
+CMartkistAddress::CMartkistAddress(const CTxDestination &dest, CChainParams::AddressType sysVer) {
 	Set(dest, sysVer);
 }
-CSyscoinAddress::CSyscoinAddress(const std::string& strAddress) {
+CMartkistAddress::CMartkistAddress(const std::string& strAddress) {
 	SetString(strAddress);
 }
-CSyscoinAddress::CSyscoinAddress(const char* pszAddress) {
+CMartkistAddress::CMartkistAddress(const char* pszAddress) {
 	SetString(pszAddress);
 }
-// SYSCOIN support old sys
-bool CSyscoinAddress::Set(const CKeyID& id, CChainParams::AddressType sysVer)
+// MARTKIST support old sys
+bool CMartkistAddress::Set(const CKeyID& id, CChainParams::AddressType sysVer)
 {
-	if (sysVer == CChainParams::ADDRESS_SYS)
-		SetData(Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_SYS), &id, 20);
+	if (sysVer == CChainParams::ADDRESS_MARTK)
+		SetData(Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_MARTK), &id, 20);
 	else if (sysVer == CChainParams::ADDRESS_BTC)
 		SetData(Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_BTC), &id, 20);
 	else if (sysVer == CChainParams::ADDRESS_ZEC)
@@ -264,52 +264,52 @@ bool CSyscoinAddress::Set(const CKeyID& id, CChainParams::AddressType sysVer)
 	return true;
 }
 
-bool CSyscoinAddress::Set(const CScriptID& id, CChainParams::AddressType sysVer)
+bool CMartkistAddress::Set(const CScriptID& id, CChainParams::AddressType sysVer)
 {
-	if (sysVer == CChainParams::ADDRESS_SYS)
-		SetData(Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_SYS), &id, 20);
+	if (sysVer == CChainParams::ADDRESS_MARTK)
+		SetData(Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_MARTK), &id, 20);
 	else if (sysVer == CChainParams::ADDRESS_BTC)
 		SetData(Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_BTC), &id, 20);
 	else if (sysVer == CChainParams::ADDRESS_ZEC)
 		SetData(Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_ZEC), &id, 20);
 	return true;
 }
-// SYSCOIN support old sys
-bool CSyscoinAddress::Set(const CTxDestination& dest, CChainParams::AddressType sysVer)
+// MARTKIST support old sys
+bool CMartkistAddress::Set(const CTxDestination& dest, CChainParams::AddressType sysVer)
 {
-	return boost::apply_visitor(CSyscoinAddressVisitor(this, sysVer), dest);
+	return boost::apply_visitor(CMartkistAddressVisitor(this, sysVer), dest);
 }
 
-bool CSyscoinAddress::IsValid() const
+bool CMartkistAddress::IsValid() const
 {
     return IsValid(Params());
 }
 
-bool CSyscoinAddress::IsValid(const CChainParams& params) const
+bool CMartkistAddress::IsValid(const CChainParams& params) const
 {
     bool fCorrectSize = vchData.size() == 20;
-	// SYSCOIN allow old SYSCOIN address scheme
-	bool fKnownVersion = vchVersion == params.Base58Prefix(CChainParams::PUBKEY_ADDRESS_SYS) ||
+	// MARTKIST allow old MARTKIST address scheme
+	bool fKnownVersion = vchVersion == params.Base58Prefix(CChainParams::PUBKEY_ADDRESS_MARTK) ||
 		vchVersion == params.Base58Prefix(CChainParams::PUBKEY_ADDRESS_BTC) ||
 		vchVersion == params.Base58Prefix(CChainParams::PUBKEY_ADDRESS_ZEC) ||
-		vchVersion == params.Base58Prefix(CChainParams::SCRIPT_ADDRESS_SYS) ||
+		vchVersion == params.Base58Prefix(CChainParams::SCRIPT_ADDRESS_MARTK) ||
 		vchVersion == params.Base58Prefix(CChainParams::SCRIPT_ADDRESS_BTC) ||
 		vchVersion == params.Base58Prefix(CChainParams::SCRIPT_ADDRESS_ZEC);
     return fCorrectSize && fKnownVersion;
 }
 
-CTxDestination CSyscoinAddress::Get() const
+CTxDestination CMartkistAddress::Get() const
 {
 	if (!IsValid())
 		return CNoDestination();
 	uint160 id;
 	memcpy(&id, &vchData[0], 20);
-	// SYSCOIN allow old SYSCOIN address scheme
-	if (vchVersion == Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_SYS) ||
+	// MARTKIST allow old MARTKIST address scheme
+	if (vchVersion == Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_MARTK) ||
 		vchVersion == Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_BTC) ||
 		vchVersion == Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_ZEC))
 		return CKeyID(id);
-	else if (vchVersion == Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_SYS) ||
+	else if (vchVersion == Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_MARTK) ||
 		vchVersion == Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_BTC)	||
 		vchVersion == Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_ZEC))
 		return CScriptID(id);
@@ -317,15 +317,15 @@ CTxDestination CSyscoinAddress::Get() const
 		return CNoDestination();
 }
 
-bool CSyscoinAddress::GetIndexKey(uint160& hashBytes, int& type) const
+bool CMartkistAddress::GetIndexKey(uint160& hashBytes, int& type) const
 {
     if (!IsValid()) {
         return false;
-    } else if (vchVersion == Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_SYS)) {
+    } else if (vchVersion == Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_MARTK)) {
         memcpy(&hashBytes, &vchData[0], 20);
         type = 1;
         return true;
-    } else if (vchVersion == Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_SYS)) {
+    } else if (vchVersion == Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_MARTK)) {
         memcpy(&hashBytes, &vchData[0], 20);
         type = 2;
         return true;
@@ -334,10 +334,10 @@ bool CSyscoinAddress::GetIndexKey(uint160& hashBytes, int& type) const
     return false;
 }
 
-bool CSyscoinAddress::GetKeyID(CKeyID& keyID) const
+bool CMartkistAddress::GetKeyID(CKeyID& keyID) const
 {
-	// SYSCOIN allow old SYSCOIN address scheme
-	if (!IsValid() || (vchVersion != Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_SYS) && vchVersion != Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_BTC) && vchVersion != Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_ZEC)))
+	// MARTKIST allow old MARTKIST address scheme
+	if (!IsValid() || (vchVersion != Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_MARTK) && vchVersion != Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_BTC) && vchVersion != Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS_ZEC)))
 		return false;
 	uint160 id;
 	memcpy(&id, &vchData[0], 20);
@@ -345,19 +345,19 @@ bool CSyscoinAddress::GetKeyID(CKeyID& keyID) const
 	return true;
 }
 
-bool CSyscoinAddress::IsScript() const
+bool CMartkistAddress::IsScript() const
 {
-	return IsValid() && (vchVersion == Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_SYS) || vchVersion == Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_BTC) || vchVersion == Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_ZEC));
+	return IsValid() && (vchVersion == Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_MARTK) || vchVersion == Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_BTC) || vchVersion == Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS_ZEC));
 }
-void CSyscoinSecret::SetKey(const CKey& vchSecret)
+void CMartkistSecret::SetKey(const CKey& vchSecret)
 {
     assert(vchSecret.IsValid());
-    SetData(Params().Base58Prefix(CChainParams::SECRET_KEY_SYS), vchSecret.begin(), vchSecret.size());
+    SetData(Params().Base58Prefix(CChainParams::SECRET_KEY_MARTK), vchSecret.begin(), vchSecret.size());
     if (vchSecret.IsCompressed())
         vchData.push_back(1);
 }
 
-CKey CSyscoinSecret::GetKey()
+CKey CMartkistSecret::GetKey()
 {
     CKey ret;
     assert(vchData.size() >= 32);
@@ -365,19 +365,19 @@ CKey CSyscoinSecret::GetKey()
     return ret;
 }
 
-bool CSyscoinSecret::IsValid() const
+bool CMartkistSecret::IsValid() const
 {
 	bool fExpectedFormat = vchData.size() == 32 || (vchData.size() == 33 && vchData[32] == 1);
-	bool fCorrectVersion = vchVersion == Params().Base58Prefix(CChainParams::SECRET_KEY_SYS) || vchVersion == Params().Base58Prefix(CChainParams::SECRET_KEY_BTC);
+	bool fCorrectVersion = vchVersion == Params().Base58Prefix(CChainParams::SECRET_KEY_MARTK) || vchVersion == Params().Base58Prefix(CChainParams::SECRET_KEY_BTC);
 	return fExpectedFormat && fCorrectVersion;
 }
 
-bool CSyscoinSecret::SetString(const char* pszSecret)
+bool CMartkistSecret::SetString(const char* pszSecret)
 {
     return CBase58Data::SetString(pszSecret) && IsValid();
 }
 
-bool CSyscoinSecret::SetString(const std::string& strSecret)
+bool CMartkistSecret::SetString(const std::string& strSecret)
 {
     return SetString(strSecret.c_str());
 }

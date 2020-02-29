@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_SERIALIZE_H
-#define SYSCOIN_SERIALIZE_H
+#ifndef MARTKIST_SERIALIZE_H
+#define MARTKIST_SERIALIZE_H
 
 #include "compat/endian.h"
 
@@ -997,4 +997,4 @@ size_t GetSerializeSize(const S& s, const T& t)
     return (CSizeComputer(s.GetType(), s.GetVersion()) << t).size();
 }
 
-#endif // SYSCOIN_SERIALIZE_H
+#endif // MARTKIST_SERIALIZE_H

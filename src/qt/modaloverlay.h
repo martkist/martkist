@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_MODALOVERLAY_H
-#define SYSCOIN_QT_MODALOVERLAY_H
+#ifndef MARTKIST_QT_MODALOVERLAY_H
+#define MARTKIST_QT_MODALOVERLAY_H
 
 #include <QDateTime>
 #include <QWidget>
@@ -49,4 +49,4 @@ private:
     bool foreverHidden;
 };
 
-#endif // SYSCOIN_QT_MODALOVERLAY_H
+#endif // MARTKIST_QT_MODALOVERLAY_H

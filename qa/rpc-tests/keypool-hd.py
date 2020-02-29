@@ -1,17 +1,17 @@
 #!/usr/bin/env python2
-# Copyright (c) 2014-2015 The Bitcoin Core developers
-# Copyright (c) 2014-2018 The Syscoin Core developers
+# Copyright (c) 2014-2020 The Bitcoin Core developers
+# Copyright (c) 2014-2020 The Martkist Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 # Exercise the wallet keypool, and interaction with wallet encryption/locking
 
-# Add python-syscoinrpc to module search path:
+# Add python-martkistrpc to module search path:
 
-from test_framework.test_framework import SyscoinTestFramework
+from test_framework.test_framework import MartkistTestFramework
 from test_framework.util import *
 
-class KeyPoolTest(SyscoinTestFramework):
+class KeyPoolTest(MartkistTestFramework):
 
     def run_test(self):
         nodes = self.nodes
@@ -22,7 +22,7 @@ class KeyPoolTest(SyscoinTestFramework):
 
         # Encrypt wallet and wait to terminate
         nodes[0].encryptwallet('test')
-        syscoind_processes[0].wait()
+        martkistd_processes[0].wait()
         # Restart node 0
         nodes[0] = start_node(0, self.options.tmpdir, ['-usehd=1'])
         # Keep creating keys

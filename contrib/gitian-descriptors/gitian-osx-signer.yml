@@ -1,5 +1,5 @@
 ---
-name: "syscoin-dmg-signer"
+name: "martkist-dmg-signer"
 suites:
 - "trusty"
 architectures:
@@ -8,10 +8,10 @@ packages:
 - "faketime"
 reference_datetime: "2018-01-01 00:00:00"
 remotes:
-- "url": "https://github.com/syscoin/syscoin-detached-sigs.git"
+- "url": "https://github.com/martkist/martkist-detached-sigs.git"
   "dir": "signature"
 files:
-- "syscoincore-osx-unsigned.tar.gz"
+- "martkistcore-osx-unsigned.tar.gz"
 script: |
   WRAP_DIR=$HOME/wrapped
   mkdir -p ${WRAP_DIR}
@@ -28,10 +28,10 @@ script: |
     chmod +x ${WRAP_DIR}/${prog}
   done
 
-  UNSIGNED=syscoincore-osx-unsigned.tar.gz
-  SIGNED=syscoincore-osx-signed.dmg
+  UNSIGNED=martkistcore-osx-unsigned.tar.gz
+  SIGNED=martkistcore-osx-signed.dmg
 
   tar -xf ${UNSIGNED}
   ./detached-sig-apply.sh ${UNSIGNED} signature/osx
-  ${WRAP_DIR}/genisoimage -no-cache-inodes -D -l -probe -V "Syscoin-Core" -no-pad -r -dir-mode 0755 -apple -o uncompressed.dmg signed-app
+  ${WRAP_DIR}/genisoimage -no-cache-inodes -D -l -probe -V "Martkist-Core" -no-pad -r -dir-mode 0755 -apple -o uncompressed.dmg signed-app
   ${WRAP_DIR}/dmg dmg uncompressed.dmg ${OUTDIR}/${SIGNED}

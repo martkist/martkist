@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_ZMQ_ZMQNOTIFICATIONINTERFACE_H
-#define SYSCOIN_ZMQ_ZMQNOTIFICATIONINTERFACE_H
+#ifndef MARTKIST_ZMQ_ZMQNOTIFICATIONINTERFACE_H
+#define MARTKIST_ZMQ_ZMQNOTIFICATIONINTERFACE_H
 
 #include "validationinterface.h"
 #include <string>
@@ -27,7 +27,7 @@ protected:
     void SyncTransaction(const CTransaction& tx, const CBlockIndex *pindex, int posInBlock) override;
     void UpdatedBlockTip(const CBlockIndex *pindexNew, const CBlockIndex *pindexFork, bool fInitialDownload) override;
     void NotifyTransactionLock(const CTransaction &tx) override;
-	void NotifySyscoinUpdate(const char *value, const char *topic) override;
+	void NotifyMartkistUpdate(const char *value, const char *topic) override;
 
 private:
     CZMQNotificationInterface();
@@ -36,4 +36,4 @@ private:
     std::list<CZMQAbstractNotifier*> notifiers;
 };
 
-#endif // SYSCOIN_ZMQ_ZMQNOTIFICATIONINTERFACE_H
+#endif // MARTKIST_ZMQ_ZMQNOTIFICATIONINTERFACE_H

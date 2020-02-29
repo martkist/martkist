@@ -1,21 +1,21 @@
 
 Debian
 ====================
-This directory contains files used to package syscoind/syscoin-qt
-for Debian-based Linux systems. If you compile syscoind/syscoin-qt yourself, there are some useful files here.
+This directory contains files used to package martkistd/martkist-qt
+for Debian-based Linux systems. If you compile martkistd/martkist-qt yourself, there are some useful files here.
 
-## syscoin: URI support ##
+## martkist: URI support ##
 
 
-syscoin-qt.desktop  (Gnome / Open Desktop)
+martkist-qt.desktop  (Gnome / Open Desktop)
 To install:
 
-	sudo desktop-file-install syscoin-qt.desktop
+	sudo desktop-file-install martkist-qt.desktop
 	sudo update-desktop-database
 
 If you build yourself, you will either need to modify the paths in
-the .desktop file or copy or symlink your syscoin-qt binary to `/usr/bin`
-and the `../../share/pixmaps/syscoin128.png` to `/usr/share/pixmaps`
+the .desktop file or copy or symlink your martkist-qt binary to `/usr/bin`
+and the `../../share/pixmaps/martkist128.png` to `/usr/share/pixmaps`
 
-syscoin-qt.protocol (KDE)
+martkist-qt.protocol (KDE)
 

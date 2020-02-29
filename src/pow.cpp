@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -83,7 +83,7 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const Conse
 unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params) {
 	if (params.fPowNoRetargeting)
 		return pindexLast->nBits;
-    /* current difficulty formula, syscoin - DarkGravity v3, written by Evan satoshiield - evan@syscoin.org */
+    /* current difficulty formula, martkist - DarkGravity v3, written by Evan satoshiield - evan@martkist.org */
     const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
 	int64_t nPastBlocks = 24;
 	
@@ -224,7 +224,7 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
     bool fNegative;
     bool fOverflow;
     arith_uint256 bnTarget;
-	// SYSCOIN
+	// MARTKIST
 	static unsigned int regTestBits = UintToArith256(Params(CBaseChainParams::REGTEST).GetConsensus().powLimit).GetCompact();
 	if (Params().NetworkIDString() != CBaseChainParams::REGTEST && nBits == regTestBits)
 		return true;

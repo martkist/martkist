@@ -1,10 +1,10 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_PEERTABLEMODEL_H
-#define SYSCOIN_QT_PEERTABLEMODEL_H
+#ifndef MARTKIST_QT_PEERTABLEMODEL_H
+#define MARTKIST_QT_PEERTABLEMODEL_H
 
 #include "net_processing.h" // For CNodeStateStats
 #include "net.h"
@@ -81,4 +81,4 @@ private:
     QTimer *timer;
 };
 
-#endif // SYSCOIN_QT_PEERTABLEMODEL_H
+#endif // MARTKIST_QT_PEERTABLEMODEL_H

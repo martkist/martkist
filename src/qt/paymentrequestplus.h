@@ -1,10 +1,10 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_QT_PAYMENTREQUESTPLUS_H
-#define SYSCOIN_QT_PAYMENTREQUESTPLUS_H
+#ifndef MARTKIST_QT_PAYMENTREQUESTPLUS_H
+#define MARTKIST_QT_PAYMENTREQUESTPLUS_H
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -49,4 +49,4 @@ private:
     payments::PaymentDetails details;
 };
 
-#endif // SYSCOIN_QT_PAYMENTREQUESTPLUS_H
+#endif // MARTKIST_QT_PAYMENTREQUESTPLUS_H

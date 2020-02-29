@@ -3,41 +3,41 @@
 Unit tests will be automatically compiled if dependencies were met in `./configure`
 and tests weren't explicitly disabled.
 
-To run the syscoind tests launch `src/test/test_syscoin`.
+To run the martkistd tests launch `src/test/test_martkist`.
 
-To add more syscoind tests, add `BOOST_AUTO_TEST_CASE` functions to the existing
+To add more martkistd tests, add `BOOST_AUTO_TEST_CASE` functions to the existing
 .cpp files in the `test/` directory or add new .cpp files that
 implement new BOOST_AUTO_TEST_SUITE sections.
 
-To run the syscoin-qt tests manually, launch `src/qt/test/test_syscoin-qt`
+To run the martkist-qt tests manually, launch `src/qt/test/test_martkist-qt`
 
-To add more syscoin-qt tests, add them to the `src/qt/test/` directory and
+To add more martkist-qt tests, add them to the `src/qt/test/` directory and
 the `src/qt/test/test_main.cpp` file.
 
 ### Running individual tests
 
-test_syscoin has some built-in command-line arguments; for
+test_martkist has some built-in command-line arguments; for
 example, to run just the getarg_tests verbosely:
 
-    test_syscoin --log_level=all --run_test=getarg_tests
+    test_martkist --log_level=all --run_test=getarg_tests
 
-... or to run just the doublesyscoin test:
+... or to run just the doublemartkist test:
 
-    test_syscoin --run_test=getarg_tests/doublesyscoin
+    test_martkist --run_test=getarg_tests/doublemartkist
 
-Run `test_syscoin --help` for the full list.
+Run `test_martkist --help` for the full list.
 
 ### Note on adding test cases
 
 The sources in this directory are unit test cases.  Boost includes a
-unit testing framework, and since Syscoin Core already uses boost, it makes
+unit testing framework, and since Martkist Core already uses boost, it makes
 sense to simply use this framework rather than require developers to
 configure some other framework (we want as few impediments to creating
 unit tests as possible).
 
-The build system is setup to compile an executable called `test_syscoin`
+The build system is setup to compile an executable called `test_martkist`
 that runs all of the unit tests.  The main source file is called
-test_syscoin.cpp. To add a new unit test file to our test suite you need 
+test_martkist.cpp. To add a new unit test file to our test suite you need 
 to add the file to `src/Makefile.test.include`. The pattern is to create 
 one test file for each class or source file for which you want to create 
 unit tests.  The file naming convention is `<source_filename>_tests.cpp` 

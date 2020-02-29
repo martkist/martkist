@@ -1,17 +1,17 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2016 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_PRIMITIVES_TRANSACTION_H
-#define SYSCOIN_PRIMITIVES_TRANSACTION_H
+#ifndef MARTKIST_PRIMITIVES_TRANSACTION_H
+#define MARTKIST_PRIMITIVES_TRANSACTION_H
 
 #include "amount.h"
 #include "script/script.h"
 #include "serialize.h"
 #include "uint256.h"
-// SYSCOIN
+// MARTKIST
 extern bool GetTimeToPrune(const CScript& scriptPubKey, uint64_t &nTime);
 extern bool IsSysServiceExpired(const uint64_t &nTime);
 /** An outpoint - a combination of a transaction hash and an index n into its vout */
@@ -152,7 +152,7 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
         READWRITE(nValue);
-		// SYSCOIN
+		// MARTKIST
 		uint64_t nTime;
 		if (scriptPubKey.IsUnspendable() && GetTimeToPrune(scriptPubKey, nTime))
 		{
@@ -364,7 +364,7 @@ static inline CTransactionRef MakeTransactionRef() { return std::make_shared<con
 template <typename Tx> static inline CTransactionRef MakeTransactionRef(Tx&& txIn) { return std::make_shared<const CTransaction>(std::forward<Tx>(txIn)); }
 
 /** Implementation of BIP69
- * https://github.com/syscoin/bips/blob/master/bip-0069.mediawiki
+ * https://github.com/martkist/bips/blob/master/bip-0069.mediawiki
  */
 struct CompareInputBIP69
 {
@@ -391,4 +391,4 @@ struct CompareOutputBIP69
     }
 };
 
-#endif // SYSCOIN_PRIMITIVES_TRANSACTION_H
+#endif // MARTKIST_PRIMITIVES_TRANSACTION_H

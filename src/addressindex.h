@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_ADDRESSINDEX_H
-#define SYSCOIN_ADDRESSINDEX_H
+#ifndef MARTKIST_ADDRESSINDEX_H
+#define MARTKIST_ADDRESSINDEX_H
 
 #include "uint256.h"
 #include "amount.h"
@@ -80,4 +80,4 @@ struct CMempoolAddressDeltaKeyCompare
     }
 };
 
-#endif // SYSCOIN_ADDRESSINDEX_H
+#endif // MARTKIST_ADDRESSINDEX_H

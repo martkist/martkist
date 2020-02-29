@@ -1,13 +1,13 @@
 UNIX BUILD NOTES
 ====================
-Some notes on how to build Syscoin Core in Unix.
+Some notes on how to build Martkist Core in Unix.
 
 (For BSD specific instructions, see [build-openbsd.md](build-openbsd.md) and/or
 [build-netbsd.md](build-netbsd.md))
 
 Note
 ---------------------
-Always use absolute paths to configure and compile syscoin and the dependencies,
+Always use absolute paths to configure and compile martkist and the dependencies,
 for example, when specifying the path of the dependency:
 
 ```shell
@@ -29,7 +29,7 @@ sudo make install # optional
 ```
 
 
-This will build syscoin-qt as well if the dependencies are met.
+This will build martkist-qt as well if the dependencies are met.
 
 Dependencies
 ---------------------
@@ -60,7 +60,7 @@ Memory Requirements
 --------------------
 
 C++ compilers are memory-hungry. It is recommended to have at least 1.5 GB of
-memory available when compiling Syscoin Core. On systems with less, gcc can be
+memory available when compiling Martkist Core. On systems with less, gcc can be
 tuned to conserve memory with additional CXXFLAGS:
 
 
@@ -77,7 +77,7 @@ tuned to conserve memory with additional CXXFLAGS:
 Some Linux distributions have their own `libdb-dev` and `libdb++-dev` packages which install
 BerkeleyDB 5.1 or later and break binary wallet compatibility with the distributed executables 
 as they are based on BerkeleyDB 4.8. If you do not care about wallet compatibility, pass 
-`--with-incompatible-bdb` to configure. See the section "Disable-wallet mode" to build Syscoin 
+`--with-incompatible-bdb` to configure. See the section "Disable-wallet mode" to build Martkist 
 Core without wallet.
 
 
@@ -107,7 +107,7 @@ sudo apt-get install -y libboost-all-dev
 
 ##### BerkeleyDB 4.8
 
->**Ubuntu:** db4.8 packages are available [here](https://launchpad.net/~syscoin/+archive/syscoin).
+>**Ubuntu:** db4.8 packages are available [here](https://launchpad.net/~martkist/+archive/martkist).
 >You can add the repository and install using the following commands:
 
 ```shell
@@ -133,7 +133,7 @@ sudo apt-get install -y libzmq3-dev
 
 #### Dependencies for the GUI
 
-If you want to build Syscoin-Qt, make sure that the required packages for Qt development are 
+If you want to build Martkist-Qt, make sure that the required packages for Qt development are 
 installed. Either Qt 5 or Qt 4 are necessary to build the GUI. If both Qt 4 and Qt 5 are installed,
 Qt 5 will be used. Pass `--with-gui=qt4` to configure to choose Qt4. To build without GUI pass 
 `--without-gui`.
@@ -156,7 +156,7 @@ libqrencode (optional) can be installed with:
 sudo apt-get install -y libqrencode-dev
 ```
 
-Once these are installed, they will be found by configure and a syscoin-qt executable will be
+Once these are installed, they will be found by configure and a martkist-qt executable will be
 built by default.
 
 
@@ -215,10 +215,10 @@ sudo yum install -y git gcc-c++ libtool make autoconf automake epel-release open
 
 ##### Boost:
 
-The version of Boost that ships with CentOS is too old to work with Syscoin - version 1.55+ 
+The version of Boost that ships with CentOS is too old to work with Martkist - version 1.55+ 
 is required. You will also need to pass the argument `--with-boot-libdir="/usr/local/lib"` 
 to `./configure`. You may want to consider adding `export LD_LIBRARY_PATH="/usr/local/lib"` 
-to your `.bashrc` as well to configure this variable on when starting `syscoind`.
+to your `.bashrc` as well to configure this variable on when starting `martkistd`.
 
 
 ```shell
@@ -267,7 +267,7 @@ sudo yum install -y qrencode-devel
 
 Notes
 -----
-The release is built with GCC and then "strip syscoind" to strip the debug symbols, 
+The release is built with GCC and then "strip martkistd" to strip the debug symbols, 
 which reduces the executable size by about 90%.
 
 
@@ -287,13 +287,13 @@ Berkeley DB
 -----------
 It is recommended to use Berkeley DB 4.8. If you have to build it yourself, you can use 
 the installation script included in [contrib/install_db4.sh](/contrib/install_db4.sh) like 
-so from the root of the Syscoin repository.
+so from the root of the Martkist repository.
 
 ```shell
 ./contrib/install_db4.sh `pwd`
 ```
 
-When compiling Sycoin you will need to run `./configure` with the results of this script.
+When compiling Martkist you will need to run `./configure` with the results of this script.
 
 **Note**: You only need Berkeley DB if the wallet is enabled (see the section *Disable-Wallet mode* below).
 
@@ -308,7 +308,7 @@ sudo ./bjam install
 
 Security
 --------
-To help make your syscoin installation more secure by making certain attacks impossible to
+To help make your martkist installation more secure by making certain attacks impossible to
 exploit even if a vulnerability is found, binaries are hardened by default.
 This can be disabled with:
 
@@ -334,7 +334,7 @@ Hardening enables the following features:
   To test that you have built PIE executable, install scanelf, part of paxutils, and use:
 
   ```shell
-  scanelf -e ./syscoin
+  scanelf -e ./martkist
   ```
 
   The output should contain:
@@ -347,7 +347,7 @@ Hardening enables the following features:
 * Non-executable Stack
 
   If the stack is executable then trivial stack based buffer overflow exploits are possible if
-  vulnerable buffers are found. By default, syscoin should be built with a non-executable stack
+  vulnerable buffers are found. By default, martkist should be built with a non-executable stack
   but if one of the libraries it uses asks for an executable stack or someone makes a mistake
   and uses a compiler extension which requires an executable stack, it will silently build an 
   executable without the non-executable stack protection.
@@ -355,7 +355,7 @@ Hardening enables the following features:
   To verify that the stack is non-executable after compiling use:
 
   ```shell
-  scanelf -e ./syscoin
+  scanelf -e ./martkist
   ```
 
   The output should contain:
@@ -370,7 +370,7 @@ Hardening enables the following features:
 
 Disable-wallet mode
 --------------------
-When the intention is to run only a P2P node without a wallet, syscoin may be compiled in 
+When the intention is to run only a P2P node without a wallet, martkist may be compiled in 
 disable-wallet mode with:
 
 ```shell
@@ -399,8 +399,8 @@ distribution of the latest changes on Arch Linux:
 
 ```shell
 pacman -S git base-devel boost libevent python
-git clone https://github.com/syscoin/syscoin.git
-cd syscoin/
+git clone https://github.com/martkist/martkist.git
+cd martkist/
 ./autogen.sh
 ./configure --disable-wallet --without-gui --without-miniupnpc
 make
@@ -411,8 +411,8 @@ Enabling wallet support requires either compiling against a Berkeley DB newer th
 (package `db`) using `--with-incompatible-bdb`, or building and depending on a local 
 version of Berkeley DB 4.8. The readily available Arch Linux packages are currently built 
 using `--with-incompatible-bdb` according to the 
-[PKGBUILD](https://projects.archlinux.org/svntogit/community.git/tree/syscoin/trunk/PKGBUILD). 
-As mentioned above, when maintaining portability of the wallet between the standard Syscoin 
+[PKGBUILD](https://projects.archlinux.org/svntogit/community.git/tree/martkist/trunk/PKGBUILD). 
+As mentioned above, when maintaining portability of the wallet between the standard Martkist 
 Core distributions and independently built node software is desired, Berkeley DB 4.8 must 
 be used.
 

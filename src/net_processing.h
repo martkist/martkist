@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_NET_PROCESSING_H
-#define SYSCOIN_NET_PROCESSING_H
+#ifndef MARTKIST_NET_PROCESSING_H
+#define MARTKIST_NET_PROCESSING_H
 
 #include "net.h"
 #include "validationinterface.h"
@@ -67,4 +67,4 @@ bool ProcessMessages(CNode* pfrom, CConnman& connman, const std::atomic<bool>& i
  */
 bool SendMessages(CNode* pto, CConnman& connman, const std::atomic<bool>& interrupt);
 
-#endif // SYSCOIN_NET_PROCESSING_H
+#endif // MARTKIST_NET_PROCESSING_H

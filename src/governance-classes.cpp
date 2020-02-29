@@ -1,9 +1,9 @@
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2017-2018 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2017-2018 The Martkist Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-//#define ENABLE_SYS_DEBUG
+//#define ENABLE_MARTK_DEBUG
 
 #include "core_io.h"
 #include "governance-classes.h"
@@ -414,9 +414,9 @@ void CSuperblockManager::CreateSuperblock(CMutableTransaction& txNewRet, int nBl
 
             CTxDestination address1;
             ExtractDestination(payment.script, address1);
-            CSyscoinAddress address2(address1);
+            CMartkistAddress address2(address1);
 
-            // TODO: PRINT NICE N.N SYS OUTPUT
+            // TODO: PRINT NICE N.N MARTK OUTPUT
 
             DBG( std::cout << "CSuperblockManager::CreateSuperblock Before LogPrintf call, nAmount = " << payment.nAmount << std::endl; );
             LogPrintf("NEW Superblock : output %d (addr %s, amount %d)\n", i, address2.ToString(), payment.nAmount);
@@ -544,7 +544,7 @@ CAmount CSuperblock::GetPaymentsLimit(int nBlockHeight)
         return 0;
     }
 
-	// SYSCOIN
+	// MARTKIST
 	// some part of all blocks issued during the cycle goes to superblock, see GetBlockSubsidy
 	CAmount nTotalRewardWithMasternodes;
 	const CAmount &nSuperblockPartOfSubsidy = GetBlockSubsidy(nBlockHeight, consensusParams, nTotalRewardWithMasternodes, true);
@@ -588,10 +588,10 @@ void CSuperblock::ParsePaymentSchedule(const std::string& strPaymentAddresses, c
     DBG( std::cout << "CSuperblock::ParsePaymentSchedule vecParsed1.size() = " << vecParsed1.size() << std::endl; );
 
     for (int i = 0; i < (int)vecParsed1.size(); i++) {
-        CSyscoinAddress address(vecParsed1[i]);
+        CMartkistAddress address(vecParsed1[i]);
         if (!address.IsValid()) {
             std::ostringstream ostr;
-            ostr << "CSuperblock::ParsePaymentSchedule -- Invalid Syscoin Address : " <<  vecParsed1[i];
+            ostr << "CSuperblock::ParsePaymentSchedule -- Invalid Martkist Address : " <<  vecParsed1[i];
             LogPrintf("%s\n", ostr.str());
             throw std::runtime_error(ostr.str());
         }
@@ -739,7 +739,7 @@ bool CSuperblock::IsValid(const CTransaction& txNew, int nBlockHeight, const CAm
 
             CTxDestination address1;
             ExtractDestination(payment.script, address1);
-            CSyscoinAddress address2(address1);
+            CMartkistAddress address2(address1);
             LogPrintf("CSuperblock::IsValid -- ERROR: Block invalid: %d payment %d to %s not found\n", i, payment.nAmount, address2.ToString());
 
             return false;
@@ -813,7 +813,7 @@ std::string CSuperblockManager::GetRequiredPaymentsString(int nBlockHeight)
 
             CTxDestination address1;
             ExtractDestination(payment.script, address1);
-            CSyscoinAddress address2(address1);
+            CMartkistAddress address2(address1);
 
             // RETURN NICE OUTPUT FOR CONSOLE
 

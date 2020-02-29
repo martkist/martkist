@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
-# Copyright (c) 2014-2015 The Bitcoin Core developers
-# Copyright (c) 2014-2017 The Syscoin Core developers
+# Copyright (c) 2014-2020 The Bitcoin Core developers
+# Copyright (c) 2014-2020 The Martkist Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -18,7 +18,7 @@ than:
       interface.
 
 For a description of arguments recognized by test scripts, see
-`qa/pull-tester/test_framework/test_framework.py:SyscoinTestFramework.main`.
+`qa/pull-tester/test_framework/test_framework.py:MartkistTestFramework.main`.
 
 """
 
@@ -35,8 +35,8 @@ from tests_config import *
 #If imported values are not defined then set to zero (or disabled)
 if 'ENABLE_WALLET' not in vars():
     ENABLE_WALLET=0
-if 'ENABLE_SYSCOIND' not in vars():
-    ENABLE_SYSCOIND=0
+if 'ENABLE_MARTKISTD' not in vars():
+    ENABLE_MARTKISTD=0
 if 'ENABLE_UTILS' not in vars():
     ENABLE_UTILS=0
 if 'ENABLE_ZMQ' not in vars():
@@ -63,19 +63,19 @@ for arg in sys.argv[1:]:
 
 #Set env vars
 buildDir = BUILDDIR
-if "SYSD" not in os.environ:
-    os.environ["SYSD"] = buildDir + '/src/syscoind' + EXEEXT
-if "SYSCLI" not in os.environ:
-    os.environ["SYSCLI"] = buildDir + '/src/syscoin-cli' + EXEEXT
+if "MARTKD" not in os.environ:
+    os.environ["MARTKD"] = buildDir + '/src/martkistd' + EXEEXT
+if "MARTKCLI" not in os.environ:
+    os.environ["MARTKCLI"] = buildDir + '/src/martkist-cli' + EXEEXT
 
 if EXEEXT == ".exe" and "-win" not in opts:
-    # https://github.com/syscoin/syscoin/commit/d52802551752140cf41f0d9a225a43e84404d3e9
-    # https://github.com/syscoin/syscoin/pull/5677#issuecomment-136646964
+    # https://github.com/martkist/martkist/commit/d52802551752140cf41f0d9a225a43e84404d3e9
+    # https://github.com/martkist/martkist/pull/5677#issuecomment-136646964
     print "Win tests currently disabled by default.  Use -win option to enable"
     sys.exit(0)
 
-if not (ENABLE_WALLET == 1 and ENABLE_UTILS == 1 and ENABLE_SYSCOIND == 1):
-    print "No rpc tests to run. Wallet, utils, and syscoind must all be enabled"
+if not (ENABLE_WALLET == 1 and ENABLE_UTILS == 1 and ENABLE_MARTKISTD == 1):
+    print "No rpc tests to run. Wallet, utils, and martkistd must all be enabled"
     sys.exit(0)
 
 # python-zmq may not be installed. Handle this gracefully and with some helpful info
@@ -118,15 +118,15 @@ testScripts = [
     'timestampindex.py',
     'spentindex.py',
     'decodescript.py',
-    'p2p-fullblocktest.py', # NOTE: needs syscoin_hash to pass
+    'p2p-fullblocktest.py', # NOTE: needs martkist_hash to pass
     'blockchain.py',
     'disablewallet.py',
-    'sendheaders.py', # NOTE: needs syscoin_hash to pass
+    'sendheaders.py', # NOTE: needs martkist_hash to pass
     'keypool.py',
     'keypool-hd.py',
     'prioritise_transaction.py',
-    'invalidblockrequest.py', # NOTE: needs syscoin_hash to pass
-    'invalidtxrequest.py', # NOTE: needs syscoin_hash to pass
+    'invalidblockrequest.py', # NOTE: needs martkist_hash to pass
+    'invalidtxrequest.py', # NOTE: needs martkist_hash to pass
     'abandonconflict.py',
     'p2p-versionbits-warning.py',
 ]
@@ -136,11 +136,11 @@ if ENABLE_ZMQ:
 testScriptsExt = [
     'bip9-softforks.py',
     'bip65-cltv.py',
-    'bip65-cltv-p2p.py', # NOTE: needs syscoin_hash to pass
+    'bip65-cltv-p2p.py', # NOTE: needs martkist_hash to pass
     'bip68-sequence.py',
-    'bipdersig-p2p.py', # NOTE: needs syscoin_hash to pass
+    'bipdersig-p2p.py', # NOTE: needs martkist_hash to pass
     'bipdersig.py',
-    'getblocktemplate_longpoll.py', # FIXME: "socket.error: [Errno 54] Connection reset by peer" on my Mac, same as  https://github.com/syscoin/syscoin/issues/6651
+    'getblocktemplate_longpoll.py', # FIXME: "socket.error: [Errno 54] Connection reset by peer" on my Mac, same as  https://github.com/martkist/martkist/issues/6651
     'getblocktemplate_proposals.py',
     'txn_doublespend.py',
     'txn_clone.py --mineblock',
@@ -150,10 +150,10 @@ testScriptsExt = [
 #    'rpcbind_test.py', #temporary, bug in libevent, see #6655
     'smartfees.py',
     'maxblocksinflight.py',
-    'p2p-acceptblock.py', # NOTE: needs syscoin_hash to pass
+    'p2p-acceptblock.py', # NOTE: needs martkist_hash to pass
     'mempool_packages.py',
     'maxuploadtarget.py',
-    # 'replace-by-fee.py', # RBF is disabled in Syscoin Core
+    # 'replace-by-fee.py', # RBF is disabled in Martkist Core
 ]
 
 def runtests():
@@ -215,7 +215,7 @@ class RPCCoverage(object):
     Coverage calculation works by having each test script subprocess write
     coverage files into a particular directory. These files contain the RPC
     commands invoked during testing, as well as a complete listing of RPC
-    commands per `syscoin-cli help` (`rpc_interface.txt`).
+    commands per `martkist-cli help` (`rpc_interface.txt`).
 
     After all tests complete, the commands run are combined and diff'd against
     the complete list to calculate uncovered RPC commands.

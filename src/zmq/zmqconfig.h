@@ -2,11 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_ZMQ_ZMQCONFIG_H
-#define SYSCOIN_ZMQ_ZMQCONFIG_H
+#ifndef MARTKIST_ZMQ_ZMQCONFIG_H
+#define MARTKIST_ZMQ_ZMQCONFIG_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/syscoin-config.h"
+#include "config/martkist-config.h"
 #endif
 
 #include <stdarg.h>
@@ -21,4 +21,4 @@
 
 void zmqError(const char *str);
 
-#endif // SYSCOIN_ZMQ_ZMQCONFIG_H
+#endif // MARTKIST_ZMQ_ZMQCONFIG_H

@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SYSCOIN_RPC_MINING_H
-#define SYSCOIN_RPC_MINING_H
+#ifndef MARTKIST_RPC_MINING_H
+#define MARTKIST_RPC_MINING_H
 
 #include <script/script.h>
 

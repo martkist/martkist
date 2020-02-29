@@ -1,13 +1,13 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2020 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "guiutil.h"
 
-#include "syscoinaddressvalidator.h"
-#include "syscoinunits.h"
+#include "martkistaddressvalidator.h"
+#include "martkistunits.h"
 #include "qvalidatedlineedit.h"
 #include "walletmodel.h"
 
@@ -116,11 +116,11 @@ static const uint8_t dummydata[] = {0xeb,0x15,0x23,0x1d,0xfc,0xeb,0x60,0x92,0x58
 // Generate a dummy address with invalid CRC, starting with the network prefix.
 static std::string DummyAddress(const CChainParams &params)
 {
-    std::vector<unsigned char> sourcedata = params.Base58Prefix(CChainParams::PUBKEY_ADDRESS_SYS);
+    std::vector<unsigned char> sourcedata = params.Base58Prefix(CChainParams::PUBKEY_ADDRESS_MARTK);
     sourcedata.insert(sourcedata.end(), dummydata, dummydata + sizeof(dummydata));
     for(int i=0; i<256; ++i) { // Try every trailing byte
         std::string s = EncodeBase58(sourcedata.data(), sourcedata.data() + sourcedata.size());
-        if (!CSyscoinAddress(s).IsValid())
+        if (!CMartkistAddress(s).IsValid())
             return s;
         sourcedata[sourcedata.size()-1] += 1;
     }
@@ -135,11 +135,11 @@ void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent)
 #if QT_VERSION >= 0x040700
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
-    widget->setPlaceholderText(QObject::tr("Enter a Syscoin address (e.g. %1)").arg(
+    widget->setPlaceholderText(QObject::tr("Enter a Martkist address (e.g. %1)").arg(
         QString::fromStdString(DummyAddress(Params()))));
 #endif
-    widget->setValidator(new SyscoinAddressEntryValidator(parent));
-    widget->setCheckValidator(new SyscoinAddressCheckValidator(parent));
+    widget->setValidator(new MartkistAddressEntryValidator(parent));
+    widget->setCheckValidator(new MartkistAddressCheckValidator(parent));
 }
 
 void setupAmountWidget(QLineEdit *widget, QWidget *parent)
@@ -151,10 +151,10 @@ void setupAmountWidget(QLineEdit *widget, QWidget *parent)
     widget->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 }
 
-bool parseSyscoinURI(const QUrl &uri, SendCoinsRecipient *out)
+bool parseMartkistURI(const QUrl &uri, SendCoinsRecipient *out)
 {
-    // return if URI is not valid or is no syscoin: URI
-    if(!uri.isValid() || uri.scheme() != QString("syscoin"))
+    // return if URI is not valid or is no martkist: URI
+    if(!uri.isValid() || uri.scheme() != QString("martkist"))
         return false;
 
     SendCoinsRecipient rv;
@@ -203,7 +203,7 @@ bool parseSyscoinURI(const QUrl &uri, SendCoinsRecipient *out)
         {
             if(!i->second.isEmpty())
             {
-                if(!SyscoinUnits::parse(SyscoinUnits::SYS, i->second, &rv.amount))
+                if(!MartkistUnits::parse(MartkistUnits::MARTK, i->second, &rv.amount))
                 {
                     return false;
                 }
@@ -221,28 +221,28 @@ bool parseSyscoinURI(const QUrl &uri, SendCoinsRecipient *out)
     return true;
 }
 
-bool parseSyscoinURI(QString uri, SendCoinsRecipient *out)
+bool parseMartkistURI(QString uri, SendCoinsRecipient *out)
 {
-    // Convert syscoin:// to syscoin:
+    // Convert martkist:// to martkist:
     //
-    //    Cannot handle this later, because syscoin:// will cause Qt to see the part after // as host,
+    //    Cannot handle this later, because martkist:// will cause Qt to see the part after // as host,
     //    which will lower-case it (and thus invalidate the address).
-    if(uri.startsWith("syscoin://", Qt::CaseInsensitive))
+    if(uri.startsWith("martkist://", Qt::CaseInsensitive))
     {
-        uri.replace(0, 7, "syscoin:");
+        uri.replace(0, 7, "martkist:");
     }
     QUrl uriInstance(uri);
-    return parseSyscoinURI(uriInstance, out);
+    return parseMartkistURI(uriInstance, out);
 }
 
-QString formatSyscoinURI(const SendCoinsRecipient &info)
+QString formatMartkistURI(const SendCoinsRecipient &info)
 {
-    QString ret = QString("syscoin:%1").arg(info.address);
+    QString ret = QString("martkist:%1").arg(info.address);
     int paramCount = 0;
 
     if (info.amount)
     {
-        ret += QString("?amount=%1").arg(SyscoinUnits::format(SyscoinUnits::SYS, info.amount, false, SyscoinUnits::separatorNever));
+        ret += QString("?amount=%1").arg(MartkistUnits::format(MartkistUnits::MARTK, info.amount, false, MartkistUnits::separatorNever));
         paramCount++;
     }
 
@@ -271,7 +271,7 @@ QString formatSyscoinURI(const SendCoinsRecipient &info)
 
 bool isDust(const QString& address, const CAmount& amount)
 {
-    CTxDestination dest = CSyscoinAddress(address.toStdString()).Get();
+    CTxDestination dest = CMartkistAddress(address.toStdString()).Get();
     CScript script = GetScriptForDestination(dest);
     CTxOut txOut(amount, script);
     return txOut.IsDust(dustRelayFee);
@@ -441,9 +441,9 @@ void openDebugLogfile()
 
 void openConfigfile()
 {
-    boost::filesystem::path pathConfig = GetConfigFile(GetArg("-conf", SYSCOIN_CONF_FILENAME));
+    boost::filesystem::path pathConfig = GetConfigFile(GetArg("-conf", MARTKIST_CONF_FILENAME));
 
-    /* Open syscoin.conf with the associated application */
+    /* Open martkist.conf with the associated application */
     if (boost::filesystem::exists(pathConfig))
         QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathConfig)));
 }
@@ -653,15 +653,15 @@ boost::filesystem::path static StartupShortcutPath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "Syscoin Core.lnk";
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "Martkist Core.lnk";
     if (chain == CBaseChainParams::TESTNET) // Remove this special case when CBaseChainParams::TESTNET = "testnet4"
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "Syscoin Core (testnet).lnk";
-    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("Syscoin Core (%s).lnk", chain);
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "Martkist Core (testnet).lnk";
+    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("Martkist Core (%s).lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
 {
-    // check for "Syscoin Core*.lnk"
+    // check for "Martkist Core*.lnk"
     return boost::filesystem::exists(StartupShortcutPath());
 }
 
@@ -753,8 +753,8 @@ boost::filesystem::path static GetAutostartFilePath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-        return GetAutostartDir() / "syscoincore.desktop";
-    return GetAutostartDir() / strprintf("syscoincore-%s.lnk", chain);
+        return GetAutostartDir() / "martkistcore.desktop";
+    return GetAutostartDir() / strprintf("martkistcore-%s.lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
@@ -793,13 +793,13 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         if (!optionFile.good())
             return false;
         std::string chain = ChainNameFromCommandLine();
-        // Write a syscoincore.desktop file to the autostart directory:
+        // Write a martkistcore.desktop file to the autostart directory:
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
         if (chain == CBaseChainParams::MAIN)
-            optionFile << "Name=Syscoin Core\n";
+            optionFile << "Name=Martkist Core\n";
         else
-            optionFile << strprintf("Name=Syscoin Core (%s)\n", chain);
+            optionFile << strprintf("Name=Martkist Core (%s)\n", chain);
         optionFile << "Exec=" << pszExePath << strprintf(" -min -testnet=%d -regtest=%d\n", GetBoolArg("-testnet", false), GetBoolArg("-regtest", false));
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
@@ -820,7 +820,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
 LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl);
 LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl)
 {
-    // loop through the list of startup items and try to find the Syscoin Core app
+    // loop through the list of startup items and try to find the Martkist Core app
     CFArrayRef listSnapshot = LSSharedFileListCopySnapshot(list, NULL);
     for(int i = 0; i < CFArrayGetCount(listSnapshot); i++) {
         LSSharedFileListItemRef item = (LSSharedFileListItemRef)CFArrayGetValueAtIndex(listSnapshot, i);
@@ -852,21 +852,21 @@ LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef
 
 bool GetStartOnSystemStartup()
 {
-    CFURLRef syscoinAppUrl = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+    CFURLRef martkistAppUrl = CFBundleCopyBundleURL(CFBundleGetMainBundle());
     LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
-    LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, syscoinAppUrl);
+    LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, martkistAppUrl);
     return !!foundItem; // return boolified object
 }
 
 bool SetStartOnSystemStartup(bool fAutoStart)
 {
-    CFURLRef syscoinAppUrl = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+    CFURLRef martkistAppUrl = CFBundleCopyBundleURL(CFBundleGetMainBundle());
     LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
-    LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, syscoinAppUrl);
+    LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, martkistAppUrl);
 
     if(fAutoStart && !foundItem) {
-        // add Syscoin Core app to startup item list
-        LSSharedFileListInsertItemURL(loginItems, kLSSharedFileListItemBeforeFirst, NULL, NULL, syscoinAppUrl, NULL, NULL);
+        // add Martkist Core app to startup item list
+        LSSharedFileListInsertItemURL(loginItems, kLSSharedFileListItemBeforeFirst, NULL, NULL, martkistAppUrl, NULL, NULL);
     }
     else if(!fAutoStart && foundItem) {
         // remove item
