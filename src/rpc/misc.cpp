@@ -947,7 +947,7 @@ UniValue getaddressdeltas(const JSONRPCRequest& request)
 
 UniValue getaddressbalance(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() != 1)
+    if (request.fHelp || !(request.params.size() == 1 || request.params.size() == 2))
         throw std::runtime_error(
             "getaddressbalance\n"
             "\nReturns the balance for an address(es) (requires addressindex to be enabled).\n"
