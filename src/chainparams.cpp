@@ -279,14 +279,24 @@ public:
         nPoolMaxTransactions = 3;
         nFulfilledRequestExpireTime = 5 * 60;// 5min
 
-        strSporkAddress = "MVLzWjo2WfatRVBiZ3CrNPNUqVBs7FguU1";
-		
+        strSporkAddress = "MVLzWjo2WfatRVBiZ3CrNPNUqVBs7FguU1";		
+
+        checkpointData = {
+            {
+                {  1000, uint256S("0000000000000004f1046e1f388f9cab53bde759772f0b84c88465b60ea2f63d")},
+                { 10000, uint256S("000000000000004f06428237f7e5e190df53e31c6232e0906bdb868ac9498f8d")},
+                { 25000, uint256S("000000000000003a2aff9878fa2858e9f2960f3b768f15db28567c3e0fdcfe4a")},
+                { 49000, uint256S("00000c9ec0f9d60ce297bf9f9cbe1f2eb39165a0d3f69c1c55fc3f6680fe45c8")}, // superblock 1
+                { 50000, uint256S("00000000000000141073cebb246a9207d504a5c00b580907603ff870a19cbd3b")},
+                { 75000, uint256S("00000000000000de94ba1fbf9a7fa5729d476a9912e81b34a314f390046b0c8a")}
+            }
+        };
 
 		chainTxData = ChainTxData{
-			// Data from rpc: getchaintxstats 4096 92025d074fdd503b0f0f4d4a11dcfbc8a57509d0a196bb400ebdb19556d61b0d
-			/* nTime    */ 0,
-			/* nTxCount */ 0,
-			/* dTxRate  */ 0
+			// Data from rpc: getchaintxstats 4096 00000000000000de94ba1fbf9a7fa5729d476a9912e81b34a314f390046b0c8a
+			/* nTime    */ 1587732478,
+			/* nTxCount */ 4845,
+			/* dTxRate  */ 0.01867757380436542
 		};
     }
 };
@@ -376,8 +386,10 @@ public:
 		assert(genesis.hashMerkleRoot == uint256S("0x9342d40305d508194d9fce5faab7d82cd6c9fea01fedc4b37557cb8b34a127c4"));
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
-        vSeeds.clear();
-  
+  		vSeeds.push_back(CDNSSeedData("seed1.test.martkist.org", "seed1.test.martkist.org"));
+		vSeeds.push_back(CDNSSeedData("seed2.test.martkist.org", "seed2.test.martkist.org"));
+		vSeeds.push_back(CDNSSeedData("seed3.test.martkist.org", "seed3.test.martkist.org"));
+		vSeeds.push_back(CDNSSeedData("seed4.test.martkist.org", "seed4.test.martkist.org"));
 
 		base58Prefixes[PUBKEY_ADDRESS_MARTK] = std::vector<unsigned char>(1, 65);
 		base58Prefixes[SCRIPT_ADDRESS_MARTK] = std::vector<unsigned char>(1, 60);
@@ -407,16 +419,21 @@ public:
 
         strSporkAddress = "TL63qB18atqREkxAhxzvKVJUVa5MTfWuD4"; // 4Tn2CyZ7GABqT4DTDooN8SZuqRpoiBonRJY1Zf68WtUzUEwkZ9GJ
 
-		
-
+        checkpointData = {
+            {
+                {  1000, uint256S("000002999ad86a395eca7b720180479035b8008377a47fee5f0af825dabf1adc")},
+                { 10000, uint256S("0000003ab0606045029160b93830230e497b651b3537c8b4358885924b2840f3")},
+                { 25000, uint256S("0000006ad69ea5d3976e7c8d1b1664849b39ba58051150ae26ae24b998516242")},
+                { 47500, uint256S("0000004ca32fd1e879da7ee908472e2d5cb6f8d7c66d14c8d9ce2c98bd2ade2a")}
+            }
+        };
+        
 		chainTxData = ChainTxData{
-			0,
-			0,
-			0
+			// Data from rpc: getchaintxstats 4096 0000004ca32fd1e879da7ee908472e2d5cb6f8d7c66d14c8d9ce2c98bd2ade2a
+			/* nTime    */ 1587918580,
+			/* nTxCount */ 4096,
+			/* dTxRate  */ 0.03110925454752592
 		};
-
-		
-
     }
 };
 static CTestNetParams testNetParams;
