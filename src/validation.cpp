@@ -1737,9 +1737,17 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams, C
     {
         nSubsidy = 6 * COIN;
     }
-    else
+    else if (nHeight <= 3196808)
     {
         nSubsidy = 3 * COIN;
+    }
+    else if (nHeight <= 5817608)
+    {
+        nSubsidy = 1 * COIN;
+    }
+    else
+    {
+        nSubsidy = 0.1 * COIN;
     }
 
 	// Reduce the block reward of miners (allowing budget/superblocks)
@@ -1759,8 +1767,10 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams, C
             nSubsidy *= 0.18;
         else if (nHeight <= 3196807)
             nSubsidy *= 0.27;
-        else
+        else if (nHeight <= 3196808)
             nSubsidy *= 0.18;
+        else
+            nSubsidy *= 0.20;
     }
 
     return nSubsidy;
