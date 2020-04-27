@@ -22,7 +22,7 @@ which leverage the bitcoin protocol and blockchain technology.
 - Martkist data service fees burned
 - Masternode collateral requirement: 18000 Martkists
 - Governance proposals payout schedule: every month
-- Governance funding per round (168630 Martkists per month)
+- Governance funding per round (89630 Martkists per month)
 
 Services include:
 
