@@ -300,10 +300,10 @@ public:
         };
 
 		chainTxData = ChainTxData{
-			// Data from rpc: getchaintxstats 4096 00000000000000de94ba1fbf9a7fa5729d476a9912e81b34a314f390046b0c8a
-			/* nTime    */ 1587732478,
-			/* nTxCount */ 4845,
-			/* dTxRate  */ 0.01867757380436542
+			// Data from rpc: getchaintxstats 4096 e07a220dfd8c4c41b434b98835acbf5e45a30e37e15a5eca4353f2b70bae55d8
+			/* nTime    */ 1669731637,
+			/* nTxCount */ 4096,
+			/* dTxRate  */ 0.0158092392961492
 		};
     }
 };
