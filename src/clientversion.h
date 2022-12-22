@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2020 The Martkist Core developers
+// Copyright (c) 2014-2023 The Martkist Core developers2023 The Martkist Core developers2023 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,7 +16,7 @@
 
 //! These need to be macros, as clientversion.cpp's and martkist*-res.rc's voodoo requires it
 #define CLIENT_VERSION_MAJOR 3
-#define CLIENT_VERSION_MINOR 3
+#define CLIENT_VERSION_MINOR 4
 #define CLIENT_VERSION_REVISION 0
 #define CLIENT_VERSION_BUILD 0
 
@@ -45,7 +45,7 @@
     DO_STRINGIZE(maj) "." DO_STRINGIZE(min) "." DO_STRINGIZE(rev) "." DO_STRINGIZE(build)
 #define BUILD_DASH_VERSION(maj, min, rev) \
     DO_STRINGIZE(maj) "." DO_STRINGIZE(min) "." DO_STRINGIZE(rev)
-#define COPYRIGHT_YEAR 2020
+#define COPYRIGHT_YEAR 2023
 #define MARTKIST_VERSION BUILD_VERSION(CLIENT_VERSION_MAJOR, CLIENT_VERSION_MINOR, CLIENT_VERSION_REVISION, CLIENT_VERSION_BUILD)
 #define DASH_VERSION BUILD_DASH_VERSION(DASH_VERSION_MAJOR, DASH_VERSION_MINOR, DASH_VERSION_REVISION)
 

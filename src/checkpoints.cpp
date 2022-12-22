@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2014 The Martkist developers
-// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2023 The Dash Core developers
 // Copyright (c) 2017-2017 The Martkist Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.

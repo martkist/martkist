@@ -9,7 +9,7 @@ For example:
 
 it will change it to
 
-// Copyright (c) 2014-2020 The Martkist Core developers
+// Copyright (c) 2014-2023 The Martkist Core developers
 '''
 import os
 import time

@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2020 The Dash Core developers
+// Copyright (c) 2014-2023 The Dash Core developers
 // Copyright (c) 2017-2018 The Martkist Core developers
 
 #include "governance.h"

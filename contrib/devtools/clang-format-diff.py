@@ -13,7 +13,7 @@
 # Open Source License
 #
 # Copyright (c) 2007-2015 University of Illinois at Urbana-Champaign.
-# Copyright (c) 2014-2020 The Martkist Core developers
+# Copyright (c) 2014-2023 The Martkist Core developers
 # All rights reserved.
 #
 # Developed by:
