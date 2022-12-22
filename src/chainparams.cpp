@@ -283,12 +283,19 @@ public:
 
         checkpointData = {
             {
-                {  1000, uint256S("0000000000000004f1046e1f388f9cab53bde759772f0b84c88465b60ea2f63d")},
-                { 10000, uint256S("000000000000004f06428237f7e5e190df53e31c6232e0906bdb868ac9498f8d")},
-                { 25000, uint256S("000000000000003a2aff9878fa2858e9f2960f3b768f15db28567c3e0fdcfe4a")},
-                { 49000, uint256S("00000c9ec0f9d60ce297bf9f9cbe1f2eb39165a0d3f69c1c55fc3f6680fe45c8")}, // superblock 1
-                { 50000, uint256S("00000000000000141073cebb246a9207d504a5c00b580907603ff870a19cbd3b")},
-                { 75000, uint256S("00000000000000de94ba1fbf9a7fa5729d476a9912e81b34a314f390046b0c8a")}
+                {    1000, uint256S("0000000000000004f1046e1f388f9cab53bde759772f0b84c88465b60ea2f63d")},
+                {   10000, uint256S("000000000000004f06428237f7e5e190df53e31c6232e0906bdb868ac9498f8d")},
+                {   25000, uint256S("000000000000003a2aff9878fa2858e9f2960f3b768f15db28567c3e0fdcfe4a")},
+                {   49000, uint256S("00000c9ec0f9d60ce297bf9f9cbe1f2eb39165a0d3f69c1c55fc3f6680fe45c8")}, // superblock 1
+                {   50000, uint256S("00000000000000141073cebb246a9207d504a5c00b580907603ff870a19cbd3b")},
+                {   75000, uint256S("00000000000000de94ba1fbf9a7fa5729d476a9912e81b34a314f390046b0c8a")},
+                {  100000, uint256S("000000000000000027851c0d782dc55333eb518aea4a2fae0f33ba52c646b1d7")},
+                {  250000, uint256S("30973ddfc0c8267dba1b9cbcb39586911ed58a87f3a8c79cec51f355430febce")},
+                {  500000, uint256S("39cb7c97066e4324e5cf5ed5b2778d0ced566c9de49f39149f17684d5b75cb9d")},
+                {  750000, uint256S("c9cd947d1aa3e5481bcb41778b47e523b70aec100cbe40b2e5e59520175fe8da")},
+                { 1000000, uint256S("be510cb90663291a20067fa6b59ae1a45c9c1c2f4b2f9334dca64e94288e24bc")},
+                { 1250000, uint256S("fdd81bcacd8c1c7c405dd2457dc87aced530e5a808eb1fdd8d49e0da433177f9")},
+                { 1372000, uint256S("e07a220dfd8c4c41b434b98835acbf5e45a30e37e15a5eca4353f2b70bae55d8")}, // most recent superblock
             }
         };
 
@@ -421,10 +428,6 @@ public:
 
         checkpointData = {
             {
-                {  1000, uint256S("000002999ad86a395eca7b720180479035b8008377a47fee5f0af825dabf1adc")},
-                { 10000, uint256S("0000003ab0606045029160b93830230e497b651b3537c8b4358885924b2840f3")},
-                { 25000, uint256S("0000006ad69ea5d3976e7c8d1b1664849b39ba58051150ae26ae24b998516242")},
-                { 47500, uint256S("0000004ca32fd1e879da7ee908472e2d5cb6f8d7c66d14c8d9ce2c98bd2ade2a")}
             }
         };
         
