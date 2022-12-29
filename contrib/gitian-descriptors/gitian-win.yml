@@ -1,5 +1,5 @@
 ---
-name: "martkist-win-3.2"
+name: "martkist-win-3.4"
 enable_cache: true
 suites:
 - "trusty"
