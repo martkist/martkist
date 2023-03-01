@@ -44,6 +44,13 @@
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/thread.hpp>
+#include <boost/process.hpp>
+#ifdef WIN32
+#include <windows.h>
+#include <boost/process/windows.hpp>
+#endif
+namespace bp = boost::process;
+namespace bfs = boost::filesystem;
 
 #include <QApplication>
 #include <QDebug>
@@ -228,6 +235,12 @@ public:
     /// Get window identifier of QMainWindow (MartkistGUI)
     WId getMainWinId() const;
 
+    void startFreech();
+    void stopFreech();
+
+private:
+    bp::child* freechd = NULL;
+
 public Q_SLOTS:
     void initializeResult(int retval);
     void shutdownResult(int retval);
@@ -398,6 +411,106 @@ MartkistApplication::~MartkistApplication()
     platformStyle = 0;
 }
 
+void MartkistApplication::startFreech()
+{
+    auto applicationDirPath = QCoreApplication::applicationDirPath().toStdString();
+    LogPrintf("applicationDirPath: %s\n", applicationDirPath);
+
+    bfs::path freech_path = GetDataDir() / "freech";
+    bfs::path freech_html_path = freech_path / "html";
+    LogPrintf("Freech path: %s\n", freech_path.string());
+    LogPrintf("Freech HTML path: %s\n", freech_html_path.string());
+
+    bfs::path source_html_path(applicationDirPath + "/freech-html");
+    if (!bfs::exists(source_html_path))
+    {
+        LogPrintf("WARNING: Can't find %s -- Freech integration won't work!\n", source_html_path.string());
+    }
+    else 
+    {
+        LogPrintf("Deploying freech-html\n");
+        bfs::create_directories(freech_html_path);
+
+        for (const auto& dirEnt : bfs::recursive_directory_iterator{source_html_path})
+        {
+            const auto& path = dirEnt.path();
+            auto relativePathStr = path.string();
+            boost::replace_first(relativePathStr, source_html_path.string(), "");
+            auto target = freech_html_path / relativePathStr;
+            if (!bfs::exists(target))
+                bfs::copy(path, target);
+            else if (bfs::is_regular_file(path))
+                bfs::copy_file(path, target, bfs::copy_option::overwrite_if_exists);
+        }
+    }
+
+    LogPrintf("Starting freechd...\n");
+    
+    // For now we will use a fixed user/pass, to allow users
+    // to access backend easily for debugging, but in the future
+    // we should generate a random password to improve privacy.
+    #if defined(WIN32)
+    bfs::path freechd_path("freechd.exe");
+    #elif defined(MAC_OSX)
+    bfs::path freechd_path(applicationDirPath + "/freechd");
+    #else
+    bfs::path freechd_path("./freechd");
+    #endif
+
+    LogPrintf("freechd_path: %s\n", freechd_path.string());
+    
+    if (!bfs::exists(freechd_path))
+    {
+        LogPrintf("WARNING: Can't find freechd! Freech integration won't work!");
+    }
+    else
+    {
+        #ifdef WIN32
+        freechd = new bp::child(
+            freechd_path,
+            bp::args({
+                "-datadir=" + freech_path.string(),
+                "-rpcuser=user",
+                "-rpcpassword=pwd"
+            }),
+            ::boost::process::windows::hide
+        );
+        #else
+        freechd = new bp::child(
+            freechd_path,
+            bp::args({
+                "-datadir=" + freech_path.string(),
+                "-rpcuser=user",
+                "-rpcpassword=pwd"
+            })
+        );
+        #endif
+
+        LogPrintf("Started freechd with id %i\n", freechd->id());
+    }
+}
+
+void MartkistApplication::stopFreech()
+{
+    // Show a simple window indicating shutdown status
+    // Do this first as some of the steps may take some time below,
+    // for example the RPC console may still be executing a command.
+    shutdownWindow.reset(ShutdownWindow::showShutdownWindow(window));
+
+    if (freechd != NULL)
+    {
+        LogPrintf("Stopping freechd id %i...\n", freechd->id());
+        #ifdef WIN32
+        AttachConsole(freechd->id());
+        GenerateConsoleCtrlEvent(CTRL_C_EVENT, 0);
+        FreeConsole();
+        #else
+        pid_t pid = freechd->id();
+        kill(pid, SIGINT);
+        #endif
+    }
+}
+
 #ifdef ENABLE_WALLET
 void MartkistApplication::createPaymentServer()
 {
@@ -459,6 +572,8 @@ void MartkistApplication::parameterSetup()
 
 void MartkistApplication::requestInitialize()
 {
+    startFreech();
+
     qDebug() << __func__ << ": Requesting initialize";
     startThread();
     Q_EMIT requestedInitialize();
@@ -466,10 +581,7 @@ void MartkistApplication::requestInitialize()
 
 void MartkistApplication::requestShutdown()
 {
-    // Show a simple window indicating shutdown status
-    // Do this first as some of the steps may take some time below,
-    // for example the RPC console may still be executing a command.
-    shutdownWindow.reset(ShutdownWindow::showShutdownWindow(window));
+    stopFreech();
 
     qDebug() << __func__ << ": Requesting shutdown";
     startThread();
@@ -589,13 +701,13 @@ int main(int argc, char *argv[])
     Q_INIT_RESOURCE(martkist);
     Q_INIT_RESOURCE(martkist_locale);
 
+#if QT_VERSION >= 0x050600
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
     MartkistApplication app(argc, argv);
 #if QT_VERSION > 0x050100
     // Generate high-dpi pixmaps
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-#endif
-#if QT_VERSION >= 0x050600
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 #ifdef Q_OS_MAC
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);

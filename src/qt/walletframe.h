@@ -65,6 +65,8 @@ private:
 public Q_SLOTS:
     /** Switch to overview (home) page */
     void gotoOverviewPage();
+    /** Switch to FREECH page */
+    void gotoFreechPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
     /** Switch to masternode page */

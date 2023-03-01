@@ -18,6 +18,10 @@ $(package)_qttranslations_sha256_hash=3a15aebd523c6d89fb97b2d3df866c94149653a26d
 $(package)_qttools_file_name=qttools-$($(package)_suffix)
 $(package)_qttools_sha256_hash=22d67de915cb8cd93e16fdd38fa006224ad9170bd217c2be1e53045a8dd02f0f
 
+$(package)_qtwebkit_download_path=https://download.qt.io/snapshots/ci/qtwebkit/5.212/latest/src/submodules/qtwebkit-opensource-src-5.212.zip
+$(package)_qtwebkit_file_name=qtwebkit-opensource-src-5.212.zip
+$(package)_qtwebkit_sha256_hash=3c418dda16fca454551b8fd92d358ae071d0df0a78ba3285e435364d801b5641
+
 $(package)_extra_sources  = $($(package)_qttranslations_file_name)
 $(package)_extra_sources += $($(package)_qttools_file_name)
 
@@ -74,6 +78,7 @@ $(package)_config_opts += -prefix $(host_prefix)
 $(package)_config_opts += -qt-libpng
 $(package)_config_opts += -qt-libjpeg
 $(package)_config_opts += -qt-pcre
+$(package)_config_opts += -qt-harfbuzz
 $(package)_config_opts += -system-zlib
 $(package)_config_opts += -reduce-exports
 $(package)_config_opts += -static
@@ -107,7 +112,8 @@ endef
 define $(package)_fetch_cmds
 $(call fetch_file,$(package),$($(package)_download_path),$($(package)_download_file),$($(package)_file_name),$($(package)_sha256_hash)) && \
 $(call fetch_file,$(package),$($(package)_download_path),$($(package)_qttranslations_file_name),$($(package)_qttranslations_file_name),$($(package)_qttranslations_sha256_hash)) && \
-$(call fetch_file,$(package),$($(package)_download_path),$($(package)_qttools_file_name),$($(package)_qttools_file_name),$($(package)_qttools_sha256_hash))
+$(call fetch_file,$(package),$($(package)_download_path),$($(package)_qttools_file_name),$($(package)_qttools_file_name),$($(package)_qttools_sha256_hash)) && \
+$(call fetch_file,$(package),$($(package)_qtwebkit_download_path),$($(package)_qtwebkit_file_name),$($(package)_qtwebkit_file_name),$($(package)_qtwebkit_sha256_hash))
 endef
 
 define $(package)_extract_cmds
@@ -115,13 +121,16 @@ define $(package)_extract_cmds
   echo "$($(package)_sha256_hash)  $($(package)_source)" > $($(package)_extract_dir)/.$($(package)_file_name).hash && \
   echo "$($(package)_qttranslations_sha256_hash)  $($(package)_source_dir)/$($(package)_qttranslations_file_name)" >> $($(package)_extract_dir)/.$($(package)_file_name).hash && \
   echo "$($(package)_qttools_sha256_hash)  $($(package)_source_dir)/$($(package)_qttools_file_name)" >> $($(package)_extract_dir)/.$($(package)_file_name).hash && \
+  echo "$($(package)_qtwebkit_sha256_hash)  $($(package)_source_dir)/$($(package)_qtwebkit_file_name)" >> $($(package)_extract_dir)/.$($(package)_file_name).hash && \
   $(build_SHA256SUM) -c $($(package)_extract_dir)/.$($(package)_file_name).hash && \
   mkdir qtbase && \
   tar --strip-components=1 -xf $($(package)_source) -C qtbase && \
   mkdir qttranslations && \
   tar --strip-components=1 -xf $($(package)_source_dir)/$($(package)_qttranslations_file_name) -C qttranslations && \
   mkdir qttools && \
-  tar --strip-components=1 -xf $($(package)_source_dir)/$($(package)_qttools_file_name) -C qttools
+  tar --strip-components=1 -xf $($(package)_source_dir)/$($(package)_qttools_file_name) -C qttools && \
+  unzip -q $($(package)_source_dir)/$($(package)_qtwebkit_file_name) && \
+  mv qtwebkit-opensource-src-5.212 qtwebkit
 endef
 
 
@@ -162,13 +171,24 @@ define $(package)_config_cmds
   $(MAKE) sub-src-clean && \
   cd ../qttranslations && ../qtbase/bin/qmake qttranslations.pro -o Makefile && \
   cd translations && ../../qtbase/bin/qmake translations.pro -o Makefile && cd ../.. &&\
-  cd qttools/src/linguist/lrelease/ && ../../../../qtbase/bin/qmake lrelease.pro -o Makefile
+  cd qttools/src/linguist/lrelease/ && ../../../../qtbase/bin/qmake lrelease.pro -o Makefile  
 endef
 
 define $(package)_build_cmds
   $(MAKE) -C src $(addprefix sub-,$($(package)_qt_libs)) && \
   $(MAKE) -C ../qttools/src/linguist/lrelease && \
-  $(MAKE) -C ../qttranslations
+  $(MAKE) -C ../qttranslations && \
+  sed -i.old "s/\/native\/bin/\/bin/g" lib/cmake/Qt5Core/Qt5CoreConfigExtras.cmake && \
+  sed -i.old "s/\/native\/bin/\/bin/g" lib/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake && \
+  cd ../qtwebkit && \
+  sed -i.old "s/^add_subdirectory(QtTestBrowser)/#&/" Tools/PlatformQt.cmake && \
+  find . -type f -name *.rb -exec dos2unix {} \; && \
+  find . -type f -name *.asm -exec dos2unix {} \; && \
+  find Source/JavaScriptCore -type f -exec dos2unix {} \; && \
+  find Source/WebCore -type f -exec dos2unix {} \; && \
+  export SQLITE3SRCDIR=$($(package)_extract_dir)/qtbase/src/3rdparty/sqlite && \
+  export CMAKE_INSTALL_PREFIX=$($(package)_staging_dir) && \
+  ./Tools/Scripts/build-webkit --qt --release --no-geolocation --64-bit --cmakeargs="-Wno-dev -DCMAKE_PREFIX_PATH=$($(package)_extract_dir)/qtbase -DENABLE_DEVICE_ORIENTATION=OFF -DENABLE_VIDEO=OFF -DENABLE_X11_TARGET=OFF -DUSE_GSTREAMER=OFF -DENABLE_WEB_AUDIO=OFF -DENABLE_GEOLOCATION=OFF -DENABLE_TOUCH_EVENTS=OFF DENABLE_DEVICE_ORIENTATION=OFF -DUSE_THIN_ARCHIVES=OFF -DENABLE_OPENGL=OFF -DUSE_LIBHYPHEN=OFF -DENABLE_XSLT=OFF -DENABLE_SPELLCHECK=OFF -DENABLE_PRINT_SUPPORT=OFF -DENABLE_QT_GESTURE_EVENTS=OFF -DENABLE_SAMPLING_PROFILER=OFF -DENABLE_API_TESTS=OFF -DENABLE_WEBKIT2=OFF -DENABLE_TOOLS=OFF -DENABLE_TEST_SUPPORT=OFF"
 endef
 
 define $(package)_stage_cmds
@@ -177,7 +197,9 @@ define $(package)_stage_cmds
   $(MAKE) -C qttranslations INSTALL_ROOT=$($(package)_staging_dir) install_subtargets && \
   if `test -f qtbase/src/plugins/platforms/xcb/xcb-static/libxcb-static.a`; then \
     cp qtbase/src/plugins/platforms/xcb/xcb-static/libxcb-static.a $($(package)_staging_prefix_dir)/lib; \
-  fi
+  fi && \
+  cd qtwebkit/WebKitBuild/Release && \
+  ninja install
 endef
 
 define $(package)_postprocess_cmds

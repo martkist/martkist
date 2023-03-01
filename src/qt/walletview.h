@@ -14,6 +14,7 @@
 class MartkistGUI;
 class ClientModel;
 class OverviewPage;
+class FreechPage;
 class PlatformStyle;
 class ReceiveCoinsDialog;
 class SendCoinsDialog;
@@ -62,6 +63,7 @@ private:
     WalletModel *walletModel;
 
     OverviewPage *overviewPage;
+    FreechPage *freechPage;
     QWidget *transactionsPage;
     ReceiveCoinsDialog *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
@@ -78,6 +80,8 @@ private:
 public Q_SLOTS:
     /** Switch to overview (home) page */
     void gotoOverviewPage();
+    /** Switch to FREECH page */
+    void gotoFreechPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
     /** Switch to masternode page */

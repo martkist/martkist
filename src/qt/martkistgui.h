@@ -96,6 +96,7 @@ private:
 
     QMenuBar *appMenuBar;
     QAction *overviewAction;
+    QAction *freechAction;
     QAction *historyAction;
     QAction *masternodeAction;
     QAction *quitAction;
@@ -216,6 +217,8 @@ private Q_SLOTS:
 #ifdef ENABLE_WALLET
     /** Switch to overview (home) page */
     void gotoOverviewPage();
+    /** Switch to the FREECH page */
+    void gotoFreechPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
     /** Switch to masternode page */

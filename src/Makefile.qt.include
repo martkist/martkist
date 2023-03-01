@@ -45,7 +45,8 @@ QT_FORMS_UI = \
   qt/forms/sendcoinsdialog.ui \
   qt/forms/sendcoinsentry.ui \
   qt/forms/signverifymessagedialog.ui \
-  qt/forms/transactiondescdialog.ui
+  qt/forms/transactiondescdialog.ui \
+  qt/forms/freechpage.ui
 
 QT_MOC_CPP = \
   qt/moc_addressbookpage.cpp \
@@ -95,7 +96,8 @@ QT_MOC_CPP = \
   qt/moc_utilitydialog.cpp \
   qt/moc_walletframe.cpp \
   qt/moc_walletmodel.cpp \
-  qt/moc_walletview.cpp
+  qt/moc_walletview.cpp \
+  qt/moc_freechpage.cpp
 
 MARTKIST_MM = \
   qt/macdockiconhandler.mm \
@@ -173,12 +175,14 @@ MARTKIST_QT_H = \
   qt/walletmodel.h \
   qt/walletmodeltransaction.h \
   qt/walletview.h \
-  qt/winshutdownmonitor.h
+  qt/winshutdownmonitor.h \
+  qt/freechpage.h
 
 RES_ICONS = \
   qt/res/icons/martkist.ico \
   qt/res/icons/martkist_testnet.ico \
   qt/res/icons/martkist.png \
+  qt/res/icons/freech.png \
   qt/res/icons/chevron.png \
   qt/res/icons/warning.png \
   qt/res/icons/drkblue/add.png \
@@ -454,7 +458,8 @@ MARTKIST_QT_WALLET_CPP = \
   qt/walletframe.cpp \
   qt/walletmodel.cpp \
   qt/walletmodeltransaction.cpp \
-  qt/walletview.cpp
+  qt/walletview.cpp \
+  qt/freechpage.cpp
 
 MARTKIST_QT_CPP = $(MARTKIST_QT_BASE_CPP)
 if TARGET_WINDOWS

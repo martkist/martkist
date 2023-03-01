@@ -5,7 +5,7 @@ FORMS += \
     ../src/qt/forms/coincontroldialog.ui \
     ../src/qt/forms/darksendconfig.ui \
     ../src/qt/forms/debugwindow.ui \
-    ../src/qt/forms/editaddressdialog.ui \
+    ../src/qt/forms/editaddressdialog.ui \    
     ../src/qt/forms/helpmessagedialog.ui \
     ../src/qt/forms/intro.ui \
     ../src/qt/forms/masternodelist.ui \
@@ -17,7 +17,8 @@ FORMS += \
     ../src/qt/forms/sendcoinsdialog.ui \
     ../src/qt/forms/sendcoinsentry.ui \
     ../src/qt/forms/signverifymessagedialog.ui \
-    ../src/qt/forms/transactiondescdialog.ui
+    ../src/qt/forms/transactiondescdialog.ui \
+    ../src/qt/forms/freechpage.ui
 
 RESOURCES += \
     ../src/qt/martkist.qrc

@@ -1,0 +1,11 @@
+prefix=/opt/qt/5.14.2/win64_mingw73
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include/QtWebKit
+
+Name: Qt5WebKit
+Description: Qt WebKit module
+Version: 5.212.0
+Libs: -L${libdir} -lQt5WebKit
+Cflags: -I${includedir} 
+Requires: Qt5Core Qt5Gui Qt5Network

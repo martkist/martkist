@@ -89,10 +89,11 @@ dnl Outputs: Sets variables for all qt-related tools.
 dnl Outputs: martkist_enable_qt, martkist_enable_qt_dbus, martkist_enable_qt_test
 AC_DEFUN([MARTKIST_QT_CONFIGURE],[
   use_pkgconfig=$1
-
+  
   if test "x$use_pkgconfig" = x; then
     use_pkgconfig=yes
   fi
+  echo "Using package config for QT: $use_pkgconfig"
 
   if test "x$use_pkgconfig" = xyes; then
     MARTKIST_QT_CHECK([_MARTKIST_QT_FIND_LIBS_WITH_PKGCONFIG([$2])])
@@ -167,6 +168,8 @@ AC_DEFUN([MARTKIST_QT_CONFIGURE],[
   CXXFLAGS=$TEMP_CXXFLAGS
   ])
 
+  echo "use_pkgconfig=$use_pkgconfig"
+  echo "qt_bin_path=$qt_bin_path"
   if test "x$use_pkgconfig$qt_bin_path" = xyes; then
     if test "x$martkist_qt_got_major_vers" = x5; then
       qt_bin_path="`$PKG_CONFIG --variable=host_bins Qt5Core 2>/dev/null`"
@@ -366,6 +369,8 @@ AC_DEFUN([_MARTKIST_QT_FIND_STATIC_PLUGINS],[
          PKG_CHECK_MODULES([X11XCB], [x11-xcb], [QT_LIBS="$X11XCB_LIBS $QT_LIBS"])
          if ${PKG_CONFIG} --exists "Qt5Core >= 5.5" 2>/dev/null; then
            PKG_CHECK_MODULES([QTXCBQPA], [Qt5XcbQpa], [QT_LIBS="$QTXCBQPA_LIBS $QT_LIBS"])
+           PKG_CHECK_MODULES([QTDBUS], [Qt5DBus], [QT_LIBS="$QTDBUS_LIBS $QT_LIBS"])
+           PKG_CHECK_MODULES([QTOPENGL], [Qt5OpenGL], [QT_LIBS="$QTOPENGL_LIBS $QT_LIBS"])
          fi
        elif test "x$TARGET_OS" = xdarwin; then
          PKG_CHECK_MODULES([QTPRINT], [Qt5PrintSupport], [QT_LIBS="$QTPRINT_LIBS $QT_LIBS"])
@@ -422,11 +427,13 @@ AC_DEFUN([_MARTKIST_QT_FIND_LIBS_WITH_PKGCONFIG],[
       QT_LIB_PREFIX=Qt
       martkist_qt_got_major_vers=4
     fi
-    qt5_modules="Qt5Core Qt5Gui Qt5Network Qt5Widgets"
+    qt5_modules="Qt5Core Qt5Gui Qt5Network Qt5Widgets Qt5WebKitWidgets"
     qt4_modules="QtCore QtGui QtNetwork"
+    export PKG_CONFIG_PATH=$QTDIR/lib/pkgconfig:$PKG_CONFIG_PATH
     MARTKIST_QT_CHECK([
       if test "x$martkist_qt_want_version" = xqt5 || ( test "x$martkist_qt_want_version" = xauto && test "x$auto_priority_version" = xqt5 ); then
         PKG_CHECK_MODULES([QT5], [$qt5_modules], [QT_INCLUDES="$QT5_CFLAGS"; QT_LIBS="$QT5_LIBS" have_qt=yes],[have_qt=no])
+        echo $QT_INCLUDES
       elif test "x$martkist_qt_want_version" = xqt4 || ( test "x$martkist_qt_want_version" = xauto && test "x$auto_priority_version" = xqt4 ); then
         PKG_CHECK_MODULES([QT4], [$qt4_modules], [QT_INCLUDES="$QT4_CFLAGS"; QT_LIBS="$QT4_LIBS" ; have_qt=yes], [have_qt=no])
       fi
@@ -467,16 +474,20 @@ AC_DEFUN([_MARTKIST_QT_FIND_LIBS_WITHOUT_PKGCONFIG],[
   CXXFLAGS="$PIC_FLAGS $CXXFLAGS"
   TEMP_LIBS="$LIBS"
   MARTKIST_QT_CHECK([
+    echo "qt_include_path=$qt_include_path"
     if test "x$qt_include_path" != x; then
-      QT_INCLUDES="-I$qt_include_path -I$qt_include_path/QtCore -I$qt_include_path/QtGui -I$qt_include_path/QtWidgets -I$qt_include_path/QtNetwork -I$qt_include_path/QtTest -I$qt_include_path/QtDBus"
+      QT_INCLUDES="-I$qt_include_path -I$qt_include_path/QtCore -I$qt_include_path/QtGui -I$qt_include_path/QtWidgets -I$qt_include_path/QtNetwork -I$qt_include_path/QtTest -I$qt_include_path/QtDBus -I$qt_include_path/QtWebKitWidgets"
+      echo "QT_INCLUDES=$QT_INCLUDES"
       CPPFLAGS="$QT_INCLUDES $CPPFLAGS"
+      echo "CPPFLAGS=$CPPFLAGS"
     fi
   ])
 
   MARTKIST_QT_CHECK([AC_CHECK_HEADER([QtPlugin],,MARTKIST_QT_FAIL(QtCore headers missing))])
   MARTKIST_QT_CHECK([AC_CHECK_HEADER([QApplication],, MARTKIST_QT_FAIL(QtGui headers missing))])
   MARTKIST_QT_CHECK([AC_CHECK_HEADER([QLocalSocket],, MARTKIST_QT_FAIL(QtNetwork headers missing))])
-
+  MARTKIST_QT_CHECK([AC_CHECK_HEADER([QtWebKitWidgets],,MARTKIST_QT_FAIL(QtWebKitWidgets headers missing))])
+  
   MARTKIST_QT_CHECK([
     if test "x$martkist_qt_want_version" = xauto; then
       _MARTKIST_QT_CHECK_QT5
@@ -509,6 +520,8 @@ AC_DEFUN([_MARTKIST_QT_FIND_LIBS_WITHOUT_PKGCONFIG],[
   MARTKIST_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}Core]   ,[main],,MARTKIST_QT_FAIL(lib${QT_LIB_PREFIX}Core not found)))
   MARTKIST_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}Gui]    ,[main],,MARTKIST_QT_FAIL(lib${QT_LIB_PREFIX}Gui not found)))
   MARTKIST_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}Network],[main],,MARTKIST_QT_FAIL(lib${QT_LIB_PREFIX}Network not found)))
+  MARTKIST_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}WebKit],[main],,MARTKIST_QT_FAIL(lib${QT_LIB_PREFIX}WebKit not found)))
+  MARTKIST_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}WebKitWidgets],[main],,MARTKIST_QT_FAIL(lib${QT_LIB_PREFIX}WebKitWidgets not found)))
   if test "x$martkist_qt_got_major_vers" = x5; then
     MARTKIST_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}Widgets],[main],,MARTKIST_QT_FAIL(lib${QT_LIB_PREFIX}Widgets not found)))
   fi

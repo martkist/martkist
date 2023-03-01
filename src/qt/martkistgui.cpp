@@ -97,6 +97,7 @@ MartkistGUI::MartkistGUI(const PlatformStyle *_platformStyle, const NetworkStyle
     progressDialog(0),
     appMenuBar(0),
     overviewAction(0),
+    freechAction(0),
     historyAction(0),
     masternodeAction(0),
     quitAction(0),
@@ -301,6 +302,17 @@ void MartkistGUI::createActions()
 #endif
     tabGroup->addAction(overviewAction);
 
+    freechAction = new QAction(QIcon(":/icons/freech"), tr("&Freech"), this);
+    freechAction->setStatusTip(tr("Your decentralised social hub"));
+    freechAction->setToolTip(freechAction->statusTip());
+    freechAction->setCheckable(true);
+#ifdef Q_OS_MAC
+    freechAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_QuoteLeft));
+#else
+    freechAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_QuoteLeft));
+#endif
+    tabGroup->addAction(freechAction);
+
     sendCoinsAction = new QAction(QIcon(":/icons/" + theme + "/send"), tr("&Send"), this);
     sendCoinsAction->setStatusTip(tr("Send coins to a Martkist address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
@@ -363,6 +375,8 @@ void MartkistGUI::createActions()
     // can be triggered from the tray menu, and need to show the GUI to be useful.
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
+    connect(freechAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(freechAction, SIGNAL(triggered()), this, SLOT(gotoFreechPage()));
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(gotoSendCoinsPage()));
     connect(sendCoinsMenuAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -562,6 +576,7 @@ void MartkistGUI::createToolBars()
         QToolBar *toolbar = new QToolBar(tr("Tabs toolbar"));
         toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         toolbar->addAction(overviewAction);
+        toolbar->addAction(freechAction);
         toolbar->addAction(sendCoinsAction);
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
@@ -709,6 +724,7 @@ void MartkistGUI::removeAllWallets()
 void MartkistGUI::setWalletActionsEnabled(bool enabled)
 {
     overviewAction->setEnabled(enabled);
+    freechAction->setEnabled(enabled);
     sendCoinsAction->setEnabled(enabled);
     sendCoinsMenuAction->setEnabled(enabled);
     receiveCoinsAction->setEnabled(enabled);
@@ -876,6 +892,12 @@ void MartkistGUI::gotoOverviewPage()
 {
     overviewAction->setChecked(true);
     if (walletFrame) walletFrame->gotoOverviewPage();
+}
+
+void MartkistGUI::gotoFreechPage()
+{
+    freechAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoFreechPage();
 }
 
 void MartkistGUI::gotoHistoryPage()

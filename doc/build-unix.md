@@ -141,7 +141,7 @@ Qt 5 will be used. Pass `--with-gui=qt4` to configure to choose Qt4. To build wi
 To build with Qt 5 (recommended) you need the following:
 
 ```shell
-sudo apt-get install -y libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler
+sudo apt-get install -y libqt5gui5 libqt5core5a libqt5webenginewidgets5 libqt5dbus5 qttools5-dev qttools5-dev-tools qtwebengine5-dev libprotobuf-dev protobuf-compiler
 ```
 
 Alternatively, to build with Qt 4 you need the following:

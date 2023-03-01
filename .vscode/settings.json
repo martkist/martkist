@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "qwebengineview": "cpp",
+        "qwebenginepage": "cpp"
+    }
+}

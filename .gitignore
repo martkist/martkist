@@ -130,6 +130,9 @@ qa/pull-tester/tests-config.sh
 #development symlinks
 martkist-cli
 martkistd
+freechd
 martkist-qt
 make
 contrib/devtools/split-debug.sh
+distsrc-*/
+temp/*

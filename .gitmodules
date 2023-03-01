@@ -1,0 +1,3 @@
+[submodule "freech-html"]
+	path = freech-html
+	url = https://github.com/martkist/freech-html
