@@ -11,7 +11,7 @@ RUN aqt install-qt mac desktop 5.14.2 clang_64
 RUN curl -O -L https://github.com/qtwebkit/qtwebkit/releases/download/qtwebkit-5.212.0-alpha4/qtwebkit-MacOS-MacOS_10_13-Clang-MacOS-MacOS_10_13-X86_64.7z
 ENV QTDIR=/opt/qt/5.14.2/clang_64
 RUN 7z x qtwebkit-MacOS-MacOS_10_13-Clang-MacOS-MacOS_10_13-X86_64.7z -o${QTDIR}
-ADD macos/*.pc ${QTDIR}/lib/pkgconfig/
+ADD *.pc ${QTDIR}/lib/pkgconfig/
 
 FROM ubuntu:trusty as build
 ARG TAG

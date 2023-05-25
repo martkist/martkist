@@ -11,7 +11,7 @@ RUN aqt install-qt windows desktop 5.14.2 win64_mingw73
 RUN curl -O -L https://github.com/qtwebkit/qtwebkit/releases/download/qtwebkit-5.212.0-alpha4/qtwebkit-Windows-Windows_10-Mingw73-Windows-Windows_10-X86_64.7z
 ENV QTDIR=/opt/qt/5.14.2/mingw73_64
 RUN 7z x qtwebkit-Windows-Windows_10-Mingw73-Windows-Windows_10-X86_64.7z -o${QTDIR}
-ADD win/*.pc ${QTDIR}/lib/pkgconfig/
+ADD *.pc ${QTDIR}/lib/pkgconfig/
 
 FROM ubuntu:20.04 as build
 LABEL maintainer="Martkist Developers"

@@ -10,7 +10,7 @@ RUN aqt install-qt linux desktop 5.14.2 gcc_64
 RUN curl -O -L https://github.com/qtwebkit/qtwebkit/releases/download/qtwebkit-5.212.0-alpha4/qtwebkit-Linux-RHEL_7_6-GCC-Linux-RHEL_7_6-X86_64.7z
 ENV QTDIR=/opt/qt/5.14.2/gcc_64
 RUN 7z x qtwebkit-Linux-RHEL_7_6-GCC-Linux-RHEL_7_6-X86_64.7z -o${QTDIR}
-ADD linux/*.pc ${QTDIR}/lib/pkgconfig/
+ADD *.pc ${QTDIR}/lib/pkgconfig/
 
 FROM ubuntu:20.04 as build
 ARG TAG
