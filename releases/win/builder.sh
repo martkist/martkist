@@ -95,7 +95,7 @@ RELEASEDIR=/martkist/distsrc-${HOST}/release
 mkdir -p ${RELEASEDIR}
 cp ${BASEPREFIX}/${HOST}/bin/freechd.exe ${RELEASEDIR}/
 cp -r ${BASEPREFIX}/../freech-html ${RELEASEDIR}/
-xargs -a /martkist/releases/win/qtdlls.txt cp -t ${RELEASEDIR}/
+xargs -a /martkist/releases/win/qtdlls.txt cp -L -t ${RELEASEDIR}/
 mkdir ${RELEASEDIR}/plugins/
 cp -r ${QTDIR}/plugins/imageformats ${RELEASEDIR}/plugins/
 cp -r ${QTDIR}/plugins/platforms ${RELEASEDIR}/plugins/
