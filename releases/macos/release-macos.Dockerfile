@@ -80,3 +80,5 @@ RUN git submodule update --init
 ENV OUTDIR=/outputs
 RUN mkdir ${OUTDIR}
 RUN releases/macos/builder.sh
+# Run it a 2nd time, otherwise the DMG is missing stuff
+RUN releases/macos/builder.sh
